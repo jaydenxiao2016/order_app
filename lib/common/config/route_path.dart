@@ -1,0 +1,11 @@
+///路由path
+class RoutePath{
+  //启动页
+  static const String SPLASH_PATH="/";
+  //登录页
+  static const String LOGIN_PATH="login";
+  //开台服务
+  static const String SERVICE_CONTROL_PATH="serviceControl";
+  //主页
+  static const String HOME_PATH="home";
+}
