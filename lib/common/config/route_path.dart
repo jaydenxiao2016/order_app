@@ -8,4 +8,6 @@ class RoutePath{
   static const String SERVICE_CONTROL_PATH="serviceControl";
   //主页
   static const String HOME_PATH="home";
+  //客户工作台
+  static const String CUSTOM_MENU_PATH="CustomMenuPage";
 }

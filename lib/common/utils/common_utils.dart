@@ -16,7 +16,6 @@ import 'package:order_app/common/style/string_base.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,48 +66,7 @@ class CommonUtils {
     }
   }
 
-  ///本地文件夹
-  static getLocalPath() async {
-    Directory appDir;
-    if (Platform.isIOS) {
-      appDir = await getApplicationDocumentsDirectory();
-    } else {
-      appDir = await getExternalStorageDirectory();
-    }
-    PermissionStatus permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.storage);
-    if (permission != PermissionStatus.granted) {
-      Map<PermissionGroup, PermissionStatus> permissions =
-          await PermissionHandler()
-              .requestPermissions([PermissionGroup.storage]);
-      if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
-        return null;
-      }
-    }
-    String appDocPath = appDir.path + "/" + Config.FILE_ROOT_PATH;
-    Directory appPath = Directory(appDocPath);
-    await appPath.create(recursive: true);
-    return appPath;
-  }
 
-  ///保存图片
-  static saveImage(String url) async {
-    Future<String> _findPath(String imageUrl) async {
-      final file = await DefaultCacheManager().getSingleFile(url);
-      if (file == null) {
-        return null;
-      }
-      Directory localPath = await CommonUtils.getLocalPath();
-      if (localPath == null) {
-        return null;
-      }
-      final name = splitFileNameByPath(file.path);
-      final result = await file.copy(localPath.path + name);
-      return result.path;
-    }
-
-    return _findPath(url);
-  }
 
   static splitFileNameByPath(String path) {
     return path.substring(path.lastIndexOf("/"));

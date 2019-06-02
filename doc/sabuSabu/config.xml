@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget 
+xmlns = "http://www.w3.org/ns/widgets"
+xmlns:gap = "http://phonegap.com/ns/1.0"
+id = "com.nsbasic.sabuSabu"
+version = "5.6">
+
+<name>sabuSabu</name>
+<description></description>
+
+<!-- Icons: Expand this section with sizes required for platforms you are targeting.
+    Here is the list: http://wiki.phonegap.com/w/page/36905973/Icons%20and%20Splash%20Screens
+-->
+<icon src="nsb/images/LauncherIcon57.png" gap:role="default" width="57" height="57"/>
+<gap:splash src="nsb/images/SplashScreen.png"/>
+
+<!-- Platforms: Uncomment this section and customize as needed.
+<gap:platforms>
+   <gap:platform name="android" minVersion="2.1" />
+   <gap:platform name="webos" />
+   <gap:platform name="ios" />
+   <gap:platform name="symbian.wrt" />
+   <gap:platform name="blackberry" project="widgets"/>
+</gap:platforms> -->
+
+<!-- sample feature specification -->
+<!-- <feature name="http://api.phonegap.com/1.0/network"/> -->
+
+<!-- sample preference specification -->
+<!-- <preference name="autorotate" value="false" readonly="true"/> -->
+<!-- <preference name="orientation" value="default" > -->
+<!-- <preference name="fullscreen" value="true" > -->
+</widget>

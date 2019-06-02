@@ -12,6 +12,7 @@ import 'package:order_app/common/net/code.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/sp_util.dart';
+import 'package:order_app/page/custom_menu_page.dart';
 import 'package:order_app/page/home_page.dart';
 import 'package:order_app/page/login_page.dart';
 import 'package:order_app/page/splash_page.dart';
@@ -98,6 +99,12 @@ class _FlutterReduxAppState extends State<FlutterReduxApp> {
               RoutePath.HOME_PATH: (context) {
                 return new MyLocalizations(
                   child: new HomePage(),
+                );
+              },
+              ///客户工作台
+              RoutePath.CUSTOM_MENU_PATH: (context) {
+                return new MyLocalizations(
+                  child: new CustomMenuPage(),
                 );
               },
             });

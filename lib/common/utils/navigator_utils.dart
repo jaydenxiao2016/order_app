@@ -29,4 +29,9 @@ class NavigatorUtils {
   static goLogin(BuildContext context) {
     Navigator.pushReplacementNamed(context, RoutePath.LOGIN_PATH);
   }
+  ///客户工作台
+  static goCustomMenuPage(BuildContext context) {
+    Navigator.pushReplacementNamed(context, RoutePath.CUSTOM_MENU_PATH);
+  }
+
 }

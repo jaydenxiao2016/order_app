@@ -2,6 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:order_app/common/style/colors_style.dart';
+import 'package:order_app/common/style/text_style.dart';
+import 'package:order_app/widget/PlusDecreaseInput.dart';
+import 'package:order_app/widget/slide_bar.dart';
 
 ///开台服务界面
 class ServiceControl extends StatefulWidget {
@@ -10,7 +13,6 @@ class ServiceControl extends StatefulWidget {
 }
 
 class _ServiceControlState extends State<ServiceControl> {
-  TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,127 +21,202 @@ class _ServiceControlState extends State<ServiceControl> {
         title: Text("开台服务"),
         centerTitle: true,
       ),
-      body: Container(
-        height: window.physicalSize.height,
-        width: window.physicalSize.width,
-        decoration: new BoxDecoration(
-            gradient: LinearGradient(colors: [
-          Theme.of(context).primaryColor,
-          Color(ColorsStyle.white)
-        ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          children: <Widget>[
+      body: SingleChildScrollView(
+        child: Container(
+          width: window.physicalSize.width,
+          decoration: new BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Theme
+                    .of(context)
+                    .primaryColor,
+                Color(ColorsStyle.white)
+              ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
+          padding: EdgeInsets.all(20.0),
+          child: Column(children: <Widget>[
+            //客人位数信息
+            PeopleAndNumInfo(),
+            Padding(padding: EdgeInsets.all(5.0),),
+            //设置信息
             Container(
-              width: 250.0,
-                child: PlusDecreaseInput(textEditingController: controller)
+              padding: EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(3.0))
+              ),
+              child: Column(
+                children: <Widget>[
+                  SlideBar(
+                    title: '午餐数量',
+                    titleColor: Colors.redAccent,
+                    min: 0.0,
+                    max: 10.0,
+                    value: 5.0,
+                    divisions: 10,),
+                  SlideBar(
+                    title: '晚餐数量',
+                    titleColor: Colors.redAccent,
+                    min: 0.0,
+                    max: 10.0,
+                    value: 5.0,
+                    divisions: 10,),
+                  SlideBar(
+                    title: '每轮时间',
+                    titleColor: Colors.redAccent,
+                    min: 0.0,
+                    max: 30.0,
+                    value: 15.0,
+                    divisions: 30,),
+                ],
+              ),
             ),
-            Container(
-                width: 250.0,
-                child: PlusDecreaseInput(textEditingController: controller)
-            ),
-          ],
+            //操作信息
+            Operations(),
+            //库存信息
+            StockInfo(),
+          ],),
         ),
       ),
     );
   }
 }
-
-class PlusDecreaseInput extends StatelessWidget {
-  final TextEditingController textEditingController;
-  final ValueChanged<String> onChanged;
-  final double inputWidth;
-  final double inputHeight;
-  final double fontSize;
-
-  PlusDecreaseInput(
-      {Key key,
-      @required this.textEditingController,
-      this.inputWidth,
-      this.inputHeight=60.0,
-      this.fontSize=30.0,
-      this.onChanged})
-      : super(key: key);
-
+class StockInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        new IconButton(
-          icon: Image.asset(
-            "static/images/icon_decrease.png",
-            height: 60.0,
-            width: 60.0,
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(3.0))
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            color: Colors.white,
+            height: 200.0,
+            child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: 10,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    padding: EdgeInsets.all(5.0),
+                    child: Text("菜单内容"+index.toString(),
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Color(ColorsStyle.mainTextColor),
+                          fontSize: MyTextStyle.smallTextSize,
+                        )),
+                  );
+                }),
           ),
-          onPressed: () {
-            if (textEditingController.text.length > 0) {
-              int num = int.parse(textEditingController.text);
-              if(num>1) {
-                num -= 1;
-              }else{
-                num=1;
-              }
-              textEditingController.text = num.toString();
-            } else {
-              textEditingController.text = "1";
-            }
-          },
-        ),
-        Expanded(
-          child: Container(
-            width: inputWidth,
-            height: inputHeight,
-            padding: const EdgeInsets.all(5.0),
-            child: TextField(
-              style: TextStyle(
-                fontSize: fontSize,
-                color: Color(ColorsStyle.mainTextColor),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: RaisedButton.icon(
+                    disabledColor: Theme
+                        .of(context)
+                        .primaryColor,
+                    highlightColor: Theme
+                        .of(context)
+                        .primaryColor,
+                    textColor: Colors.white,
+                    textTheme: ButtonTextTheme.normal,
+                    splashColor: Colors.white,
+                    disabledTextColor: Colors.white,
+                    color: Theme
+                        .of(context)
+                        .primaryColor,
+                    onPressed: () {},
+                    icon: Icon(Icons.update, size: 25.0,),
+                    label: Text("更新菜单")),
               ),
-              decoration: InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-                enabledBorder: OutlineInputBorder(
-                  /*边角*/
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5.0), //边角为30
-                  ),
-                  borderSide: BorderSide(
-                    color: Colors.white,
-                    width: 1, //边线宽度为2
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                  color:Theme.of(context).primaryColor,
-                  width: 1, //宽度为5
-                )),
-              ),
-              controller: textEditingController,
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-        new IconButton(
-          icon: Image.asset(
-            "static/images/icon_plus.png",
-            height: 60.0,
-            width: 60.0,
-          ),
-          onPressed: () {
-            if (textEditingController.text.length > 0) {
-              int num = int.parse(textEditingController.text);
-              if (num > 0) {
-                num += 1;
-              } else {
-                num = 1;
-              }
-              textEditingController.text = num.toString();
-            } else {
-              textEditingController.text = "1";
-            }
-          },
-        ),
-      ],
+            ],
+          )
+        ],
+      ),
     );
   }
 }
+
+
+class Operations extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: RaisedButton.icon(
+                disabledColor: Colors.blueAccent,
+                highlightColor: Colors.blue,
+                textColor: Colors.white,
+                textTheme: ButtonTextTheme.normal,
+                splashColor: Colors.white,
+                disabledTextColor: Colors.white,
+                color: Colors.blue,
+                onPressed: () {},
+                icon: Icon(Icons.person_add, size: 25.0,),
+                label: Text("午餐确认")),
+          ),
+          Padding(padding: EdgeInsets.all(5.0),),
+          Expanded(
+            child: RaisedButton.icon(
+                disabledColor: Colors.blueAccent,
+                highlightColor: Colors.blue,
+                textColor: Colors.white,
+                textTheme: ButtonTextTheme.normal,
+                splashColor: Colors.white,
+                disabledTextColor: Colors.white,
+                color: Colors.blue,
+                onPressed: () {},
+                icon: Icon(Icons.person_add, size: 25.0,),
+                label: Text("晚餐确认")),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class PeopleAndNumInfo extends StatelessWidget {
+  TextEditingController controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(3.0))
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+              child: PlusDecreaseInput(
+                textEditingController: controller, title: "成人",)
+          ),
+          Container(
+              child: PlusDecreaseInput(
+                textEditingController: controller, title: "小孩",)
+          ),
+          Container(
+              child: PlusDecreaseInput(
+                textEditingController: controller, title: "桌号",)
+          ),
+          Container(
+              child: PlusDecreaseInput(
+                textEditingController: controller,
+                decreaseVisible: false,
+                plusVisible: false,
+                title: "密码",)
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
