@@ -18,6 +18,9 @@ class PlusDecreaseInput extends StatelessWidget {
   ///输入框字体大小
   final double fontSize;
 
+  ///标题是否可见
+  final bool titleVisible;
+
   ///标题
   final String title;
 
@@ -29,7 +32,8 @@ class PlusDecreaseInput extends StatelessWidget {
 
   PlusDecreaseInput({Key key,
     @required this.textEditingController,
-    @required this.title,
+    this.title,
+    this.titleVisible = true,
     this.decreaseVisible = true,
     this.plusVisible = true,
     this.inputWidth,
@@ -46,11 +50,14 @@ class PlusDecreaseInput extends StatelessWidget {
     return Row(
       children: <Widget>[
         //标题
-        Text(title, style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: titleFontSize,
-          color: titleColor,
-        )),
+        Offstage(
+          offstage: titleVisible,
+          child: Text(title, style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: titleFontSize,
+            color: titleColor,
+          )),
+        ),
         Opacity(
           opacity: decreaseVisible ? 1.0 : 0.0,
           child: IconButton(

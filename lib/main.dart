@@ -113,7 +113,7 @@ class _FlutterReduxAppState extends State<FlutterReduxApp> {
   }
 }
 
-///绑定语音切换的组件
+///绑定语言切换的组件
 class MyLocalizations extends StatefulWidget {
   final Widget child;
 

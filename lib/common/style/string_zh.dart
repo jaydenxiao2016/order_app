@@ -5,7 +5,7 @@ class StringZh extends StringBase {
   @override
   String welcomeMessage = "Welcome To Flutter";
   @override
-  String appName = "点餐";
+  String appName = "测试标题";
   @override
   String appOk = "确定";
   @override
