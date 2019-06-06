@@ -71,6 +71,7 @@ class _MenuPageState extends State<MenuPage> {
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
                     itemCount: 20,
+
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         child: Row(
