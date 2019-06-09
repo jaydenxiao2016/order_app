@@ -2,30 +2,34 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:order_app/common/style/colors_style.dart';
-import 'package:order_app/widget/PlusDecreaseInput.dart';
+import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:order_app/page/menu_record.dart';
+import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
 
-//餐单
-class MenuPage extends StatefulWidget {
+//食品餐单
+class MenuFoodPage extends StatefulWidget {
   @override
-  _MenuPageState createState() => _MenuPageState();
+  _MenuFoodPageState createState() => _MenuFoodPageState();
 }
 
-class _MenuPageState extends State<MenuPage> {
+class _MenuFoodPageState extends State<MenuFoodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("酒水"),
+        title: Text("食品"),
       ),
       body: Container(
         alignment: Alignment.topLeft,
         height: window.physicalSize.height,
         decoration: new BoxDecoration(
             gradient: LinearGradient(colors: [
-          Theme.of(context).primaryColor,
-          Color(ColorsStyle.white)
-        ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
+              Theme
+                  .of(context)
+                  .primaryColor,
+              Color(ColorsStyle.white)
+            ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
         child: Row(
           children: <Widget>[
             //左边
@@ -33,6 +37,18 @@ class _MenuPageState extends State<MenuPage> {
               flex: 1,
               child: Column(
                 children: <Widget>[
+                  //闹钟
+                  Center(
+                    child: Text(
+                      "0:5",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 40.0,
+                          color: Colors.orangeAccent,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
                   //分类
                   Expanded(
                     child: Container(
@@ -45,7 +61,7 @@ class _MenuPageState extends State<MenuPage> {
                           borderRadius: BorderRadius.all(Radius.circular(3.0))),
                       child: ListView.builder(
                           scrollDirection: Axis.vertical,
-                          itemCount: 10,
+                          itemCount: 580,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
                               leading: Icon(Icons.mail),
@@ -55,11 +71,17 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                   ),
                   //操作按钮
-                  FlexButton(
-                    color: Colors.deepOrange,
-                    textColor: Colors.white,
-                    text: "确定",
-                    onPress: () {},
+                  Container(
+                    height: 70.0,
+                    margin: EdgeInsets.all(5.0),
+                    child: FlexButton(
+                      color: Colors.deepOrange,
+                      textColor: Colors.white,
+                      text: "确定",
+                      onPress: () {
+                        NavigatorUtils.navigatorRouter(context, MenuRecord());
+                      },
+                    ),
                   )
                 ],
               ),
@@ -77,13 +99,17 @@ class _MenuPageState extends State<MenuPage> {
                         child: Row(
                           children: <Widget>[
                             Text("菜单内容" + index.toString()),
-                            Expanded(child: Text("价格" + index.toString())),
+                            Expanded(child: Text(
+                                "国家领导国家的福建高考的房间里感觉到" + index.toString())),
                             Container(
-                              child: PlusDecreaseInput(
+                              child: PlusDecreaseText(
                                 title: "fds",
                                 textEditingController: TextEditingController(),
+                                color: Colors.white,
+                                decreaseImg: 'static/images/minus.png',
+                                plusImg: 'static/images/plus.png',
                               ),
-                              width: 200.0,
+                              width: 190.0,
                             ),
                           ],
                         ),

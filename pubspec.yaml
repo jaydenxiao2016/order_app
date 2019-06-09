@@ -46,3 +46,5 @@ flutter:
   - static/images/hm3_de.png
   - static/images/hm4_de.png
   - static/images/icon_bg.jpg
+  - static/images/plus.png
+  - static/images/minus.png

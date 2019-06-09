@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
-import 'package:order_app/page/menu_page.dart';
+import 'package:order_app/page/menu_drink_page.dart';
+import 'package:order_app/page/menu_food_page.dart';
 import 'package:order_app/widget/flex_button.dart';
 
 ///客户工作台
@@ -99,7 +100,7 @@ class CustomMenuPage extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      NavigatorUtils.navigatorRouter(context, MenuPage());
+                      NavigatorUtils.navigatorRouter(context, MenuDrinkPage());
                     },
                     child: Container(
                       margin: EdgeInsets.all(5.0),
@@ -122,24 +123,29 @@ class CustomMenuPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.all(5.0),
-                    child: Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: Image.asset(
-                            'static/images/hm2_de.png',
-                            fit: BoxFit.cover,
+                  InkWell(
+                    onTap: (){
+                      NavigatorUtils.navigatorRouter(context, MenuFoodPage());
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            child: Image.asset(
+                              'static/images/hm2_de.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                            '餐单',
-                            style: MyTextStyle.largeTextWhiteBold,
-                          ),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              '餐单',
+                              style: MyTextStyle.largeTextWhiteBold,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   Container(
