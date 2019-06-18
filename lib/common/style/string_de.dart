@@ -87,4 +87,27 @@ class StringDe extends StringBase {
   String loginUserEmpty="用户名不能为空";
   @override
   String loginPswEmpty="密码不能为空";
+
+  @override
+  String adult="Erwachsene";
+  @override
+  String children="Kinder";
+  @override
+  String tableNum="TischNumber";
+  @override
+  String password="Passwort";
+  @override
+  String lunchItem="Mittag Item";
+  @override
+  String dinnerItem="Abend Item";
+  @override
+  String timer="Timer(in min)";
+  @override
+  String updateMenu="Update(Speisekarte)";
+  @override
+  String service="Dienstleistungen";
+  @override
+  String lunch="Mittag";
+  @override
+  String dinner="Abend";
 }

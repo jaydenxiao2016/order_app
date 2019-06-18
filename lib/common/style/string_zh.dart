@@ -85,4 +85,27 @@ class StringZh extends StringBase {
   String loginUserEmpty="用户名不能为空";
   @override
   String loginPswEmpty="密码不能为空";
+
+  @override
+  String adult="成人";
+  @override
+  String children="小孩";
+  @override
+  String tableNum="桌号";
+  @override
+  String password="密码";
+  @override
+  String lunchItem="午餐项目";
+  @override
+  String dinnerItem="晚餐项目";
+  @override
+  String timer="等待时间（分）";
+  @override
+  String updateMenu="更新(菜单)";
+  @override
+  String service="服务";
+  @override
+  String lunch="午餐";
+  @override
+  String dinner="晚餐";
 }

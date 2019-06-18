@@ -44,4 +44,21 @@ abstract class StringBase {
   String loginPswTip;
   String loginUserEmpty;
   String loginPswEmpty;
+
+
+  String adult;
+  String children;
+  String tableNum;
+  String password;
+
+  String lunchItem;
+  String dinnerItem;
+  String timer;
+
+  String updateMenu;
+  String service;
+  String lunch;
+  String dinner;
+
+
 }

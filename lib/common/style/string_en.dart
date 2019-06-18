@@ -88,4 +88,27 @@ class StringEn extends StringBase {
   String loginUserEmpty="用户名不能为空";
   @override
   String loginPswEmpty="密码不能为空";
+
+  @override
+  String adult="Adult";
+  @override
+  String children="Children";
+  @override
+  String tableNum="TableNum";
+  @override
+  String password="Passwort";
+  @override
+  String lunchItem="Lunch Item";
+  @override
+  String dinnerItem="Dinner Item";
+  @override
+  String timer="Timer(in min)";
+  @override
+  String updateMenu="Update(Menu)";
+  @override
+  String service="Service";
+  @override
+  String lunch="Lunch";
+  @override
+  String dinner="Dinner";
 }

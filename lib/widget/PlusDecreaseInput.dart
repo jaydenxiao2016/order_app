@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/style/colors_style.dart';
 
 ///带增加减少的输入框
@@ -8,7 +9,8 @@ class PlusDecreaseInput extends StatelessWidget {
 
   final bool decreaseVisible;
   final bool plusVisible;
-
+  ///最小值
+  final int minValue;
   ///输入框宽
   final double inputWidth;
 
@@ -23,6 +25,9 @@ class PlusDecreaseInput extends StatelessWidget {
 
   ///标题
   final String title;
+
+  ///标题长度
+  final double titleWidth;
 
   ///标题字体大小
   final double titleFontSize;
@@ -39,8 +44,10 @@ class PlusDecreaseInput extends StatelessWidget {
     this.inputWidth,
     this.inputHeight = 50.0,
     this.fontSize = 30.0,
-    this.titleFontSize = 25.0,
-    this.titleColor = Colors.orange,
+    this.titleFontSize = 30.0,
+    this.minValue=0,
+    this.titleWidth,
+    this.titleColor = Colors.yellow,
     this.onChanged})
       : super(key: key);
 
@@ -51,12 +58,15 @@ class PlusDecreaseInput extends StatelessWidget {
       children: <Widget>[
         //标题
         Offstage(
-          offstage: titleVisible,
-          child: Text(title, style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: titleFontSize,
-            color: titleColor,
-          )),
+          offstage: !titleVisible,
+          child: Container(
+            width: titleWidth,
+            child: Text(title, style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: titleFontSize,
+              color: titleColor,
+            )),
+          ),
         ),
         Opacity(
           opacity: decreaseVisible ? 1.0 : 0.0,
@@ -69,14 +79,14 @@ class PlusDecreaseInput extends StatelessWidget {
             onPressed: () {
               if (textEditingController.text.length > 0) {
                 int num = int.parse(textEditingController.text);
-                if (num > 1) {
+                if (num > minValue) {
                   num -= 1;
                 } else {
-                  num = 1;
+                  num = minValue;
                 }
                 textEditingController.text = num.toString();
               } else {
-                textEditingController.text = "1";
+                textEditingController.text = minValue.toString();
               }
             },
           ),
@@ -130,14 +140,14 @@ class PlusDecreaseInput extends StatelessWidget {
             onPressed: () {
               if (textEditingController.text.length > 0) {
                 int num = int.parse(textEditingController.text);
-                if (num > 0) {
+                if (num >= minValue) {
                   num += 1;
                 } else {
-                  num = 1;
+                  num = minValue;
                 }
                 textEditingController.text = num.toString();
               } else {
-                textEditingController.text = "1";
+                textEditingController.text = (minValue+1).toString();
               }
             },
           ),

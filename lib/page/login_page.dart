@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
@@ -145,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
 //      return;
 //    }
 //    print("用户名：" + _userNameController.text + "密码：" + _passwordController.text);
-    NavigatorUtils.goCustomMenuPage(context);
+    NavigatorUtils.pushReplacementNamed(context,RoutePath.SERVICE_CONTROL_PATH);
   }
 
   @override

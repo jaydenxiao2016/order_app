@@ -37,11 +37,14 @@ class _SlideBarState extends State<SlideBar> {
     return Row(
       children: <Widget>[
         //标题
-        Text(widget.title, style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: widget.titleFontSize,
-          color: widget.titleColor,
-        )),
+        Container(
+          width: 150.0,
+          child: Text(widget.title, style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: widget.titleFontSize,
+            color: widget.titleColor,
+          )),
+        ),
         //内容
         Container(
           padding: EdgeInsets.all(5.0),
@@ -64,7 +67,7 @@ class _SlideBarState extends State<SlideBar> {
             value: widget.value,
             max: widget.max,
             min: widget.min,
-            label: 'value:' + widget.value.toInt().toString(),
+            label: widget.value.toInt().toString(),
             divisions: widget.divisions,
             activeColor: Colors.blue,
             onChanged: (double val) {

@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_statusbar/flutter_statusbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/localization/default_localizations.dart';
 import 'package:order_app/common/redux/locale_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
@@ -15,7 +12,6 @@ import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/string_base.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/widget/flex_button.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -66,8 +62,6 @@ class CommonUtils {
     }
   }
 
-
-
   static splitFileNameByPath(String path) {
     return path.substring(path.lastIndexOf("/"));
   }
@@ -84,24 +78,40 @@ class CommonUtils {
   static getThemeData(Color color) {
     return ThemeData(primarySwatch: color, platform: TargetPlatform.android);
   }
+
   ///获取主题颜色
   static getThemeDataByIndex(int index) {
-    return ThemeData(primarySwatch: getThemeListColor()[index], platform: TargetPlatform.android);
+    return ThemeData(
+        primarySwatch: getThemeListColor()[index],
+        platform: TargetPlatform.android);
   }
 
   ///切换语言
-  static changeLocale(Store<StateInfo> store,BuildContext context, int index) {
+  static changeLocale(Store<StateInfo> store, BuildContext context, int index) {
     store.dispatch(RefreshLocaleAction(getLanguageList(context)[index]));
+  }
+
+  ///切换语言
+  static changeLocale2(
+      Store<StateInfo> store, BuildContext context, Locale locale) {
+    store.dispatch(RefreshLocaleAction(locale));
   }
 
   ///获取当前语言
   static StringBase getLocale(BuildContext context) {
     return MyLocalizations.of(context).currentLocalized;
   }
+
   ///获取语言列表
   static List<Locale> getLanguageList(BuildContext context) {
-   return[Localizations.localeOf(context),Locale('zh', 'CH'),Locale('de', 'LA'),Locale('en', 'US')];
+    return [
+      Localizations.localeOf(context),
+      Locale('de', 'LA'),
+      Locale('zh', 'CH'),
+      Locale('en', 'US')
+    ];
   }
+
   ///获取主题列表
   static List<Color> getThemeListColor() {
     return [
