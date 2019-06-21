@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:order_app/common/model/ServiceSetting.dart';
 import 'package:order_app/common/model/user.dart';
+import 'package:order_app/common/redux/service_control_redux.dart';
 import 'package:order_app/common/redux/theme_redux.dart';
 import 'package:order_app/common/redux/user_redux.dart';
 import 'package:redux/redux.dart';
@@ -17,8 +19,11 @@ class StateInfo {
   ///语言
   Locale locale;
 
+  ///服务控制信息
+  ServiceSetting serviceSetting;
+
   ///构造方法
-  StateInfo({this.userInfo, this.themeData, this.locale});
+  StateInfo({this.userInfo, this.themeData, this.locale,this.serviceSetting});
 }
 
 ///创建 Reducer
@@ -34,6 +39,9 @@ StateInfo appReducer(StateInfo state, action) {
 
     ///通过 LocaleReducer 将 GSYState 内的 locale 和 action 关联在一起
     locale: LocaleReducer(state.locale, action),
+
+    ///通过 ServiceControlReducer
+    serviceSetting: ServiceControlReducer(state.serviceSetting, action),
   );
 }
 

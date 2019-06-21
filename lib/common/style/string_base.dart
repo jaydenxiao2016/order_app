@@ -50,15 +50,22 @@ abstract class StringBase {
   String children;
   String tableNum;
   String password;
-
   String lunchItem;
   String dinnerItem;
   String timer;
-
   String updateMenu;
   String service;
   String lunch;
   String dinner;
+
+  String reOrderFoodTip;
+  String orderFoodTooMuchTip;
+  String order;
+  String round;
+  String customWorkbenchService;
+  String drink;
+  String menu;
+  String payment;
 
 
 }

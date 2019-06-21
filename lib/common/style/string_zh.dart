@@ -108,4 +108,21 @@ class StringZh extends StringBase {
   String lunch="午餐";
   @override
   String dinner="晚餐";
+
+  @override
+  String reOrderFoodTip="请在倒计时完后再下单";
+  @override
+  String orderFoodTooMuchTip="食品下单已达次数上限";
+  @override
+  String order="点餐";
+  @override
+  String round="轮";
+  @override
+  String customWorkbenchService="客人工作台";
+  @override
+  String drink="酒水";
+  @override
+  String menu="餐单";
+  @override
+  String payment="支付";
 }

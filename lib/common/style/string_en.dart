@@ -111,4 +111,21 @@ class StringEn extends StringBase {
   String lunch="Lunch";
   @override
   String dinner="Dinner";
+
+  @override
+  String reOrderFoodTip="Please place the order after the countdown has been completed";
+  @override
+  String orderFoodTooMuchTip="Food orders have reached the maximum number of times";
+  @override
+  String order="Order";
+  @override
+  String round="Round";
+  @override
+  String customWorkbenchService="Guest Workbench";
+  @override
+  String drink="Drink";
+  @override
+  String menu="Menu";
+  @override
+  String payment="Payment";
 }

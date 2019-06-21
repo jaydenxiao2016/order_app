@@ -110,4 +110,21 @@ class StringDe extends StringBase {
   String lunch="Mittag";
   @override
   String dinner="Abend";
+
+  @override
+  String orderFoodTooMuchTip="Die Zahl der bestellungen obergrenze erreicht Hat, Essen";
+  @override
+  String reOrderFoodTip="Bitte in den Countdown dann bestellen";
+  @override
+  String order="Essen";
+  @override
+  String round="Runde";
+  @override
+  String customWorkbenchService="Die gäste arbeitstisch";
+  @override
+  String drink="Getränke";
+  @override
+  String menu="Gerichte";
+  @override
+  String payment="Bezahlen";
 }

@@ -1,5 +1,11 @@
 class Config {
   static const PAGE_SIZE = 20;
+  ///过15分钟一轮
+  static const double ROUND_TIME = 15;
+  ///午餐一次食品数量
+  static const double LUNCH_ITEM = 5;
+  ///晚餐=餐一次食品数量
+  static const double DINNER_ITEM = 5;
   static const DEBUG = true;
   static const USE_NATIVE_WEBVIEW = true;
   /// //////////////////////////////////////常量////////////////////////////////////// ///

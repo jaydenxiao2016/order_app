@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_statusbar/flutter_statusbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/localization/default_localizations.dart';
@@ -28,6 +30,8 @@ class CommonUtils {
   static final double DAYS_LIMIT = 30 * HOURS_LIMIT;
 
   static double sStaticBarHeight = 0.0;
+
+  static final EventBus eventBus = new EventBus();
 
   static void initStatusBarHeight(context) async {
     sStaticBarHeight =
@@ -237,5 +241,12 @@ class CommonUtils {
             ),
           );
         });
+  }
+  ///获取store
+  static Store<StateInfo> getStore(BuildContext context) {
+    if (context == null) {
+      return null;
+    }
+    return StoreProvider.of(context);
   }
 }

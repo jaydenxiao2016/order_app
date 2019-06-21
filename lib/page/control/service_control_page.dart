@@ -1,8 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/route_path.dart';
+import 'package:order_app/common/model/ServiceSetting.dart';
+import 'package:order_app/common/redux/service_control_redux.dart';
+import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
@@ -11,6 +16,7 @@ import 'package:order_app/page/control/stock_info.dart';
 import 'package:order_app/widget/PlusDecreaseInput.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:order_app/widget/slide_bar.dart';
+import 'package:redux/redux.dart';
 
 ///开台服务界面
 class ServiceControlPage extends StatefulWidget {
@@ -32,48 +38,95 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
   TextEditingController _passwordController = TextEditingController();
 
   //午餐设置
-  double _lunchItem;
+  double _lunchItem=Config.LUNCH_ITEM;
 
   //晚餐设置
-  double _dinnerItem;
+  double _dinnerItem=Config.DINNER_ITEM;
 
   //时间设置
-  double _timerItem;
+  double _timerItem=Config.ROUND_TIME;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false, //输入框抵住键盘
-      appBar: AppBar(
-        title: Text(CommonUtils.getLocale(context).service),
-        centerTitle: true,
-      ),
-      body: Container(
-        child: Container(
-          width: window.physicalSize.width,
-          decoration: new BoxDecoration(
-              gradient: LinearGradient(colors: [
-            Theme.of(context).primaryColor,
-            Color(ColorsStyle.white)
-          ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
-          padding: EdgeInsets.all(20.0),
-          child: Row(
-            children: <Widget>[
-              //库存信息
-              Expanded(
-                flex: 1,
-                child: StockInfo(),
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: LanguageSetting(),
-                    ),
-                    //客人位数信息
-                    Expanded(
+    return new StoreBuilder<StateInfo>(builder: (context, store) {
+      return Scaffold(
+        resizeToAvoidBottomPadding: false, //输入框抵住键盘
+        appBar: AppBar(
+          title: Text(CommonUtils.getLocale(context).service),
+          centerTitle: true,
+        ),
+        body: Container(
+          child: Container(
+            width: window.physicalSize.width,
+            decoration: new BoxDecoration(
+                gradient: LinearGradient(colors: [
+              Theme.of(context).primaryColor,
+              Color(ColorsStyle.white)
+            ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
+            padding: EdgeInsets.all(20.0),
+            child: Row(
+              children: <Widget>[
+                //库存信息
+                Expanded(
+                  flex: 1,
+                  child: StockInfo(),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: LanguageSetting(),
+                      ),
+                      //客人位数信息
+                      Expanded(
+                          flex: 4,
+                          child: Container(
+                            padding: EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(3.0))),
+                            child: Column(
+                              children: <Widget>[
+                                Expanded(
+                                    child: PlusDecreaseInput(
+                                  textEditingController: _adultController,
+                                  titleWidth: 200.0,
+                                  title: CommonUtils.getLocale(context).adult,
+                                )),
+                                Expanded(
+                                    child: PlusDecreaseInput(
+                                  textEditingController: _childrenController,
+                                  titleWidth: 200.0,
+                                  title:
+                                      CommonUtils.getLocale(context).children,
+                                )),
+                                Expanded(
+                                    child: PlusDecreaseInput(
+                                  textEditingController: _tableNumController,
+                                  titleWidth: 200.0,
+                                  title:
+                                      CommonUtils.getLocale(context).tableNum,
+                                )),
+                                Expanded(
+                                    child: PlusDecreaseInput(
+                                  textEditingController: _passwordController,
+                                  titleWidth: 200.0,
+                                  decreaseVisible: false,
+                                  plusVisible: false,
+                                  title:
+                                      CommonUtils.getLocale(context).password,
+                                )),
+                              ],
+                            ),
+                          )),
+                      Padding(
+                        padding: EdgeInsets.all(5.0),
+                      ),
+                      //设置信息
+                      Expanded(
                         flex: 4,
                         child: Container(
                           padding: EdgeInsets.all(5.0),
@@ -84,141 +137,100 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                  child: PlusDecreaseInput(
-                                textEditingController: _adultController,
-                                titleWidth: 200.0,
-                                title: CommonUtils.getLocale(context).adult,
-                              )),
+                                child: SlideBar(
+                                  title:
+                                      CommonUtils.getLocale(context).lunchItem,
+                                  titleFontSize: 18.0,
+                                  titleColor: Colors.redAccent,
+                                  onChanged: (value) {
+                                    _lunchItem = value;
+                                  },
+                                  min: 0.0,
+                                  max: 10.0,
+                                  value: Config.LUNCH_ITEM,
+                                  divisions: 10,
+                                ),
+                              ),
                               Expanded(
-                                  child: PlusDecreaseInput(
-                                textEditingController: _childrenController,
-                                titleWidth: 200.0,
-                                title: CommonUtils.getLocale(context).children,
-                              )),
+                                child: SlideBar(
+                                  title:
+                                      CommonUtils.getLocale(context).dinnerItem,
+                                  titleFontSize: 18.0,
+                                  titleColor: Colors.redAccent,
+                                  onChanged: (value) {
+                                    _dinnerItem = value;
+                                  },
+                                  min: 0.0,
+                                  max: 10.0,
+                                  value: Config.DINNER_ITEM,
+                                  divisions: 10,
+                                ),
+                              ),
                               Expanded(
-                                  child: PlusDecreaseInput(
-                                textEditingController: _tableNumController,
-                                titleWidth: 200.0,
-                                title: CommonUtils.getLocale(context).tableNum,
-                              )),
-                              Expanded(
-                                  child: PlusDecreaseInput(
-                                textEditingController: _passwordController,
-                                titleWidth: 200.0,
-                                decreaseVisible: false,
-                                plusVisible: false,
-                                title: CommonUtils.getLocale(context).password,
-                              )),
+                                child: SlideBar(
+                                  title: CommonUtils.getLocale(context).timer,
+                                  titleFontSize: 18.0,
+                                  titleColor: Colors.redAccent,
+                                  onChanged: (value) {
+                                    _timerItem = value;
+                                  },
+                                  min: 0.0,
+                                  max: 30.0,
+                                  value: Config.ROUND_TIME,
+                                  divisions: 30,
+                                ),
+                              ),
                             ],
                           ),
-                        )),
-                    Padding(
-                      padding: EdgeInsets.all(5.0),
-                    ),
-                    //设置信息
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        padding: EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(3.0))),
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: SlideBar(
-                                title: CommonUtils.getLocale(context).lunchItem,
-                                titleFontSize: 18.0,
-                                titleColor: Colors.redAccent,
-                                onChanged: (value) {
-                                  _lunchItem = value;
-                                },
-                                min: 0.0,
-                                max: 10.0,
-                                value: 5.0,
-                                divisions: 10,
-                              ),
-                            ),
-                            Expanded(
-                              child: SlideBar(
-                                title:
-                                    CommonUtils.getLocale(context).dinnerItem,
-                                titleFontSize: 18.0,
-                                titleColor: Colors.redAccent,
-                                onChanged: (value) {
-                                  _dinnerItem = value;
-                                },
-                                min: 0.0,
-                                max: 10.0,
-                                value: 5.0,
-                                divisions: 10,
-                              ),
-                            ),
-                            Expanded(
-                              child: SlideBar(
-                                title: CommonUtils.getLocale(context).timer,
-                                titleFontSize: 18.0,
-                                titleColor: Colors.redAccent,
-                                onChanged: (value) {
-                                  _timerItem = value;
-                                },
-                                min: 0.0,
-                                max: 30.0,
-                                value: 15.0,
-                                divisions: 30,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
-                    ),
-                    //操作信息
-                    Expanded(
-                        flex: 1,
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: FlexButton(
-                                  color: Colors.deepOrange,
-                                  textColor: Colors.white,
-                                  text: CommonUtils.getLocale(context).lunch,
-                                  onPress: () {
-                                    _startToMenu(
-                                        context, RoutePath.CUSTOM_MENU_PATH);
-                                  },
+                      //操作信息
+                      Expanded(
+                          flex: 1,
+                          child: Container(
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: FlexButton(
+                                    color: Colors.black,
+                                    textColor: Colors.white,
+                                    text: CommonUtils.getLocale(context).lunch,
+                                    onPress: () {
+                                      _startToMenu(context, store,
+                                          RoutePath.CUSTOM_MENU_PATH);
+                                    },
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(5.0),
-                              ),
-                              Expanded(
-                                child: FlexButton(
-                                  color: Colors.deepOrange,
-                                  textColor: Colors.white,
-                                  text: CommonUtils.getLocale(context).dinner,
-                                  onPress: () {
-                                    _startToMenu(
-                                        context, RoutePath.CUSTOM_MENU_PATH);
-                                  },
+                                Padding(
+                                  padding: EdgeInsets.all(5.0),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )),
-                  ],
+                                Expanded(
+                                  child: FlexButton(
+                                    color: Colors.black,
+                                    textColor: Colors.white,
+                                    text: CommonUtils.getLocale(context).dinner,
+                                    onPress: () {
+                                      _startToMenu(context, store,
+                                          RoutePath.CUSTOM_MENU_PATH);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   ///开始点餐
-  _startToMenu(BuildContext context, String path) {
+  _startToMenu(BuildContext context, Store store, String path) {
     if (_adultController.text.length <= 0 || _adultController.text == '0') {
       Fluttertoast.showToast(msg: "成人数不能为空");
       return;
@@ -231,6 +243,19 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
       Fluttertoast.showToast(msg: "密码不能为空");
       return;
     }
+    //初始化服务设置对象
+    ServiceSetting serviceSetting = ServiceSetting.empty();
+    serviceSetting.adult = int.parse(_adultController.text);
+    if (_childrenController.text.length > 0) {
+      serviceSetting.children = int.parse(_childrenController.text);
+    }
+    serviceSetting.tableNum = _tableNumController.text;
+    serviceSetting.password = _passwordController.text;
+    serviceSetting.lunchItem = _lunchItem;
+    serviceSetting.dinnerItem = _dinnerItem;
+    serviceSetting.timer = _timerItem;
+    store.dispatch(RefreshServiceControlAction(serviceSetting));
+    //打开客户工作台
     NavigatorUtils.pushReplacementNamed(context, path);
   }
 

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
+import 'package:order_app/widget/flex_button.dart';
 ///菜单内容
 class StockInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 10.0),
+      margin: EdgeInsets.only(right: 10.0,bottom: 10.0),
       decoration: BoxDecoration(
           color: Colors.grey,
           borderRadius: BorderRadius.all(Radius.circular(3.0))),
@@ -46,20 +47,14 @@ class StockInfo extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: RaisedButton.icon(
-                    disabledColor: Theme.of(context).primaryColor,
-                    highlightColor: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    textTheme: ButtonTextTheme.normal,
-                    splashColor: Colors.white,
-                    disabledTextColor: Colors.white,
-                    color: Theme.of(context).primaryColor,
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.update,
-                      size: 25.0,
-                    ),
-                    label: Text(CommonUtils.getLocale(context).updateMenu)),
+                child: FlexButton(
+                  color: Colors.black,
+                  textColor: Colors.white,
+                  text: CommonUtils.getLocale(context).updateMenu,
+                  onPress: () {
+
+                  },
+                ),
               ),
             ],
           )
