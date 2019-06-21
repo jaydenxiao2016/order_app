@@ -16,7 +16,6 @@ import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/customMenu/timer_painter.dart';
 import 'package:order_app/page/menu_drink_page.dart';
 import 'package:order_app/page/menu_record.dart';
-import 'package:order_app/page/test.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
@@ -78,17 +77,16 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
   ///去下单食品
   _toOrderFood() {
-    NavigatorUtils.navigatorRouter(context, Test());
-//    if (animationController.value != 0) {
-//      Fluttertoast.showToast(
-//          msg: CommonUtils.getLocale(context).reOrderFoodTip);
-//    } else if (CommonUtils.getStore(context).state.serviceSetting.currentRound >
-//        10) {
-//      Fluttertoast.showToast(
-//          msg: CommonUtils.getLocale(context).orderFoodTooMuchTip);
-//    } else {
-//      NavigatorUtils.navigatorRouter(context, MenuFoodPage());
-//    }
+    if (animationController.value != 0) {
+      Fluttertoast.showToast(
+          msg: CommonUtils.getLocale(context).reOrderFoodTip);
+    } else if (CommonUtils.getStore(context).state.serviceSetting.currentRound >
+        10) {
+      Fluttertoast.showToast(
+          msg: CommonUtils.getLocale(context).orderFoodTooMuchTip);
+    } else {
+      NavigatorUtils.navigatorRouter(context, MenuFoodPage());
+    }
   }
 
   @override
