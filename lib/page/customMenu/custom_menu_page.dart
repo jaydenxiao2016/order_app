@@ -139,7 +139,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(1.0),
                               child: AspectRatio(
                                   aspectRatio: 1.0,
                                   child: Stack(
@@ -177,7 +177,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                                         color: Colors.white,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        fontSize: 45.0,
+                                                        fontSize: 42.0,
                                                       ),
                                                     )
                                                   : InkWell(
