@@ -127,4 +127,10 @@ class StringDe extends StringBase {
   String menu="Gerichte";
   @override
   String payment="Bezahlen";
+  @override
+  String orderNumLimitTip="Dieses mal ist die Zahl der an der grenze zu bestellen";
+  @override
+  String sure="Bestätigen";
+  @override
+  String buy="Bestellen";
 }

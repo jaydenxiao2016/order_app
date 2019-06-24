@@ -20,7 +20,7 @@ class ColorsStyle {
   static const int actionBlue = 0xff267aff;
   static const int subTextColor = 0xff959595;
   static const int subLightTextColor = 0xffc4c4c4;
-
+  static const int lightGrayColor = 0xffcccccc;
   static const int mainBackgroundColor = miWhite;
 
   static const int mainTextColor = primaryDarkValue;

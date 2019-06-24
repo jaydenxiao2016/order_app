@@ -22,6 +22,11 @@ class ServiceSetting {
   ///每轮等待时间
   double timer;
 
+  ///午餐
+  bool isLunch;
+  ///晚餐
+  bool isDiner;
+
   ///当前轮数
   int currentRound=1;
 
@@ -36,6 +41,10 @@ class ServiceSetting {
     this.lunchItem,
     this.dinnerItem,
     this.timer,
+    this.isLunch,
+    this.isDiner,
+    this.currentRound,
+    this.currentTime,
   );
 
   ServiceSetting.empty();

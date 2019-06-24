@@ -187,7 +187,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                                       child: Text(
                                                         CommonUtils.getLocale(
                                                                 context)
-                                                            .order,
+                                                            .menu,
                                                         style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 25.0,
@@ -449,7 +449,8 @@ class _RoundInfoState extends State<RoundInfo> {
     for (int i = 0; i < 10; i++) {
       list.add(CommonUtils.getLocale(context).round + " " + (i + 1).toString());
     }
-    list.add(CommonUtils.getLocale(context).order);
+    //最后加上已点酒水
+    list.add(CommonUtils.getLocale(context).drink);
     return list;
   }
 

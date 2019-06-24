@@ -128,4 +128,10 @@ class StringEn extends StringBase {
   String menu="Menu";
   @override
   String payment="Payment";
+  @override
+  String orderNumLimitTip="The number of meals ordered has reached the upper limit";
+  @override
+  String sure="Sure";
+  @override
+  String buy="Order";
 }

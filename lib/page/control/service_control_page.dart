@@ -197,7 +197,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                     text: CommonUtils.getLocale(context).lunch,
                                     onPress: () {
                                       _startToMenu(context, store,
-                                          RoutePath.CUSTOM_MENU_PATH);
+                                          RoutePath.CUSTOM_MENU_PATH,true,false);
                                     },
                                   ),
                                 ),
@@ -211,7 +211,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                     text: CommonUtils.getLocale(context).dinner,
                                     onPress: () {
                                       _startToMenu(context, store,
-                                          RoutePath.CUSTOM_MENU_PATH);
+                                          RoutePath.CUSTOM_MENU_PATH,false,true);
                                     },
                                   ),
                                 ),
@@ -230,7 +230,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
   }
 
   ///开始点餐
-  _startToMenu(BuildContext context, Store store, String path) {
+  _startToMenu(BuildContext context, Store store, String path,bool isLunch,bool isDinner) {
     if (_adultController.text.length <= 0 || _adultController.text == '0') {
       Fluttertoast.showToast(msg: "成人数不能为空");
       return;
@@ -254,6 +254,8 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     serviceSetting.lunchItem = _lunchItem;
     serviceSetting.dinnerItem = _dinnerItem;
     serviceSetting.timer = _timerItem;
+    serviceSetting.isLunch = isLunch;
+    serviceSetting.isDiner = isDinner;
     store.dispatch(RefreshServiceControlAction(serviceSetting));
     //打开客户工作台
     NavigatorUtils.pushReplacementNamed(context, path);

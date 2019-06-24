@@ -125,4 +125,10 @@ class StringZh extends StringBase {
   String menu="餐单";
   @override
   String payment="支付";
+  @override
+  String orderNumLimitTip="本次点餐数目已到达上限";
+  @override
+  String sure="确认";
+  @override
+  String buy="订购";
 }

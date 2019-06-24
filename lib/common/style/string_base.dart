@@ -67,5 +67,7 @@ abstract class StringBase {
   String menu;
   String payment;
 
-
+  String orderNumLimitTip;
+  String buy;
+  String sure;
 }
