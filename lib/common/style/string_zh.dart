@@ -131,4 +131,6 @@ class StringZh extends StringBase {
   String sure="确认";
   @override
   String buy="订购";
+  @override
+  String back="返回";
 }

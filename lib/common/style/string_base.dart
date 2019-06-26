@@ -70,4 +70,5 @@ abstract class StringBase {
   String orderNumLimitTip;
   String buy;
   String sure;
+  String back;
 }

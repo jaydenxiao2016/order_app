@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
@@ -150,7 +151,16 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                         textColor: Colors.white,
                         text: CommonUtils.getLocale(context).buy,
                         onPress: () {
-                          NavigatorUtils.navigatorRouter(context, MenuRecord());
+                          ///跳转到确认菜单并监听返回结果
+                          Navigator.push<bool>(
+                              context,
+                              new CupertinoPageRoute(
+                                  builder: (context) => MenuRecord()))
+                              .then((isFinish) {
+                            if (isFinish) {
+                              Navigator.pop(context);
+                            }
+                          });
                         },
                       ),
                     )

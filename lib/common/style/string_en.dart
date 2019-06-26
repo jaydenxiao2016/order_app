@@ -134,4 +134,6 @@ class StringEn extends StringBase {
   String sure="Sure";
   @override
   String buy="Order";
+  @override
+  String back="Back";
 }

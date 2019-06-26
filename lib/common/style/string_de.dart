@@ -133,4 +133,6 @@ class StringDe extends StringBase {
   String sure="Bestätigen";
   @override
   String buy="Bestellen";
+  @override
+  String back="Zurück";
 }

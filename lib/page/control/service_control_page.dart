@@ -62,7 +62,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                 gradient: LinearGradient(colors: [
               Theme.of(context).primaryColor,
               Color(ColorsStyle.white)
-            ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
+            ], begin: FractionalOffset(1,0), end: FractionalOffset(0, 1))),
             padding: EdgeInsets.all(20.0),
             child: Row(
               children: <Widget>[
