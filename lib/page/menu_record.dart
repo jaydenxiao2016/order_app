@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:order_app/common/event/timer_event.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/widget/flex_button.dart';
 
@@ -233,6 +234,7 @@ class _MenuRecordState extends State<MenuRecord> {
                       textColor: Colors.white,
                       text: CommonUtils.getLocale(context).sure,
                       onPress: () {
+                        CommonUtils.eventBus.fire(TimerEvent());
                         Navigator.pop(context, true);
                       },
                     ),
