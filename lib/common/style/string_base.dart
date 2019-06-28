@@ -46,6 +46,7 @@ abstract class StringBase {
   String loginPswEmpty;
 
 
+  String menuContent;
   String adult;
   String children;
   String tableNum;
@@ -71,4 +72,5 @@ abstract class StringBase {
   String buy;
   String sure;
   String back;
+  String orderSure;
 }

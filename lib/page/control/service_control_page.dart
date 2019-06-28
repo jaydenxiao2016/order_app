@@ -58,11 +58,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
         body: Container(
           child: Container(
             width: window.physicalSize.width,
-            decoration: new BoxDecoration(
-                gradient: LinearGradient(colors: [
-              Theme.of(context).primaryColor,
-              Color(ColorsStyle.white)
-            ], begin: FractionalOffset(1,0), end: FractionalOffset(0, 1))),
+            color: Colors.black,
             padding: EdgeInsets.all(20.0),
             child: Row(
               children: <Widget>[
@@ -192,8 +188,8 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: FlexButton(
-                                    color: Colors.black,
-                                    textColor: Colors.white,
+                                    color: Colors.white,
+                                    textColor: Colors.black,
                                     text: CommonUtils.getLocale(context).lunch,
                                     onPress: () {
                                       _startToMenu(context, store,
@@ -206,8 +202,8 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                 ),
                                 Expanded(
                                   child: FlexButton(
-                                    color: Colors.black,
-                                    textColor: Colors.white,
+                                    color: Colors.white,
+                                    textColor: Colors.black,
                                     text: CommonUtils.getLocale(context).dinner,
                                     onPress: () {
                                       _startToMenu(context, store,

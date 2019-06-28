@@ -17,7 +17,7 @@ class StockInfo extends StatelessWidget {
         children: <Widget>[
           Padding(
             child: Text(
-              "菜单内容",
+              CommonUtils.getLocale(context).menuContent,
               textAlign: TextAlign.left,
               style: TextStyle(
                 color: Colors.white,
@@ -30,7 +30,7 @@ class StockInfo extends StatelessWidget {
               color: Colors.white,
               child: ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: 10,
+                  itemCount: 30,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       padding: EdgeInsets.all(5.0),
@@ -44,19 +44,22 @@ class StockInfo extends StatelessWidget {
                   }),
             ),
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: FlexButton(
-                  color: Colors.black,
-                  textColor: Colors.white,
-                  text: CommonUtils.getLocale(context).updateMenu,
-                  onPress: () {
+          Container(
+            color: Colors.black,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: FlexButton(
+                    color: Colors.white,
+                    textColor: Colors.black,
+                    text: CommonUtils.getLocale(context).updateMenu,
+                    onPress: () {
 
-                  },
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           )
         ],
       ),

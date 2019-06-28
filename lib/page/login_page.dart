@@ -30,11 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             centerTitle: true,
             title: Text(CommonUtils.getLocale(context).loginTitle)),
         body: Container(
-          decoration: new BoxDecoration(
-              gradient: LinearGradient(colors: [
-            Theme.of(context).primaryColor,
-            Color(ColorsStyle.white)
-          ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
+          color: Colors.black,
           child: Center(
             child: Container(
               decoration: BoxDecoration(

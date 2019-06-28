@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/widget/flex_button.dart';
 
-///订单确认
-class MenuRecord extends StatefulWidget {
+///酒水记录
+class DrinkRecord extends StatefulWidget {
   @override
-  _MenuRecordState createState() => new _MenuRecordState();
+  _DrinkRecordState createState() => new _DrinkRecordState();
 }
 
-///获取订单内容
+///获取酒水内容
 Widget _getContent(int i, value) {
   return Container(
     color: i.isEven ? Colors.white : Color(0xFFF2F2F2),
@@ -96,7 +96,7 @@ Widget _getContent(int i, value) {
   );
 }
 
-class _MenuRecordState extends State<MenuRecord> {
+class _DrinkRecordState extends State<DrinkRecord> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,19 +221,6 @@ class _MenuRecordState extends State<MenuRecord> {
                       text: CommonUtils.getLocale(context).back,
                       onPress: () {
                         Navigator.pop(context, false);
-                      },
-                    ),
-                  ),
-                  Container(
-                    width: 300.0,
-                    height: 60.0,
-                    margin: EdgeInsets.all(5.0),
-                    child: FlexButton(
-                      color: Colors.deepOrange,
-                      textColor: Colors.white,
-                      text: CommonUtils.getLocale(context).sure,
-                      onPress: () {
-                        Navigator.pop(context, true);
                       },
                     ),
                   ),

@@ -14,6 +14,7 @@ import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/customMenu/timer_painter.dart';
+import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_drink_page.dart';
 import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/flex_button.dart';
@@ -474,7 +475,7 @@ class _RoundInfoState extends State<RoundInfo> {
             onPress: () {
               ///已点菜单
               if (index == 10) {
-                NavigatorUtils.navigatorRouter(context, MenuRecord());
+                NavigatorUtils.navigatorRouter(context, DrinkRecord());
               }
             },
             color: widget.currentRound > index + 1
