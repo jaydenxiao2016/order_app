@@ -89,6 +89,8 @@ class StringDe extends StringBase {
   String loginPswEmpty="密码不能为空";
 
   @override
+  String menuContent="Inhalt des Menüs";
+  @override
   String adult="Erwachsene";
   @override
   String children="Kinder";
@@ -127,4 +129,14 @@ class StringDe extends StringBase {
   String menu="Gerichte";
   @override
   String payment="Bezahlen";
+  @override
+  String orderNumLimitTip="Dieses mal ist die Zahl der an der grenze zu bestellen";
+  @override
+  String sure="Bestätigen";
+  @override
+  String buy="Bestellen";
+  @override
+  String back="Zurück";
+  @override
+  String orderSure="Bestätigung der Bestellung";
 }

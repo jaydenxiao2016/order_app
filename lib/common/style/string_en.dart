@@ -90,6 +90,8 @@ class StringEn extends StringBase {
   String loginPswEmpty="密码不能为空";
 
   @override
+  String menuContent="Menu Content";
+  @override
   String adult="Adult";
   @override
   String children="Children";
@@ -128,4 +130,14 @@ class StringEn extends StringBase {
   String menu="Menu";
   @override
   String payment="Payment";
+  @override
+  String orderNumLimitTip="The number of meals ordered has reached the upper limit";
+  @override
+  String sure="Sure";
+  @override
+  String buy="Order";
+  @override
+  String back="Back";
+  @override
+  String orderSure="Order Sure";
 }

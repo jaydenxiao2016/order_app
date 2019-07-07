@@ -37,34 +37,11 @@ class _SplashPageState extends State<SplashPage> {
         return Scaffold(
           body: Container(
             color: Color(ColorsStyle.white),
-            child: Stack(
-              children: <Widget>[
-                new Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(50.0),
-                    child: Image.asset(
-                      'static/images/bg_logo.jpg',
-                      width: 120.0,
-                      height: 120.0,
-                    ),
-                  ),
-                ),
-                new Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(50.0),
-                    child: Text(
-                      CommonUtils.getLocale(context).appName,
-                      style: TextStyle(
-                        color: Color(ColorsStyle.mainTextColor),
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                )
-              ],
+            child: Image.asset(
+              'static/images/icon_splash.jpg',
+              width: window.physicalSize.width,
+              height: window.physicalSize.height,
+              fit: BoxFit.cover,
             ),
           ),
         );

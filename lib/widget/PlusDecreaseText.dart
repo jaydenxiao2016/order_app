@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/style/colors_style.dart';
+import 'package:order_app/common/utils/common_utils.dart';
 
 ///带增加减少的输入框
 class PlusDecreaseText extends StatelessWidget {
-  final TextEditingController textEditingController;
-  final ValueChanged<String> onChanged;
+  TextEditingController textEditingController;
+  final Function callback;
 
   final String decreaseImg;
   final String plusImg;
   final bool decreaseVisible;
   final bool plusVisible;
+
+  ///加号是否可用
+  final bool plusEnable;
   final Color color;
+
+  ///输入值
+  final String inputValue;
+
   ///输入框宽
   final double inputWidth;
 
@@ -32,23 +41,29 @@ class PlusDecreaseText extends StatelessWidget {
   ///标题颜色
   final Color titleColor;
 
-  PlusDecreaseText({Key key,
-    @required this.textEditingController,
-    this.title,
-    this.titleVisible = true,
-    this.decreaseImg = "static/images/icon_decrease.png",
-    this.plusImg = "static/images/icon_plus.png",
-    this.decreaseVisible = true,
-    this.plusVisible = true,
-    this.color=const Color(ColorsStyle.mainTextColor),
-    this.inputWidth,
-    this.inputHeight = 50.0,
-    this.fontSize = 30.0,
-    this.titleFontSize = 25.0,
-    this.titleColor = Colors.orange,
-    this.onChanged})
-      : super(key: key){
-    textEditingController.text="0";
+  PlusDecreaseText(
+      {Key key,
+      this.textEditingController,
+      this.title="",
+      this.titleVisible = true,
+      this.decreaseImg = "static/images/icon_decrease.png",
+      this.plusImg = "static/images/icon_plus.png",
+      this.decreaseVisible = true,
+      this.plusVisible = true,
+      this.plusEnable = true,
+      this.color = const Color(ColorsStyle.mainTextColor),
+      this.inputWidth,
+      this.inputHeight = 50.0,
+      this.fontSize = 30.0,
+      this.titleFontSize = 25.0,
+      this.titleColor = Colors.orange,
+      this.inputValue = "0",
+      this.callback})
+      : super(key: key) {
+    if (textEditingController == null) {
+      textEditingController = new TextEditingController();
+    }
+    textEditingController.text = inputValue ?? "0";
   }
 
   @override
@@ -59,11 +74,12 @@ class PlusDecreaseText extends StatelessWidget {
         //标题
         Offstage(
           offstage: titleVisible,
-          child: Text(title, style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: titleFontSize,
-            color: titleColor,
-          )),
+          child: Text(title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: titleFontSize,
+                color: titleColor,
+              )),
         ),
         Opacity(
           opacity: decreaseVisible ? 1.0 : 0.0,
@@ -71,20 +87,22 @@ class PlusDecreaseText extends StatelessWidget {
             height: 65.0,
             width: 65.0,
             child: IconButton(
-              icon:Image.asset(
-                  decreaseImg,
-                ),
+              icon: Image.asset(
+                decreaseImg,
+              ),
               onPressed: () {
+                int num = 0;
                 if (textEditingController.text.length > 0) {
-                  int num = int.parse(textEditingController.text);
+                  num = int.parse(textEditingController.text);
                   if (num > 0) {
                     num -= 1;
                   } else {
                     num = 0;
                   }
-                  textEditingController.text = num.toString();
-                } else {
-                  textEditingController.text = "0";
+                }
+                textEditingController.text = num.toString();
+                if (callback != null) {
+                  callback(num.toString());
                 }
               },
             ),
@@ -109,32 +127,38 @@ class PlusDecreaseText extends StatelessWidget {
                 filled: true,
               ),
               controller: textEditingController,
-              onChanged: onChanged,
             ),
           ),
         ),
         Opacity(
-          opacity: plusVisible ? 1.0 : 0.0,
+          opacity: plusVisible ? (plusEnable ? 1 : 0.5) : 0.0,
           child: Container(
             height: 65.0,
             width: 65.0,
             child: IconButton(
               icon: Image.asset(
-               plusImg,
+                plusImg,
                 height: 80.0,
                 width: 80.0,
               ),
               onPressed: () {
-                if (textEditingController.text.length > 0) {
-                  int num = int.parse(textEditingController.text);
-                  if (num >= 0) {
-                    num += 1;
-                  } else {
-                    num = 0;
+                if (plusEnable) {
+                  int num = 0;
+                  if (textEditingController.text.length > 0) {
+                    num = int.parse(textEditingController.text);
+                    if (num >= 0) {
+                      num += 1;
+                    } else {
+                      num = 0;
+                    }
                   }
                   textEditingController.text = num.toString();
+                  if (callback != null) {
+                    callback(num.toString());
+                  }
                 } else {
-                  textEditingController.text = "0";
+                  Fluttertoast.showToast(
+                      msg: CommonUtils.getLocale(context).orderNumLimitTip);
                 }
               },
             ),

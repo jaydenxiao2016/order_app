@@ -87,6 +87,8 @@ class StringZh extends StringBase {
   String loginPswEmpty="密码不能为空";
 
   @override
+  String menuContent="菜单内容";
+  @override
   String adult="成人";
   @override
   String children="小孩";
@@ -125,4 +127,14 @@ class StringZh extends StringBase {
   String menu="餐单";
   @override
   String payment="支付";
+  @override
+  String orderNumLimitTip="本次点餐数目已到达上限";
+  @override
+  String sure="确认";
+  @override
+  String buy="订购";
+  @override
+  String back="返回";
+  @override
+  String orderSure="订单确认";
 }

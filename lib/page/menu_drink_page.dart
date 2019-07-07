@@ -1,8 +1,11 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
-import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
@@ -14,100 +17,261 @@ class MenuDrinkPage extends StatefulWidget {
 }
 
 class _MenuDrinkPageState extends State<MenuDrinkPage> {
+  ///已点数目
+  int currentNum = 0;
+
+  ///已点餐单和数目
+  Map<int, int> selected = new Map();
+
+  ///分类选择index
+  int selectTypeIndex = 0;
+
+  ///计算已点数目
+  _calculateCurrentNum() {
+    int total = 0;
+    selected.forEach((index, value) => total += value);
+    print("total" + total.toString());
+    setState(() {
+      currentNum = total;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("酒水"),
-      ),
-      body: Container(
-        alignment: Alignment.topLeft,
-        height: window.physicalSize.height,
-        decoration: new BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Theme
-                  .of(context)
-                  .primaryColor,
-              Color(ColorsStyle.white)
-            ], begin: FractionalOffset(1, 0), end: FractionalOffset(0, 1))),
-        child: Row(
-          children: <Widget>[
-            //左边
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: <Widget>[
-                  //分类
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.all(5.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.white,
-                              style: BorderStyle.solid,
-                              width: 2.0),
-                          borderRadius: BorderRadius.all(Radius.circular(3.0))),
-                      child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: 580,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                              leading: Icon(Icons.mail),
-                              title: new Text("分类" + index.toString()),
-                            );
-                          }),
-                    ),
-                  ),
-                  //操作按钮
-                  Container(
-                    height: 70.0,
-                    margin: EdgeInsets.all(5.0),
-                    child: FlexButton(
-                      color: Colors.deepOrange,
-                      textColor: Colors.white,
-                      text: "确定",
-                      onPress: () {
-                        NavigatorUtils.navigatorRouter(context, MenuRecord());
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-            //右边
-            Expanded(
-              flex: 3,
-              child: Container(
-                child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: 20,
-
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        child: Row(
-                          children: <Widget>[
-                            Text("菜单内容" + index.toString()),
-                            Expanded(child: Text(
-                                "国家领导国家的福建高考的房间里感觉到" + index.toString())),
-                            Container(
-                              child: PlusDecreaseText(
-                                title: "fds",
-                                textEditingController: TextEditingController(),
-                                color: Colors.white,
-                                decreaseImg: 'static/images/minus.png',
-                                plusImg: 'static/images/plus.png',
-                              ),
-                              width: 190.0,
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-              ),
-            )
-          ],
+    return new StoreBuilder<StateInfo>(builder: (context, store) {
+      String title = CommonUtils.getLocale(context).drink +
+          " " +
+          CommonUtils.getLocale(context).menu;
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(title),
         ),
-      ),
-    );
+        body: Container(
+          alignment: Alignment.topLeft,
+          height: window.physicalSize.height,
+          color: Colors.black,
+          child: Row(
+            children: <Widget>[
+              ///左边
+              Expanded(
+                flex: 1,
+                child: Column(
+                  children: <Widget>[
+                    ///已点数目显示
+                    SizedBox(
+                      height: 70.0,
+                      child: Center(
+                        child: Text(
+                          currentNum.toInt().toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 60.0,
+                              color: Colors.orangeAccent,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+
+                    ///分类
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.all(5.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Color(ColorsStyle.lightGrayColor),
+                                style: BorderStyle.solid,
+                                width: 2.0),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0))),
+                        child: ListView.separated(
+                            scrollDirection: Axis.vertical,
+                            itemCount: 20,
+                            separatorBuilder: (content, index) {
+                              return new Container(
+                                height: 1.0,
+                                color: Color(ColorsStyle.lightGrayColor),
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                height: 60.0,
+                                color: index == selectTypeIndex
+                                    ? Colors.lightBlue
+                                    : Colors.black,
+                                child: ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      selectTypeIndex = index;
+                                    });
+                                  },
+                                  leading: Image.asset(
+                                    'static/images/41.png',
+                                    width: 50.0,
+                                    height: 50.0,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  title: new Text(
+                                    "寿司" + index.toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0,
+                                        color: index == selectTypeIndex
+                                            ? Colors.white
+                                            : Color(
+                                                ColorsStyle.lightGrayColor)),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Color(ColorsStyle.lightGrayColor),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                    ),
+
+                    ///操作按钮
+                    Container(
+                      height: 70.0,
+                      margin: EdgeInsets.all(5.0),
+                      child: FlexButton(
+                        color: Colors.deepOrange,
+                        textColor: Colors.white,
+                        text: CommonUtils.getLocale(context).buy,
+                        onPress: () {
+                          ///跳转到确认菜单并监听返回结果
+                          Navigator.push<bool>(
+                                  context,
+                                  new CupertinoPageRoute(
+                                      builder: (context) => MenuRecord()))
+                              .then((isFinish) {
+                            if (isFinish) {
+                              Navigator.pop(context);
+                            }
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+
+              ///右边
+              Expanded(
+                flex: 3,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 70.0,
+                      child: Center(
+                        child: Text(
+                          "酒水" + selectTypeIndex.toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 40.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: ListView.separated(
+                            scrollDirection: Axis.vertical,
+                            itemCount: 20,
+                            separatorBuilder: (content, index) {
+                              return new Container(
+                                height: 3.0,
+                                margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                color: Color(ColorsStyle.lightGrayColor),
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                padding:
+                                    EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    ///价钱
+                                    Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 10.0, right: 15.0),
+                                        padding: EdgeInsets.all(5.0),
+                                        width: 110.0,
+                                        decoration: BoxDecoration(
+                                            color: Colors.yellow,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(3.0))),
+                                        child: Text(
+                                          "¥131",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25.0),
+                                        )),
+
+                                    ///标题
+                                    Expanded(
+                                        child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          index.toString() + ")    " + "第一标题",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25.0,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8.0),
+                                          child: Text(
+                                            "第二标题",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      ],
+                                    )),
+
+                                    ///数量
+                                    Container(
+                                      child: PlusDecreaseText(
+                                        inputValue: selected[index]?.toString(),
+                                        callback: (String value) {
+                                          int num = int.parse(value);
+                                          if (num > 0) {
+                                            selected[index] = num;
+                                          } else {
+                                            selected.remove(index);
+                                          }
+
+                                          ///计算已定餐单
+                                          _calculateCurrentNum();
+                                        },
+                                        color: Colors.white,
+                                        decreaseImg: 'static/images/minus.png',
+                                        plusImg: 'static/images/plus.png',
+                                      ),
+                                      width: 200.0,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    });
   }
 }
