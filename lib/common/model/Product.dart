@@ -1,3 +1,4 @@
+import  'package:order_app/common/model/Categroy.dart';
 ///菜品新鲜
 class Product{
   Category	category;
@@ -31,3 +32,4 @@ String searchKey;//	string
 int status	;//integer($int32)
 //状态 1上架 0下架
 }
+

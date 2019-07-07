@@ -1,3 +1,4 @@
+import  'package:order_app/common/model/OrderRound.dart';
 ///订单主表
 class OrderMsater{
   int adult;//	integer($int32)
@@ -21,7 +22,7 @@ class OrderMsater{
   int orderId	;//integer($int32)
   //订单id
 
-  List<OrderRounds>orderRounds;
+  List<OrderRound>orderRounds;
 
   String orderType	;//string
   //订单类型 1午餐 2晚餐

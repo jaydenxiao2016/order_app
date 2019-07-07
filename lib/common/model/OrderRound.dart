@@ -1,3 +1,5 @@
+import  'package:order_app/common/model/OrderDetail.dart';
+
 ///每轮订单表
 class OrderRound{
   String createTime	;//string($date-time)
