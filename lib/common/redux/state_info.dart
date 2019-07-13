@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:order_app/common/model/ServiceSetting.dart';
+import 'package:order_app/common/model/login_response_entity.dart';
 import 'package:order_app/common/model/user.dart';
+import 'package:order_app/common/redux/login_info_redux.dart';
 import 'package:order_app/common/redux/service_control_redux.dart';
 import 'package:order_app/common/redux/theme_redux.dart';
 import 'package:order_app/common/redux/user_redux.dart';
@@ -22,8 +24,11 @@ class StateInfo {
   ///服务控制信息
   ServiceSetting serviceSetting;
 
+  ///登录信息
+  LoginResponseEntity loginResponseEntity;
+
   ///构造方法
-  StateInfo({this.userInfo, this.themeData, this.locale,this.serviceSetting});
+  StateInfo({this.userInfo, this.themeData, this.locale,this.serviceSetting,this.loginResponseEntity});
 }
 
 ///创建 Reducer
@@ -42,6 +47,8 @@ StateInfo appReducer(StateInfo state, action) {
 
     ///通过 ServiceControlReducer
     serviceSetting: ServiceControlReducer(state.serviceSetting, action),
+
+    loginResponseEntity: LoginInfoEntityReducer(state.loginResponseEntity, action),
   );
 }
 

@@ -14,5 +14,7 @@ static const orderRoundConfirmPath="/app/order/round/confirm";//每轮点餐确�
 
 static const productListPath="/app/product/queryListByPage";//分页查询菜品列表,
 
+static const getCategoryByPidPath="/app/getCategorysByPid";//获取菜单分类
+
 static const signInPath="/app/signin";//App登录接口
 }

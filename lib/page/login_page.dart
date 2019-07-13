@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/route_path.dart';
+import 'package:order_app/common/config/url_path.dart';
+import 'package:order_app/common/model/login_response_entity.dart';
+import 'package:order_app/common/net/http_go.dart';
+import 'package:order_app/common/redux/login_info_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:redux/redux.dart';
 
 ///登录界面
 class LoginPage extends StatefulWidget {
@@ -17,13 +22,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _userNameController = new TextEditingController();
   final _passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    _userNameController.text = "123";
-    _passwordController.text = "123";
+    _passwordController.text = '123456';
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       return new Scaffold(
         appBar: AppBar(
@@ -42,37 +45,6 @@ class _LoginPageState extends State<LoginPage> {
               child: new SingleChildScrollView(
                 child: new Column(
                   children: <Widget>[
-                    new Padding(
-                      padding: new EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 15.0),
-                      child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            new Padding(
-                              padding:
-                                  new EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                              child: new Icon(Icons.account_circle),
-                            ),
-                            new Expanded(
-                              child: new TextField(
-                                controller: _userNameController,
-                                autofocus: false,
-                                style: MyTextStyle.largeText,
-                                keyboardType: TextInputType.phone,
-                                decoration: new InputDecoration(
-                                  labelText: CommonUtils.getLocale(context)
-                                      .loginUserTitle,
-                                  suffixIcon: new IconButton(
-                                    icon: new Icon(Icons.clear,
-                                        color: Colors.black45),
-                                    onPressed: () {
-                                      _userNameController.text = "";
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                    ),
                     new Padding(
                       padding: new EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 30.0),
                       child: new Row(
@@ -112,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                         textColor: Colors.white,
                         child: new Text(CommonUtils.getLocale(context).login),
                         onPressed: () {
-                          _login(context);
+                          _login(context, store);
                         },
                       ),
                     )
@@ -127,24 +99,29 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///登录
-  _login(BuildContext context) {
-    if (_userNameController.text.length <= 0) {
-      Fluttertoast.showToast(
-          msg: CommonUtils.getLocale(context).loginUserEmpty);
-      return;
-    }
+  _login(BuildContext context, Store<StateInfo> store) {
     if (_passwordController.text.length <= 0) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).loginPswEmpty);
       return;
     }
-    NavigatorUtils.pushReplacementNamed(
-        context, RoutePath.SERVICE_CONTROL_PATH);
+    HttpGo.getInstance().post(UrlPath.signInPath, params: {
+      'mac': "1322131",
+      'pwd': _passwordController.text
+    }).then((baseResult) {
+      LoginResponseEntity loginInfo =
+          LoginResponseEntity.fromJson(baseResult.data);
+      print(loginInfo);
+      store.dispatch(RefreshLoginInfoAction(loginInfo));
+      NavigatorUtils.pushReplacementNamed(
+          context, RoutePath.SERVICE_CONTROL_PATH);
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: error.toString());
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _userNameController.dispose();
     _passwordController.dispose();
   }
 }

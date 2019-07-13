@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,12 +24,17 @@ import 'common/config/config.dart';
 
 ///程序入口
 void main() {
-  runZoned(() {
-    runApp(FlutterReduxApp());
-    PaintingBinding.instance.imageCache.maximumSize = 100;
-  }, onError: (Object obj, StackTrace stack) {
-    print(obj);
-    print(stack);
+  ///强制横屏
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
+      .then((_) {
+    runZoned(() {
+      runApp(FlutterReduxApp());
+      PaintingBinding.instance.imageCache.maximumSize = 100;
+    }, onError: (Object obj, StackTrace stack) {
+      print(obj);
+      print(stack);
+    });
   });
 }
 

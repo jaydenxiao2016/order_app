@@ -1,35 +1,46 @@
-import  'package:order_app/common/model/Categroy.dart';
-///菜品新鲜
-class Product{
-  Category	category;
-int cid	;//integer($int32)
-//菜品类型ID
+import 'package:order_app/common/model/category.dart';
 
-int id	;//integer($int32)
-//主键ID
+class Product {
+  double price;
+  String name;
+  int pageSize;
+  int id;
+  String pic;
+  int inventory;
+  Category category;
+  int pageNum;
+  int status;
+  int cid;
 
-int inventory	;//integer($int32)
-//库存
+  Product({this.price, this.name, this.pageSize, this.id, this.pic, this.inventory, this.category, this.pageNum, this.status, this.cid});
 
-String name;//	string
-//菜品名称
+  Product.fromJson(Map<String, dynamic> json) {
+    price = json['price'];
+    name = json['name'];
+    pageSize = json['pageSize'];
+    id = json['id'];
+    pic = json['pic'];
+    inventory = json['inventory'];
+    category = json['category'] != null ? new Category.fromJson(json['category']) : null;
+    pageNum = json['pageNum'];
+    status = json['status'];
+    cid = json['cid'];
+  }
 
-int pageNum	;//integer($int32)
-//第几页
-
-int pageSize;//	integer($int32)
-//每页显示数量
-
-String pic;//	string
-//菜品图片
-
-double price;//	number($double)
-//单价
-
-String searchKey;//	string
-//模糊查询参数
-
-int status	;//integer($int32)
-//状态 1上架 0下架
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['price'] = this.price;
+    data['name'] = this.name;
+    data['pageSize'] = this.pageSize;
+    data['id'] = this.id;
+    data['pic'] = this.pic;
+    data['inventory'] = this.inventory;
+    if (this.category != null) {
+      data['category'] = this.category.toJson();
+    }
+    data['pageNum'] = this.pageNum;
+    data['status'] = this.status;
+    data['cid'] = this.cid;
+    return data;
+  }
 }
-

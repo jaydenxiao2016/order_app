@@ -6,8 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/event/timer_event.dart';
-import 'package:order_app/common/model/ServiceSetting.dart';
-import 'package:order_app/common/redux/service_control_redux.dart';
+import 'package:order_app/common/redux/login_info_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
@@ -16,7 +15,6 @@ import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/customMenu/timer_painter.dart';
 import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_drink_page.dart';
-import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
@@ -50,11 +48,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     ///监听触发计时器
     stream = CommonUtils.eventBus.on<TimerEvent>().listen((event) {
       if (animationController != null) {
+        //轮数+1
         Store<StateInfo> store = CommonUtils.getStore(context);
-        ServiceSetting serviceSetting = store.state.serviceSetting;
-        serviceSetting.currentRound += 1;
-        print(serviceSetting.currentRound);
-        store.dispatch(RefreshServiceControlAction(serviceSetting));
+        store.state.loginResponseEntity.setting.currentRound += 1;
+        store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
         //开始动画
         animationController.reverse(from: 1.0);
       }
@@ -70,8 +67,8 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       Store<StateInfo> store = CommonUtils.getStore(context);
       animationController = AnimationController(
           vsync: this,
-          duration:
-              Duration(minutes: store.state.serviceSetting.timer.toInt()));
+          duration: Duration(
+              minutes: store.state.loginResponseEntity.setting.waitTime));
     }
     super.didChangeDependencies();
   }
@@ -81,7 +78,11 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     if (animationController.value != 0) {
       Fluttertoast.showToast(
           msg: CommonUtils.getLocale(context).reOrderFoodTip);
-    } else if (CommonUtils.getStore(context).state.serviceSetting.currentRound >
+    } else if (CommonUtils.getStore(context)
+            .state
+            .loginResponseEntity
+            .setting
+            .currentRound >
         10) {
       Fluttertoast.showToast(
           msg: CommonUtils.getLocale(context).orderFoodTooMuchTip);
@@ -93,6 +94,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
+      print('打印信息');
       return new Scaffold(
         appBar: AppBar(
           title: Text(CommonUtils.getLocale(context).customWorkbenchService),
@@ -117,8 +119,8 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       flex: 4,
                       child: RoundInfo(
-                          currentRound:
-                              store.state.serviceSetting.currentRound),
+                          currentRound: store
+                              .state.loginResponseEntity.setting.currentRound),
                     ),
 
                     ///中间倒计时信息
@@ -211,7 +213,8 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 fit: BoxFit.cover,
                               ),
                               Text(
-                                store.state.serviceSetting.tableNum,
+                                store
+                                    .state.loginResponseEntity.setting.tableNum,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30.0,

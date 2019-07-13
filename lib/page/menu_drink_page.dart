@@ -3,6 +3,15 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
+import 'package:order_app/common/config/url_path.dart';
+import 'package:order_app/common/model/category.dart';
+import 'package:order_app/common/model/category_response_entity.dart';
+import 'package:order_app/common/model/order_master_entity.dart';
+import 'package:order_app/common/model/product.dart';
+import 'package:order_app/common/model/product_response_entity.dart';
+import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
@@ -23,8 +32,26 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   ///已点餐单和数目
   Map<int, int> selected = new Map();
 
+  ///已点餐单key:分类id+商品id value:订单明细
+  Map<int, OrderDetail> selectedProduct = new Map();
+
   ///分类选择index
   int selectTypeIndex = 0;
+
+  ///酒水分类
+  CategoryResponseEntity categoryInfoEntity =
+      new CategoryResponseEntity(data: List<Category>(), imgPath: "");
+
+  ///当前商品信息
+  List<Product> productList = new List();
+  ProductResponseEntity productResponseEntity = new ProductResponseEntity(
+      data: ProductInfoData()..list = List<Product>(), imgPath: "");
+
+  @override
+  void initState() {
+    super.initState();
+    _requestDrinkCategoryData();
+  }
 
   ///计算已点数目
   _calculateCurrentNum() {
@@ -34,6 +61,52 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
     setState(() {
       currentNum = total;
     });
+  }
+
+  ///获取酒水分类
+  _requestDrinkCategoryData() {
+    print('请求酒水');
+    if (mounted) {
+      HttpGo.getInstance()
+          .get(UrlPath.getCategoryByPidPath +
+              "?parentId=" +
+              Config.DRINK_CATEGORY_ID.toString())
+          .then((baseResult) {
+        ///默认选中第一个分类
+        CategoryResponseEntity categoryResponseEntity =
+            CategoryResponseEntity.fromJson(baseResult.data);
+        if (categoryResponseEntity != null &&
+            categoryResponseEntity.data != null &&
+            categoryResponseEntity.data.length > 0) {
+          ///请求商品
+          _requestDrinkProductData(
+              categoryResponseEntity.data[selectTypeIndex].id);
+        }
+        this.setState(() {
+          categoryInfoEntity = CategoryResponseEntity.fromJson(baseResult.data);
+        });
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }
+  }
+
+  ///获取商品信息
+  _requestDrinkProductData(int cId) {
+    print('请求商品');
+    if (mounted) {
+      HttpGo.getInstance().post(UrlPath.productListPath, params: {
+        "cid": cId,
+        "pageSize": Config.PAGE_SIZE,
+      }).then((baseResult) {
+        this.setState(() {
+          productResponseEntity =
+              ProductResponseEntity.fromJson(baseResult.data);
+        });
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }
   }
 
   @override
@@ -85,7 +158,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                 BorderRadius.all(Radius.circular(5.0))),
                         child: ListView.separated(
                             scrollDirection: Axis.vertical,
-                            itemCount: 20,
+                            itemCount: categoryInfoEntity.data.length,
                             separatorBuilder: (content, index) {
                               return new Container(
                                 height: 1.0,
@@ -100,18 +173,18 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                     : Colors.black,
                                 child: ListTile(
                                   onTap: () {
+                                    _requestDrinkProductData(
+                                        categoryInfoEntity.data[index].id);
                                     setState(() {
                                       selectTypeIndex = index;
                                     });
                                   },
-                                  leading: Image.asset(
-                                    'static/images/41.png',
-                                    width: 50.0,
-                                    height: 50.0,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  leading: CommonUtils.displayImageWidget(
+                                      Config.BASE_URL +
+                                          categoryInfoEntity.imgPath +
+                                          categoryInfoEntity.data[index].pic),
                                   title: new Text(
-                                    "寿司" + index.toString(),
+                                    categoryInfoEntity.data[index].name,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
@@ -165,7 +238,9 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                       height: 70.0,
                       child: Center(
                         child: Text(
-                          "酒水" + selectTypeIndex.toString(),
+                          categoryInfoEntity.data.length > 0
+                              ? categoryInfoEntity.data[selectTypeIndex].name
+                              : "",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 40.0,
@@ -178,7 +253,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                       child: Container(
                         child: ListView.separated(
                             scrollDirection: Axis.vertical,
-                            itemCount: 20,
+                            itemCount: productResponseEntity.data.list.length,
                             separatorBuilder: (content, index) {
                               return new Container(
                                 height: 3.0,
@@ -187,6 +262,8 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                               );
                             },
                             itemBuilder: (BuildContext context, int index) {
+                              Product product =
+                                  productResponseEntity.data.list[index];
                               return Container(
                                 padding:
                                     EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -203,7 +280,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(3.0))),
                                         child: Text(
-                                          "¥131",
+                                          product.price.toString(),
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 25.0),
@@ -216,7 +293,9 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          index.toString() + ")    " + "第一标题",
+                                          product.id.toString() +
+                                              ")    " +
+                                              product.name,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 25.0,
@@ -241,16 +320,51 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                     ///数量
                                     Container(
                                       child: PlusDecreaseText(
-                                        inputValue: selected[index]?.toString(),
+                                        inputValue: selected[categoryInfoEntity
+                                                    .data[selectTypeIndex].id +
+                                                product.id]
+                                            ?.toString(),
                                         callback: (String value) {
+                                          int key = categoryInfoEntity
+                                                  .data[selectTypeIndex].id +
+                                              product.id;
                                           int num = int.parse(value);
                                           if (num > 0) {
-                                            selected[index] = num;
+                                            selected[key] = num;
+                                            print('已选中');
+                                            print(selected);
+                                            ///加入订单
+                                            OrderDetail orderDetail =
+                                                selectedProduct[key];
+                                            if (orderDetail == null) {
+                                              orderDetail = new OrderDetail(
+                                                  productId: product.id,
+                                                  orderId: store
+                                                      .state
+                                                      .loginResponseEntity
+                                                      .orderMasterEntity
+                                                      .orderId,
+                                                  productNumber: num,
+                                                  categoryName:
+                                                      categoryInfoEntity
+                                                          .data[selectTypeIndex]
+                                                          .name,
+                                                  productName: product.name,
+                                                  detailType:
+                                                      Config.DETAIL_DRINK_TYPE,
+                                                  categoryId: categoryInfoEntity
+                                                      .data[selectTypeIndex].id,
+                                                  productPrice: product.price);
+                                              selectedProduct[key] =
+                                                  orderDetail;
+                                            } else {
+                                              orderDetail.productNumber = num;
+                                            }
                                           } else {
-                                            selected.remove(index);
+                                            selected.remove(key);
+                                            selectedProduct.remove(key);
                                           }
-
-                                          ///计算已定餐单
+                                          ///计算已定餐单总数和总价
                                           _calculateCurrentNum();
                                         },
                                         color: Colors.white,

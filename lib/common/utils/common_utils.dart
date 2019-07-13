@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -242,11 +243,23 @@ class CommonUtils {
           );
         });
   }
+
   ///获取store
   static Store<StateInfo> getStore(BuildContext context) {
     if (context == null) {
       return null;
     }
     return StoreProvider.of(context);
+  }
+
+  ///显示图片
+  static Widget displayImageWidget(String url,{double height=50,double width=50}) {
+    return CachedNetworkImage(
+      height:height,
+      width:width,
+      imageUrl: url,
+      placeholder: (context, url) => new CircularProgressIndicator(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    );
   }
 }

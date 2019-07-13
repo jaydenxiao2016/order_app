@@ -1,16 +1,22 @@
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:order_app/common/net/code.dart';
-import 'package:order_app/common/net/result_data.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
+import 'package:order_app/common/net/base_result.dart';
 
 ///dio网络请求工具
 class HttpGo {
-  static final String BASE_URL = "http://192.168.5.6:8085";
   static final String GET = "get";
   static final String POST = "post";
   static final String DATA = "data";
   static final String CODE = "errorCode";
+
+  String _codeKey = "code";
+  String _msgKey = "msg";
+  String _dataKey = "extend";
 
   static Dio dio;
   static HttpGo _instance;
@@ -24,7 +30,7 @@ class HttpGo {
 
   HttpGo() {
     dio = Dio(BaseOptions(
-      baseUrl: BASE_URL,
+      baseUrl: Config.BASE_URL,
       headers: {'platform': 'android', 'version': 11.0},
       connectTimeout: 5000,
       receiveTimeout: 100000,
@@ -32,17 +38,17 @@ class HttpGo {
   }
 
   //get请求
-  Future<ResultData> get(String url,
+  Future<BaseResult> get(String url,
       {params, Map<String, dynamic> header}) async {
     Options options = new Options(method: "GET");
     return netFetch(url, params, header, options);
   }
 
   //post请求
-  Future<ResultData> post(String url,
-      {params, Map<String, dynamic> header}) async {
+  Future<BaseResult> post(String url,
+      {params, Map<String, dynamic> header, loading = true}) async {
     Options options = new Options(method: "POST");
-    return netFetch(url, params, header, options);
+    return netFetch(url, params, header, options, loading: loading);
   }
 
   ///发起网络请求
@@ -50,9 +56,9 @@ class HttpGo {
   ///[ params] 请求参数
   ///[ header] 外加头
   ///[ option] 配置
-  Future<ResultData> netFetch(
+  Future<BaseResult> netFetch(
       url, params, Map<String, dynamic> header, Options option,
-      {noTip = false}) async {
+      {loading = true}) async {
     Map<String, dynamic> headers = new HashMap();
     if (header != null) {
       headers.addAll(header);
@@ -63,33 +69,68 @@ class HttpGo {
       option = new Options(method: "GET");
       option.headers = headers;
     }
-    resultError(DioError e) {
-      Response errorResponse;
-      if (e.response != null) {
-        errorResponse = e.response;
-      } else {
-        errorResponse = new Response(statusCode: 666);
-      }
-      if (e.type == DioErrorType.CONNECT_TIMEOUT ||
-          e.type == DioErrorType.RECEIVE_TIMEOUT) {
-        errorResponse.statusCode = Code.NETWORK_TIMEOUT;
-      }
-      return new ResultData(
-          Code.errorHandleFunction(errorResponse.statusCode, e.message, noTip),
-          false,
-          errorResponse.statusCode);
-    }
-
+    int _code;
+    String _msg;
+    var _data;
+    print("api参数：");
+    print(params.toString());
     Response response;
     try {
       response = await dio.request(url, data: params, options: option);
     } on DioError catch (e) {
-      return resultError(e);
+      print("api请求报错：");
+      print(e);
+      return new Future.error("api请求失败");
     }
-    if (response.data is DioError) {
-      return resultError(response.data);
+    if (response.statusCode == HttpStatus.ok ||
+        response.statusCode == HttpStatus.created) {
+      try {
+        ///api返回
+        print("api返回：---------------------begin");
+        print(response);
+        print("api返回：-----------------------end");
+        if (response.data is Map) {
+          _code = (response.data[_codeKey] is String)
+              ? int.tryParse(response.data[_codeKey])
+              : response.data[_codeKey];
+          _msg = response.data[_msgKey];
+          _data = response.data[_dataKey];
+        } else {
+          Map<String, dynamic> _dataMap = _decodeData(response);
+          _code = (_dataMap[_codeKey] is String)
+              ? int.tryParse(_dataMap[_codeKey])
+              : _dataMap[_codeKey];
+          _msg = _dataMap[_msgKey];
+          _data = _dataMap[_dataKey];
+        }
+
+        ///接口数据成功
+        if (_code == 100) {
+          return new BaseResult(_data, _msg, _code);
+        }
+
+        ///接口数据失败
+        else {
+          Fluttertoast.showToast(msg: _msg);
+          return new Future.error(_msg);
+        }
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(msg: "data parsing exception...");
+        return new Future.error(_msg);
+      }
     }
-    return ResultData(response.data, true, response.statusCode);
+    return new Future.error("statusCode: $response.statusCode, service error");
+  }
+
+  /// decode response data.
+  Map<String, dynamic> _decodeData(Response response) {
+    if (response == null ||
+        response.data == null ||
+        response.data.toString().isEmpty) {
+      return new Map();
+    }
+    return json.decode(response.data.toString());
   }
 
   /// 清空 dio 对象
