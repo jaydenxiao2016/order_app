@@ -21,13 +21,13 @@ import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
 
-//酒水餐单
-class MenuDrinkPage extends StatefulWidget {
+//服务餐单
+class MenuServicePage extends StatefulWidget {
   @override
-  _MenuDrinkPageState createState() => _MenuDrinkPageState();
+  _MenuServicePageState createState() => _MenuServicePageState();
 }
 
-class _MenuDrinkPageState extends State<MenuDrinkPage> {
+class _MenuServicePageState extends State<MenuServicePage> {
   ///已点数目
   int currentNum = 0;
 
@@ -41,7 +41,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   ///分类选择index
   int selectTypeIndex = 0;
 
-  ///酒水分类
+  ///服务分类
   CategoryResponseEntity categoryInfoEntity =
       new CategoryResponseEntity(data: List<Category>(), imgPath: "");
 
@@ -70,14 +70,14 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
     });
   }
 
-  ///获取酒水分类
+  ///获取服务分类
   _requestDrinkCategoryData() async{
-    print('请求酒水');
+    print('请求服务');
     if (mounted) {
       await HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
               "?parentId=" +
-              Config.DRINK_CATEGORY_ID.toString())
+              Config.DRINK_SERVICE_ID.toString())
           .then((baseResult) {
         ///默认选中第一个分类
         CategoryResponseEntity categoryResponseEntity =
@@ -223,9 +223,9 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                           Navigator.push<bool>(
                                   context,
                                   new CupertinoPageRoute(
-                                      builder: (context) => MenuRecord(1,selectedProductList)))
+                                      builder: (context) => MenuRecord(3,selectedProductList)))
                               .then((isFinish) {
-                            if (isFinish!= null&&isFinish) {
+                            if (isFinish!=null&&isFinish) {
                               Navigator.pop(context);
                             }
                           });
@@ -358,7 +358,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                                           .name,
                                                   productName: product.name,
                                                   detailType:
-                                                      Config.DETAIL_DRINK_TYPE,
+                                                      Config.DETAIL_SERVICE_TYPE,
                                                   categoryId: categoryInfoEntity
                                                       .data[selectTypeIndex].id,
                                                   productPrice: product.price);

@@ -1,103 +1,162 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
+import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/event/timer_event.dart';
+import 'package:order_app/common/model/order_detail.dart';
+import 'package:order_app/common/model/order_round_detail_entity.dart';
+import 'package:order_app/common/model/order_service_detail_entity.dart';
+import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/widget/flex_button.dart';
 
 ///订单确认
 class MenuRecord extends StatefulWidget {
+  ///1：酒水 2：每轮订单 3:服务
+  int type;
+  ///订单明细
+  List<OrderDetail> selectedDrinkProduct = new List();
+  MenuRecord(this.type,this.selectedDrinkProduct,{Key key}):super(key:key);
   @override
   _MenuRecordState createState() => new _MenuRecordState();
 }
 
 ///获取订单内容
-Widget _getContent(int i, value) {
-  return Container(
-    color: i.isEven ? Colors.white : Color(0xFFF2F2F2),
-    child: Row(
-      children: <Widget>[
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              '张三' + i.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black),
+  Widget _getContent(int i, OrderDetail value) {
+    return Container(
+      color: i.isEven ? Colors.white : Color(0xFFF2F2F2),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.categoryId.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              '张三' + i.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black),
+          Container(
+            color: Colors.white,
+            height: 35.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.categoryName,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              '张三' + i.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black),
+          Container(
+            color: Colors.white,
+            height: 35.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productName,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              '张三' + i.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black),
+          Container(
+            color: Colors.white,
+            height: 35.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productPrice.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              '张三' + i.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black),
+          Container(
+            color: Colors.white,
+            height: 35.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productNumber.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
 class _MenuRecordState extends State<MenuRecord> {
+
+
+  ///酒水下单
+  _requestDrinkConfirm(BuildContext context) async{
+    print('请求酒水下单');
+    await HttpGo.getInstance().post(UrlPath.drinkConfirmPath, params: widget.selectedDrinkProduct.map((v) => v.toJson()).toList()).then((baseResult) {
+      Fluttertoast.showToast(msg: '下单成功');
+      Navigator.pop(context, true);
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: error.toString());
+    });
+  }
+  ///每轮点餐下单
+  _requestRoundFoodConfirm(BuildContext context) async{
+    ///倒计时结束才能下单
+    if(!CommonUtils.getStore(context).state.loginResponseEntity.setting.isTimeFinish){
+      Fluttertoast.showToast(
+          msg: CommonUtils.getLocale(context).reOrderFoodTip);
+      return;
+    }
+    print('请求每轮点餐下单');
+    OrderRoundDetailEntity orderRoundDetailEntity=new OrderRoundDetailEntity();
+    orderRoundDetailEntity.orderDetails=widget.selectedDrinkProduct;
+    orderRoundDetailEntity.num=CommonUtils.getStore(context).state.loginResponseEntity.setting.currentRound;
+    orderRoundDetailEntity.orderId=CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId;
+    await HttpGo.getInstance().post(UrlPath.orderRoundConfirmPath, params: orderRoundDetailEntity.toJson()).then((baseResult) {
+      Fluttertoast.showToast(msg: '下单成功');
+      CommonUtils.eventBus.fire(TimerEvent());
+      Navigator.pop(context, true);
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: error.toString());
+    });
+  }
+///服务下单
+  _requestServiceConfirm(BuildContext context) async{
+    print('请求服务下单');
+    OrderServiceDetailEntity orderServiceDetailEntity=new OrderServiceDetailEntity(orderId: CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId,
+    needServiceDetails: widget.selectedDrinkProduct);
+    await HttpGo.getInstance().post(UrlPath.orderNeedServicePath, params: orderServiceDetailEntity.toJson()).then((baseResult) {
+      Fluttertoast.showToast(msg: '下单成功');
+      CommonUtils.eventBus.fire(TimerEvent());
+      Navigator.pop(context, true);
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: error.toString());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -184,7 +243,7 @@ class _MenuRecordState extends State<MenuRecord> {
                             flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("分类", textAlign: TextAlign.center),
+                              child: Text("数量", textAlign: TextAlign.center),
                             ),
                           )
                         ],
@@ -193,9 +252,9 @@ class _MenuRecordState extends State<MenuRecord> {
                     Expanded(
                         child: Container(
                       child: ListView.builder(
-                        itemCount: 80,
+                        itemCount: widget.selectedDrinkProduct.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return _getContent(index, "dfd");
+                          return _getContent(index, widget.selectedDrinkProduct[index]);
                         },
                       ),
                     ))
@@ -234,8 +293,13 @@ class _MenuRecordState extends State<MenuRecord> {
                       textColor: Colors.white,
                       text: CommonUtils.getLocale(context).sure,
                       onPress: () {
-                        CommonUtils.eventBus.fire(TimerEvent());
-                        Navigator.pop(context, true);
+                        if(widget.type==1){
+                          this._requestDrinkConfirm(context);
+                        }else if(widget.type==2){
+                          this._requestRoundFoodConfirm(context);
+                        }else{
+                          this._requestServiceConfirm(context);
+                        }
                       },
                     ),
                   ),

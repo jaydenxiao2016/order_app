@@ -76,6 +76,30 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ]),
                     ),
+                    Row(
+                      children: <Widget>[
+                        //中文
+                        Expanded(
+                          child: RadioListTile<String>(
+                            value: '工作台',
+                            title: Text('工作台'),
+                            groupValue: '工作台',
+                            onChanged: (value) {
+                            },
+                          ),
+                        ),
+                        //英文
+                        Expanded(
+                          child: RadioListTile<String>(
+                            value: '控制台',
+                            title: Text('控制台'),
+                            groupValue: '工作台',
+                            onChanged: (value) {
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                     Container(
                       width: 300.0,
                       margin: EdgeInsets.only(top: 10.0),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/event/timer_event.dart';
 import 'package:order_app/common/redux/login_info_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
@@ -15,6 +16,7 @@ import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/customMenu/timer_painter.dart';
 import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_drink_page.dart';
+import 'package:order_app/page/menu_service_page.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
@@ -51,6 +53,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
         //轮数+1
         Store<StateInfo> store = CommonUtils.getStore(context);
         store.state.loginResponseEntity.setting.currentRound += 1;
+        store.state.loginResponseEntity.setting.isTimeFinish=false;
         store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
         //开始动画
         animationController.reverse(from: 1.0);
@@ -69,16 +72,21 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           vsync: this,
           duration: Duration(
               minutes: store.state.loginResponseEntity.setting.waitTime));
+      animationController.addStatusListener((AnimationStatus status){
+        if(status==AnimationStatus.dismissed){
+          //倒计时结束
+          Store<StateInfo> store = CommonUtils.getStore(context);
+          store.state.loginResponseEntity.setting.isTimeFinish=true;
+          store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
+        }
+      });
     }
     super.didChangeDependencies();
   }
 
   ///去下单食品
   _toOrderFood() {
-    if (animationController.value != 0) {
-      Fluttertoast.showToast(
-          msg: CommonUtils.getLocale(context).reOrderFoodTip);
-    } else if (CommonUtils.getStore(context)
+    if (CommonUtils.getStore(context)
             .state
             .loginResponseEntity
             .setting
@@ -328,31 +336,37 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
                     ///服务
                     Expanded(
-                      child: Container(
-                        margin: EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 5.0,
-                          ),
-                        ]),
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: Image.asset(
-                                'static/images/hm3_de.png',
-                                width: window.physicalSize.width / 4,
-                                fit: BoxFit.cover,
-                              ),
+                      child: InkWell(
+                        onTap:  (){
+                          NavigatorUtils.navigatorRouter(
+                              context, MenuServicePage());
+                        },
+                        child: Container(
+                          margin: EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                              color: Colors.black,
+                              blurRadius: 5.0,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                CommonUtils.getLocale(context).service,
-                                style: MyTextStyle.largeTextWhiteBold,
+                          ]),
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: Image.asset(
+                                  'static/images/hm3_de.png',
+                                  width: window.physicalSize.width / 4,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            )
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  CommonUtils.getLocale(context).service,
+                                  style: MyTextStyle.largeTextWhiteBold,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -478,7 +492,9 @@ class _RoundInfoState extends State<RoundInfo> {
             onPress: () {
               ///已点菜单
               if (index == 10) {
-                NavigatorUtils.navigatorRouter(context, DrinkRecord());
+                NavigatorUtils.navigatorRouter(context, DrinkRecord(Config.DETAIL_DRINK_TYPE));
+              }else if(widget.currentRound > index + 1){
+                NavigatorUtils.navigatorRouter(context, DrinkRecord(Config.DETAIL_FOOD_TYPE,round: index+1,));
               }
             },
             color: widget.currentRound > index + 1

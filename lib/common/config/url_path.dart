@@ -6,7 +6,7 @@ static const orderConfirmPath="/app/order/confirm";//午餐/晚餐确认∂
 
 static const drinkConfirmPath="/app/order/drinks/confirm";//酒水分类下单
 
-static const orderNeedServicePath="/app/order/needService";//点需要服务接口
+static const orderNeedServicePath="/app/order/needService/confirm";//点需要服务接口
 
 static const orderDetailPath="/app/order/queryOrderDetail";//根据orderId/roundId分页查询订单详情列表
 

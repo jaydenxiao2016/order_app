@@ -4,17 +4,17 @@ class OrderDetail {
 	int orderId;
 	int detailId;
 	int pageSize;
-	String updateTime;
+	int updateTime;
 	int productNumber;
 	String searchKey;
 	String categoryName;
 	int pageNum;
 	String productName;
 	String detailType;
-	String createTime;
+	int createTime;
 	int roundId;
 	int categoryId;
-	int productPrice;
+	double productPrice;
 
 	OrderDetail({this.productId, this.orderId, this.detailId, this.pageSize, this.updateTime, this.productNumber, this.searchKey, this.categoryName, this.pageNum, this.productName, this.detailType, this.createTime, this.roundId, this.categoryId, this.productPrice});
 

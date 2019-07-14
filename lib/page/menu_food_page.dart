@@ -3,6 +3,16 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
+import 'package:order_app/common/config/url_path.dart';
+import 'package:order_app/common/model/category.dart';
+import 'package:order_app/common/model/category_response_entity.dart';
+import 'package:order_app/common/model/order_detail.dart';
+import 'package:order_app/common/model/order_round_detail_entity.dart';
+import 'package:order_app/common/model/product.dart';
+import 'package:order_app/common/model/product_response_entity.dart';
+import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
@@ -26,6 +36,9 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
 
   ///已点餐单和数目
   Map<int, int> selected = new Map();
+  ///已点餐单key:分类id+商品id value:订单明细
+  Map<int, OrderDetail> selectedProduct = new Map();
+  List<OrderDetail> selectedProductList = new List();
 
   ///加号是否可用
   bool plusEnable = true;
@@ -33,24 +46,89 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   ///分类选择index
   int selectTypeIndex = 0;
 
+  ///食品分类
+  CategoryResponseEntity categoryInfoEntity =
+  new CategoryResponseEntity(data: List<Category>(), imgPath: "");
+
+  ///当前商品信息
+  List<Product> productList = new List();
+  ProductResponseEntity productResponseEntity = new ProductResponseEntity(
+      data: ProductInfoData()..list = List<Product>(), imgPath: "");
+
+  @override
+  void initState() {
+    super.initState();
+    _requestDrinkCategoryData();
+  }
+
   ///计算已点数目
-  _calculateCurrentNum() {
+  _calculateCurrentNum(BuildContext context) {
     int total = 0;
     selected.forEach((index, value) => total += value);
     print("total" + total.toString());
+    selectedProductList.clear();
+    selectedProduct.forEach((key,value){
+      selectedProductList.add(value);
+    });
     setState(() {
       currentNum = total;
       plusEnable = currentNum < totalNumLimited;
     });
   }
 
+  ///获取食品分类
+  _requestDrinkCategoryData() async{
+    print('请求食品');
+    if (mounted) {
+      await HttpGo.getInstance()
+          .get(UrlPath.getCategoryByPidPath +
+          "?parentId=" +
+          Config.DETAIL_FOOD_TYPE.toString())
+          .then((baseResult) {
+        ///默认选中第一个分类
+        CategoryResponseEntity categoryResponseEntity =
+        CategoryResponseEntity.fromJson(baseResult.data);
+        if (categoryResponseEntity != null &&
+            categoryResponseEntity.data != null &&
+            categoryResponseEntity.data.length > 0) {
+          ///请求商品
+          _requestDrinkProductData(
+              categoryResponseEntity.data[selectTypeIndex].id);
+        }
+        this.setState(() {
+          categoryInfoEntity = CategoryResponseEntity.fromJson(baseResult.data);
+        });
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }
+  }
+
+  ///获取商品信息
+  _requestDrinkProductData(int cId) async{
+    print('请求商品');
+    if (mounted) {
+      await HttpGo.getInstance().post(UrlPath.productListPath, params: {
+        "cid": cId,
+        "pageSize": Config.PAGE_SIZE,
+      }).then((baseResult) {
+        this.setState(() {
+          productResponseEntity =
+              ProductResponseEntity.fromJson(baseResult.data);
+        });
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
-      totalNumLimited = store.state.serviceSetting.isLunch
-          ? store.state.serviceSetting.lunchItem.toInt()
-          : store.state.serviceSetting.dinnerItem.toInt();
-      String title = store.state.serviceSetting.isLunch
+      totalNumLimited = store.state.loginResponseEntity.setting.isLunch
+          ? store.state.loginResponseEntity.setting.lunchNum
+          : store.state.loginResponseEntity.setting.dinnerNum;
+      String title = store.state.loginResponseEntity.setting.isLunch
           ? CommonUtils.getLocale(context).lunch
           : CommonUtils.getLocale(context).dinner;
       title+=" " +CommonUtils.getLocale(context).menu;
@@ -98,7 +176,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                 BorderRadius.all(Radius.circular(5.0))),
                         child: ListView.separated(
                             scrollDirection: Axis.vertical,
-                            itemCount: 20,
+                            itemCount: categoryInfoEntity.data.length,
                             separatorBuilder: (content, index) {
                               return new Container(
                                 height: 1.0,
@@ -113,18 +191,18 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                     : Colors.black,
                                 child: ListTile(
                                   onTap: () {
+                                    _requestDrinkProductData(
+                                        categoryInfoEntity.data[index].id);
                                     setState(() {
                                       selectTypeIndex = index;
                                     });
                                   },
-                                  leading: Image.asset(
-                                    'static/images/41.png',
-                                    width: 50.0,
-                                    height: 50.0,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  leading: CommonUtils.displayImageWidget(
+                                      Config.BASE_URL +
+                                          categoryInfoEntity.imgPath +
+                                          categoryInfoEntity.data[index].pic),
                                   title: new Text(
-                                    "寿司" + index.toString(),
+                                    categoryInfoEntity.data[index].name,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
@@ -155,9 +233,9 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                           Navigator.push<bool>(
                               context,
                               new CupertinoPageRoute(
-                                  builder: (context) => MenuRecord()))
+                                  builder: (context) => MenuRecord(2,selectedProductList)))
                               .then((isFinish) {
-                            if (isFinish) {
+                            if (isFinish!=null&&isFinish) {
                               Navigator.pop(context);
                             }
                           });
@@ -176,7 +254,9 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                       height: 70.0,
                       child: Center(
                         child: Text(
-                          "寿司" + selectTypeIndex.toString(),
+                          categoryInfoEntity.data.length > 0
+                            ? categoryInfoEntity.data[selectTypeIndex].name
+                            : "",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 40.0,
@@ -189,7 +269,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                       child: Container(
                         child: ListView.separated(
                             scrollDirection: Axis.vertical,
-                            itemCount: 20,
+                            itemCount: productResponseEntity.data.list.length,
                             separatorBuilder: (content, index) {
                               return new Container(
                                 height: 3.0,
@@ -198,18 +278,18 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                               );
                             },
                             itemBuilder: (BuildContext context, int index) {
+                              Product product =
+                              productResponseEntity.data.list[index];
                               return Container(
                                 padding: EdgeInsets.only(top: 20.0,bottom: 20.0),
                                 child: Row(
                                   children: <Widget>[
                                     Padding(
                                       padding: const EdgeInsets.only(left:10.0,right: 15.0),
-                                      child: Image.asset(
-                                        "static/images/27.png",
-                                        width: 90.0,
-                                        height: 90.0,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: CommonUtils.displayImageWidget(
+                                          Config.BASE_URL +
+                                              productResponseEntity.imgPath +
+                                              product.pic,height: 90,width: 90),
                                     ),
                                     Expanded(
                                         child: Column(
@@ -217,7 +297,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          index.toString() + ")  " + "第一标题",
+                                        product.name,
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 25.0,
@@ -240,17 +320,53 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                     Container(
                                       child: PlusDecreaseText(
                                         plusEnable: plusEnable,
-                                        inputValue: selected[index]?.toString(),
+                                        inputValue: selected[categoryInfoEntity
+                                            .data[selectTypeIndex].id +
+                                            product.id]
+                                            ?.toString(),
                                         callback: (String value) {
+                                          int key = categoryInfoEntity
+                                              .data[selectTypeIndex].id +
+                                              product.id;
                                           int num = int.parse(value);
                                           if (num > 0) {
-                                            selected[index] = num;
+                                            selected[key] = num;
+                                            print('已选中');
+                                            print(selected);
+                                            ///加入订单
+                                            OrderDetail orderDetail =
+                                            selectedProduct[key];
+                                            if (orderDetail == null) {
+                                              orderDetail = new OrderDetail(
+                                                  productId: product.id,
+                                                  orderId: store
+                                                      .state
+                                                      .loginResponseEntity
+                                                      .orderMasterEntity
+                                                      .orderId,
+                                                  roundId: store.state.loginResponseEntity.setting.currentRound,
+                                                  productNumber: num,
+                                                  categoryName:
+                                                  categoryInfoEntity
+                                                      .data[selectTypeIndex]
+                                                      .name,
+                                                  productName: product.name,
+                                                  detailType:
+                                                  Config.DETAIL_FOOD_TYPE,
+                                                  categoryId: categoryInfoEntity
+                                                      .data[selectTypeIndex].id,
+                                                  productPrice: product.price);
+                                              selectedProduct[key] =
+                                                  orderDetail;
+                                            } else {
+                                              orderDetail.productNumber = num;
+                                            }
                                           } else {
-                                            selected.remove(index);
+                                            selected.remove(key);
+                                            selectedProduct.remove(key);
                                           }
-                                          print("mynum" + num.toString());
 //                                    //计算已定餐单
-                                          _calculateCurrentNum();
+                                          _calculateCurrentNum(context);
                                         },
                                         color: Colors.white,
                                         decreaseImg: 'static/images/minus.png',

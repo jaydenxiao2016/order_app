@@ -96,6 +96,9 @@ class LoginInfoSetting {
   ///当前轮数
   int currentRound=1;
 
+  ///倒计时是否结束
+  bool isTimeFinish=true;
+
   ///当前时间
   String currentTime;
 
@@ -120,6 +123,7 @@ class LoginInfoSetting {
       this.isLunch,
       this.isDiner,
       this.currentRound=1,
+      this.isTimeFinish=true,
       this.currentTime,
       });
 
@@ -146,6 +150,7 @@ class LoginInfoSetting {
     isLunch = json['isLunch'];
     isDiner = json['isDiner'];
     currentRound = json['currentRound'];
+    isTimeFinish = json['isTimeFinish'];
     currentTime = json['currentTime'];
   }
 
@@ -173,6 +178,7 @@ class LoginInfoSetting {
     data['isLunch'] = this.isLunch;
     data['isDiner'] = this.isDiner;
     data['currentRound'] = this.currentRound;
+    data['isTimeFinish'] = this.isTimeFinish;
     data['currentTime'] = this.currentTime;
     return data;
   }

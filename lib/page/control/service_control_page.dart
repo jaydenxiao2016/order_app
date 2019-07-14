@@ -8,7 +8,6 @@ import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/model/login_response_entity.dart';
 import 'package:order_app/common/model/order_master_entity.dart';
-import 'package:order_app/common/model/order_master_response.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/login_info_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
@@ -323,6 +322,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     loginInfoSetting.isLunch = isLunch;
     loginInfoSetting.isDiner = isDinner;
     loginInfoSetting.currentRound = 1;
+    loginInfoSetting.isTimeFinish = true;
     loginInfoSetting.buyerId = loginInfoEntity.areas[_buyerId].id;
     loginInfoEntity.setting = loginInfoSetting;
 

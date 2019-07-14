@@ -9,7 +9,7 @@ class Product {
   int inventory;
   Category category;
   int pageNum;
-  int status;
+  String status;
   int cid;
 
   Product({this.price, this.name, this.pageSize, this.id, this.pic, this.inventory, this.category, this.pageNum, this.status, this.cid});
