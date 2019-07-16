@@ -189,7 +189,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
                                   leading: CommonUtils.displayImageWidget(
                                       Config.BASE_URL +
                                           categoryInfoEntity.imgPath +
-                                          categoryInfoEntity.data[index].pic),
+                                          (categoryInfoEntity.data[index].pic??"")),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(

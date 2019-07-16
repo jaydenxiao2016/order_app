@@ -189,7 +189,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                   leading: CommonUtils.displayImageWidget(
                                       Config.BASE_URL +
                                           categoryInfoEntity.imgPath +
-                                          categoryInfoEntity.data[index].pic),
+                                          (categoryInfoEntity.data[index].pic)??""),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(

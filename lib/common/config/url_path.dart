@@ -1,6 +1,6 @@
 ///接口url
 class UrlPath{
-static const orderInfoPath="/app/order/{orderId}/info";//根据orderId获取订单详情∂
+static const orderInfoPath="/app/order/";//{orderId}/info";//根据orderId获取订单详情∂
 
 static const orderConfirmPath="/app/order/confirm";//午餐/晚餐确认∂
 

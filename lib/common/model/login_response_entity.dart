@@ -8,6 +8,8 @@ class LoginResponseEntity {
   LoginInfoSetting setting;
   ///本次订单主表
   OrderMasterEntity orderMasterEntity;
+  ///已点菜单key:轮数 value:roundId
+  Map<int,int>roundIdMap=new Map();
 
   LoginResponseEntity({this.areas, this.setting});
 

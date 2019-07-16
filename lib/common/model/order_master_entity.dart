@@ -59,10 +59,10 @@ class OrderMasterEntity {
   int buyerId;
   int lunchNum;
   int pageNum;
-  int totalAmount;
+  double totalAmount;
   String tableNum;
   int adult;
-  String openTime;
+  int openTime;
   int waitTime;
   int child;
   String status;
@@ -138,7 +138,7 @@ class OrderMasterEntity {
 
 class OrderRound {
   List<OrderDetail> orderDetails;
-  String createTime;
+  int createTime;
   int orderId;
   int num;
   int pageSize;

@@ -6,7 +6,11 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
+import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/event/timer_event.dart';
+import 'package:order_app/common/model/login_response_entity.dart';
+import 'package:order_app/common/model/order_master_entity.dart';
+import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/login_info_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
@@ -50,13 +54,8 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     ///监听触发计时器
     stream = CommonUtils.eventBus.on<TimerEvent>().listen((event) {
       if (animationController != null) {
-        //轮数+1
-        Store<StateInfo> store = CommonUtils.getStore(context);
-        store.state.loginResponseEntity.setting.currentRound += 1;
-        store.state.loginResponseEntity.setting.isTimeFinish=false;
-        store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
-        //开始动画
-        animationController.reverse(from: 1.0);
+        ///获取最新订单详情
+        _getOrderDetail();
       }
     });
   }
@@ -82,6 +81,36 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       });
     }
     super.didChangeDependencies();
+  }
+  ///获取主订单详情
+  _getOrderDetail()async{
+    print("获取订单详情");
+    if (context == null) {
+      return;
+    }
+    Store<StateInfo> store = CommonUtils.getStore(context);
+     await HttpGo.getInstance()
+        .get(UrlPath.orderInfoPath+store.state.loginResponseEntity.orderMasterEntity.orderId.toString()+"/info")
+        .then((baseResult) {
+       print("订单详情成果");
+       ///1.轮数+1
+       Store<StateInfo> store = CommonUtils.getStore(context);
+       store.state.loginResponseEntity.setting.currentRound += 1;
+       store.state.loginResponseEntity.setting.isTimeFinish=false;
+       store.state.loginResponseEntity.orderMasterEntity=OrderMasterEntity.fromJson(baseResult.data["data"]);
+       ///2.保存已点轮数和roundid
+       if(store.state.loginResponseEntity.orderMasterEntity!=null){
+         store.state.loginResponseEntity.orderMasterEntity.orderRounds.forEach((rounds){
+           store.state.loginResponseEntity.roundIdMap[rounds.num]=rounds.id;
+         });
+       }
+       ///3.更新到store
+       store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
+       ///4.开始动画
+       animationController.reverse(from: 1.0);
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: error.toString());
+    });
   }
 
   ///去下单食品
@@ -490,11 +519,18 @@ class _RoundInfoState extends State<RoundInfo> {
           alignment: Alignment.center,
           child: FlexButton(
             onPress: () {
-              ///已点菜单
+              ///已点酒水
               if (index == 10) {
                 NavigatorUtils.navigatorRouter(context, DrinkRecord(Config.DETAIL_DRINK_TYPE));
-              }else if(widget.currentRound > index + 1){
-                NavigatorUtils.navigatorRouter(context, DrinkRecord(Config.DETAIL_FOOD_TYPE,round: index+1,));
+              }
+              ///已点轮菜单
+              else if(widget.currentRound > index + 1){
+                Store<StateInfo> store = CommonUtils.getStore(context);
+                int roundId=store.state.loginResponseEntity.roundIdMap[index+1];
+                if(roundId!=null) {
+                  NavigatorUtils.navigatorRouter(context,
+                      DrinkRecord(Config.DETAIL_FOOD_TYPE, round: roundId));
+                }
               }
             },
             color: widget.currentRound > index + 1

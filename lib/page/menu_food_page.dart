@@ -200,7 +200,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                   leading: CommonUtils.displayImageWidget(
                                       Config.BASE_URL +
                                           categoryInfoEntity.imgPath +
-                                          categoryInfoEntity.data[index].pic),
+                                          (categoryInfoEntity.data[index].pic)??""),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(
@@ -289,7 +289,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                       child: CommonUtils.displayImageWidget(
                                           Config.BASE_URL +
                                               productResponseEntity.imgPath +
-                                              product.pic,height: 90,width: 90),
+                                              (product.pic??""),height: 90,width: 90),
                                     ),
                                     Expanded(
                                         child: Column(

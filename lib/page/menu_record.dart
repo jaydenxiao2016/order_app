@@ -150,7 +150,9 @@ class _MenuRecordState extends State<MenuRecord> {
     needServiceDetails: widget.selectedDrinkProduct);
     await HttpGo.getInstance().post(UrlPath.orderNeedServicePath, params: orderServiceDetailEntity.toJson()).then((baseResult) {
       Fluttertoast.showToast(msg: '下单成功');
-      CommonUtils.eventBus.fire(TimerEvent());
+      if(widget.type==2) {
+        CommonUtils.eventBus.fire(TimerEvent());
+      }
       Navigator.pop(context, true);
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
