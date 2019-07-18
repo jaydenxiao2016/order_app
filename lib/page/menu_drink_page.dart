@@ -193,7 +193,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                             },
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
-                                height: ScreenUtil.getInstance().setWidth(80),
+                                padding: EdgeInsets.all(10.0),
                                 color: index == selectTypeIndex
                                     ? Colors.lightBlue
                                     : Colors.black,
@@ -210,7 +210,8 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                               categoryInfoEntity.imgPath +
                                               (categoryInfoEntity
                                                   .data[index].pic) ??
-                                          ""),
+                                          "",height: ScreenUtil.getInstance().setWidth(80)
+                                  ,width: ScreenUtil.getInstance().setWidth(80)),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(
@@ -321,6 +322,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
 
                                     ///数量
                                     Container(
+                                      padding: EdgeInsets.only(right: 10.0),
                                       child: PlusDecreaseText(
                                         inputValue: selected[categoryInfoEntity
                                                     .data[selectTypeIndex].id +

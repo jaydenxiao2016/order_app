@@ -214,7 +214,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.all(5.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
                               CommonUtils.getLocale(context).waitingTip,
                               style: TextStyle(

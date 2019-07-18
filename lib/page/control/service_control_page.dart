@@ -95,7 +95,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                               padding: EdgeInsets.all(5.0),
                               alignment: Alignment.center,
                               color: _buyerId == index
-                                  ? Colors.blue
+                                  ? Colors.lightBlue
                                   : Colors.white,
                               child: Text(
                                   store.state.loginResponseEntity.areas[index]
@@ -124,7 +124,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                       Expanded(
                           flex: 4,
                           child: Container(
-                            padding: EdgeInsets.all(5.0),
+                            padding: EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius:
@@ -182,7 +182,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                       Expanded(
                         flex: 4,
                         child: Container(
-                          padding: EdgeInsets.all(5.0),
+                          padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius:
@@ -194,7 +194,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                   title:
                                       CommonUtils.getLocale(context).lunchItem,
                                   titleFontSize: MyTextStyle.bigTextSize,
-                                  titleColor: Colors.redAccent,
+                                  titleColor: Colors.black,
                                   onChanged: (value) {
                                     _lunchItem = value.toInt();
                                   },
@@ -211,7 +211,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                   title:
                                       CommonUtils.getLocale(context).dinnerItem,
                                   titleFontSize: MyTextStyle.bigTextSize,
-                                  titleColor: Colors.redAccent,
+                                  titleColor: Colors.black,
                                   onChanged: (value) {
                                     _dinnerItem = value.toInt();
                                   },
@@ -227,7 +227,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                 child: SlideBar(
                                   title: CommonUtils.getLocale(context).timer,
                                   titleFontSize: MyTextStyle.bigTextSize,
-                                  titleColor: Colors.redAccent,
+                                  titleColor: Colors.black,
                                   onChanged: (value) {
                                     _timerItem = value.toInt();
                                   },
@@ -245,43 +245,49 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                       ),
                       //操作信息
                       Expanded(
-                          flex: 1,
+                          flex: 2,
                           child: Container(
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: FlexButton(
-                                    color: Colors.white,
-                                    textColor: Colors.black,
-                                    text: CommonUtils.getLocale(context).lunch,
-                                    fontSize: MyTextStyle.normalTextSize,
-                                    onPress: () {
-                                      _startToMenu(
-                                          context,
-                                          store,
-                                          RoutePath.CUSTOM_MENU_PATH,
-                                          true,
-                                          false);
-                                    },
+                                  child: Container(
+                                    height: ScreenUtil.getInstance().setWidth(80),
+                                    child: FlexButton(
+                                      color: Colors.redAccent,
+                                      textColor: Colors.white,
+                                      text: CommonUtils.getLocale(context).lunch,
+                                      fontSize: MyTextStyle.normalTextSize,
+                                      onPress: () {
+                                        _startToMenu(
+                                            context,
+                                            store,
+                                            RoutePath.CUSTOM_MENU_PATH,
+                                            true,
+                                            false);
+                                      },
+                                    ),
                                   ),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.all(5.0),
                                 ),
                                 Expanded(
-                                  child: FlexButton(
-                                    color: Colors.white,
-                                    textColor: Colors.black,
-                                    text: CommonUtils.getLocale(context).dinner,
-                                    fontSize: MyTextStyle.normalTextSize,
-                                    onPress: () {
-                                      _startToMenu(
-                                          context,
-                                          store,
-                                          RoutePath.CUSTOM_MENU_PATH,
-                                          false,
-                                          true);
-                                    },
+                                  child: Container(
+                                     height: ScreenUtil.getInstance().setWidth(80),
+                                    child: FlexButton(
+                                      color: Colors.lightBlue,
+                                      textColor: Colors.white,
+                                      text: CommonUtils.getLocale(context).dinner,
+                                      fontSize: MyTextStyle.normalTextSize,
+                                      onPress: () {
+                                        _startToMenu(
+                                            context,
+                                            store,
+                                            RoutePath.CUSTOM_MENU_PATH,
+                                            false,
+                                            true);
+                                      },
+                                    ),
                                   ),
                                 ),
                               ],

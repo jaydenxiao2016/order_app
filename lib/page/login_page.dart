@@ -40,9 +40,9 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(
                   color: Color(ColorsStyle.white),
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              height: ScreenUtil.getInstance().setWidth(400),
+              height: ScreenUtil.getInstance().setWidth(450),
               padding: EdgeInsets.all(ScreenUtil.getInstance().setWidth(30)),
-              width: ScreenUtil.getInstance().setWidth(500),
+              width: ScreenUtil.getInstance().setWidth(600),
               child: new SingleChildScrollView(
                 child: new Column(
                   children: <Widget>[

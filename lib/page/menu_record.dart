@@ -134,7 +134,7 @@ class _MenuRecordState extends State<MenuRecord> {
   _requestDrinkConfirm(BuildContext context) async{
     print('请求酒水下单');
     await HttpGo.getInstance().post(UrlPath.drinkConfirmPath, params: widget.selectedDrinkProduct.map((v) => v.toJson()).toList()).then((baseResult) {
-      Fluttertoast.showToast(msg: '下单成功');
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).orderSuccess);
       Navigator.pop(context, true);
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
@@ -154,7 +154,7 @@ class _MenuRecordState extends State<MenuRecord> {
     orderRoundDetailEntity.num=CommonUtils.getStore(context).state.loginResponseEntity.setting.currentRound;
     orderRoundDetailEntity.orderId=CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId;
     await HttpGo.getInstance().post(UrlPath.orderRoundConfirmPath, params: orderRoundDetailEntity.toJson()).then((baseResult) {
-      Fluttertoast.showToast(msg: '下单成功');
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).orderSuccess);
       CommonUtils.eventBus.fire(TimerEvent());
       Navigator.pop(context, true);
     }).catchError((error) {
@@ -167,7 +167,7 @@ class _MenuRecordState extends State<MenuRecord> {
     OrderServiceDetailEntity orderServiceDetailEntity=new OrderServiceDetailEntity(orderId: CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId,
     needServiceDetails: widget.selectedDrinkProduct);
     await HttpGo.getInstance().post(UrlPath.orderNeedServicePath, params: orderServiceDetailEntity.toJson()).then((baseResult) {
-      Fluttertoast.showToast(msg: '下单成功');
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).orderSuccess);
       if(widget.type==2) {
         CommonUtils.eventBus.fire(TimerEvent());
       }

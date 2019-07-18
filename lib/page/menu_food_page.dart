@@ -205,7 +205,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                             },
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
-                                height: ScreenUtil.getInstance().setWidth(80),
+                                padding: EdgeInsets.all(10.0),
                                 color: index == selectTypeIndex
                                     ? Colors.lightBlue
                                     : Colors.black,
@@ -219,10 +219,11 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                   },
                                   leading: CommonUtils.displayImageWidget(
                                       Config.BASE_URL +
-                                              categoryInfoEntity.imgPath +
-                                              (categoryInfoEntity
-                                                  .data[index].pic) ??
-                                          ""),
+                                          categoryInfoEntity.imgPath +
+                                          (categoryInfoEntity
+                                              .data[index].pic) ??
+                                          "",height: ScreenUtil.getInstance().setWidth(80)
+                                      ,width: ScreenUtil.getInstance().setWidth(80)),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(
@@ -323,6 +324,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                       ),
                                     ),
                                     Container(
+                                      padding: EdgeInsets.only(right: 10.0),
                                       child: PlusDecreaseText(
                                         plusEnable: plusEnable,
                                         inputValue: selected[categoryInfoEntity
