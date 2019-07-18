@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:order_app/common/style/colors_style.dart';
 
 ///文本样式
@@ -6,159 +7,161 @@ class MyTextStyle {
 
   static const String app_default_share_url = "https://github.com/CarGuo/GSYGithubAppFlutter";
 
-  static const lagerTextSize = 30.0;
-  static const bigTextSize = 23.0;
-  static const normalTextSize = 18.0;
-  static const middleTextWhiteSize = 16.0;
-  static const smallTextSize = 14.0;
-  static const minTextSize = 12.0;
+  static var hugeBigTextSize =  ScreenUtil.getInstance().setSp(60.0);
+  static var hugeTextSize =  ScreenUtil.getInstance().setSp(50.0);
+  static var lagerTextSize =  ScreenUtil.getInstance().setSp(40.0);
+  static var bigTextSize = ScreenUtil.getInstance().setSp(30.0);
+  static var normalTextSize =  ScreenUtil.getInstance().setSp(23.0);
+  static var middleTextWhiteSize =  ScreenUtil.getInstance().setSp(23.0);
+  static var smallTextSize = ScreenUtil.getInstance().setSp(20.0);
+  static var minTextSize = ScreenUtil.getInstance().setSp(14.0);
 
-  static const minText = TextStyle(
+  static var minText = TextStyle(
     color: Color(ColorsStyle.subLightTextColor),
     fontSize: minTextSize,
   );
 
-  static const smallTextWhite = TextStyle(
+  static var smallTextWhite = TextStyle(
     color: Color(ColorsStyle.textColorWhite),
     fontSize: smallTextSize,
   );
 
-  static const smallText = TextStyle(
+  static var smallText = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: smallTextSize,
   );
 
-  static const smallTextBold = TextStyle(
+  static var smallTextBold = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: smallTextSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const smallSubLightText = TextStyle(
+  static var smallSubLightText = TextStyle(
     color: Color(ColorsStyle.subLightTextColor),
     fontSize: smallTextSize,
   );
 
-  static const smallActionLightText = TextStyle(
+  static var smallActionLightText = TextStyle(
     color: Color(ColorsStyle.actionBlue),
     fontSize: smallTextSize,
   );
 
-  static const smallMiLightText = TextStyle(
+  static var smallMiLightText = TextStyle(
     color: Color(ColorsStyle.miWhite),
     fontSize: smallTextSize,
   );
 
-  static const smallSubText = TextStyle(
+  static var smallSubText = TextStyle(
     color: Color(ColorsStyle.subTextColor),
     fontSize: smallTextSize,
   );
 
-  static const middleText = TextStyle(
+  static var middleText = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: middleTextWhiteSize,
   );
 
-  static const middleTextWhite = TextStyle(
+  static var middleTextWhite = TextStyle(
     color: Color(ColorsStyle.textColorWhite),
     fontSize: middleTextWhiteSize,
   );
 
-  static const middleSubText = TextStyle(
+  static var middleSubText = TextStyle(
     color: Color(ColorsStyle.subTextColor),
     fontSize: middleTextWhiteSize,
   );
 
-  static const middleSubLightText = TextStyle(
+  static var middleSubLightText = TextStyle(
     color: Color(ColorsStyle.subLightTextColor),
     fontSize: middleTextWhiteSize,
   );
 
-  static const middleTextBold = TextStyle(
+  static var middleTextBold = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: middleTextWhiteSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const middleTextWhiteBold = TextStyle(
+  static var middleTextWhiteBold = TextStyle(
     color: Color(ColorsStyle.textColorWhite),
     fontSize: middleTextWhiteSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const middleSubTextBold = TextStyle(
+  static var middleSubTextBold = TextStyle(
     color: Color(ColorsStyle.subTextColor),
     fontSize: middleTextWhiteSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const normalText = TextStyle(
+  static var normalText = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: normalTextSize,
   );
 
-  static const normalTextBold = TextStyle(
+  static var normalTextBold = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: normalTextSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const normalSubText = TextStyle(
+  static var normalSubText = TextStyle(
     color: Color(ColorsStyle.subTextColor),
     fontSize: normalTextSize,
   );
 
-  static const normalTextWhite = TextStyle(
+  static var normalTextWhite = TextStyle(
     color: Color(ColorsStyle.textColorWhite),
     fontSize: normalTextSize,
   );
 
-  static const normalTextMitWhiteBold = TextStyle(
+  static var normalTextMitWhiteBold = TextStyle(
     color: Color(ColorsStyle.miWhite),
     fontSize: normalTextSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const normalTextActionWhiteBold = TextStyle(
+  static var normalTextActionWhiteBold = TextStyle(
     color: Color(ColorsStyle.actionBlue),
     fontSize: normalTextSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const normalTextLight = TextStyle(
+  static var normalTextLight = TextStyle(
     color: Color(ColorsStyle.primaryLightValue),
     fontSize: normalTextSize,
   );
 
-  static const largeText = TextStyle(
+  static var largeText = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: bigTextSize,
   );
 
-  static const largeTextBold = TextStyle(
+  static var largeTextBold = TextStyle(
     color: Color(ColorsStyle.mainTextColor),
     fontSize: bigTextSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const largeTextWhite = TextStyle(
+  static var largeTextWhite = TextStyle(
     color: Color(ColorsStyle.textColorWhite),
     fontSize: bigTextSize,
   );
 
-  static const largeTextWhiteBold = TextStyle(
+  static var largeTextWhiteBold = TextStyle(
     color: Color(ColorsStyle.textColorWhite),
     fontSize: bigTextSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const largeLargeTextWhite = TextStyle(
+  static var largeLargeTextWhite = TextStyle(
     color: Color(ColorsStyle.textColorWhite),
     fontSize: lagerTextSize,
     fontWeight: FontWeight.bold,
   );
 
-  static const largeLargeText = TextStyle(
+  static var largeLargeText = TextStyle(
     color: Color(ColorsStyle.primaryValue),
     fontSize: lagerTextSize,
     fontWeight: FontWeight.bold,

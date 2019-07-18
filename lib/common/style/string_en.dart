@@ -26,6 +26,10 @@ class StringEn extends StringBase {
   String appNotNewVersion = "No new version.";
   @override
   String appVersionTitle = "Update Version";
+  @override
+  String workbenchTitle="Workbench";
+  @override
+  String controlTitle="Console";
 
   @override
   String languageDefault= "Default";
@@ -88,6 +92,18 @@ class StringEn extends StringBase {
   String loginUserEmpty="用户名不能为空";
   @override
   String loginPswEmpty="密码不能为空";
+  @override
+  String buyerEmptyTip="The dining area should not be empty";
+  @override
+  String adultEmptyTip="The number of adults should not be empty";
+  @override
+  String tableEmptyTip="No empty table number";
+  @override
+  String passwordEmptyTip="Password cannot be empty";
+  @override
+  String passwordWrongTip="Password error";
+  @override
+  String waitingTip="Waiting for the next round";
 
   @override
   String menuContent="Menu Content";
@@ -113,6 +129,10 @@ class StringEn extends StringBase {
   String lunch="Lunch";
   @override
   String dinner="Dinner";
+  @override
+  String emptyTip="Please choose at least one";
+  @override
+  String countTimer="Count down";
 
   @override
   String reOrderFoodTip="Please place the order after the countdown has been completed";
@@ -140,4 +160,24 @@ class StringEn extends StringBase {
   String back="Back";
   @override
   String orderSure="Order Sure";
+  @override
+  String serialNum="SerialNum";
+  @override
+  String category="Category";
+  @override
+  String categories="Categories";
+  @override
+  String name="Name";
+  @override
+  String num="Num";
+  @override
+  String price="Price";
+  @override
+  String orderSuccess="checkout success";
+  @override
+  String tip="Tip";
+  @override
+  String payTip="Are you sure you want to notify the payment?";
+  @override
+  String cancel="Cancel";
 }

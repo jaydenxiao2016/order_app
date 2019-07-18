@@ -6,9 +6,9 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
+import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/event/timer_event.dart';
-import 'package:order_app/common/model/login_response_entity.dart';
 import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/login_info_redux.dart';
@@ -17,10 +17,10 @@ import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
-import 'package:order_app/page/customMenu/timer_painter.dart';
 import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_drink_page.dart';
 import 'package:order_app/page/menu_service_page.dart';
+import 'package:order_app/widget/NetLoadingDialog.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
@@ -37,13 +37,15 @@ class _CustomMenuPageState extends State<CustomMenuPage>
   ///监听
   StreamSubscription stream;
 
-  ///倒计时
-  AnimationController animationController;
+  ///定时器
+  Timer countdownTimer;
+
+  ///倒计时总时长（秒）
+  int currentTimeSecond = 0;
 
   ///时间字符串
   String get timerString {
-    Duration duration =
-        animationController.duration * animationController.value;
+    Duration duration = new Duration(seconds: currentTimeSecond);
     return '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
 
@@ -53,61 +55,72 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
     ///监听触发计时器
     stream = CommonUtils.eventBus.on<TimerEvent>().listen((event) {
-      if (animationController != null) {
-        ///获取最新订单详情
-        _getOrderDetail();
+      ///获取最新订单详情
+      _getOrderDetail();
+    });
+  }
+
+  ///开始倒计时
+  _startCountdown() {
+    print("开始计时");
+    currentTimeSecond = CommonUtils.getStore(context)
+            .state
+            .loginResponseEntity
+            .setting
+            .waitTime *
+        60;
+    countdownTimer = new Timer.periodic(new Duration(seconds: 1), (timer) {
+      print(currentTimeSecond);
+      if (currentTimeSecond > 0) {
+        setState(() {
+          currentTimeSecond = currentTimeSecond - 1;
+        });
+      } else {
+        //倒计时结束
+        countdownTimer.cancel();
+        countdownTimer = null;
+        Store<StateInfo> store = CommonUtils.getStore(context);
+        store.state.loginResponseEntity.setting.isTimeFinish = true;
+        store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
       }
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    if (context == null) {
-      return;
-    }
-    if (animationController == null) {
-      Store<StateInfo> store = CommonUtils.getStore(context);
-      animationController = AnimationController(
-          vsync: this,
-          duration: Duration(
-              minutes: store.state.loginResponseEntity.setting.waitTime));
-      animationController.addStatusListener((AnimationStatus status){
-        if(status==AnimationStatus.dismissed){
-          //倒计时结束
-          Store<StateInfo> store = CommonUtils.getStore(context);
-          store.state.loginResponseEntity.setting.isTimeFinish=true;
-          store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
-        }
-      });
-    }
-    super.didChangeDependencies();
-  }
   ///获取主订单详情
-  _getOrderDetail()async{
+  _getOrderDetail() async {
     print("获取订单详情");
     if (context == null) {
       return;
     }
     Store<StateInfo> store = CommonUtils.getStore(context);
-     await HttpGo.getInstance()
-        .get(UrlPath.orderInfoPath+store.state.loginResponseEntity.orderMasterEntity.orderId.toString()+"/info")
+    await HttpGo.getInstance()
+        .get(UrlPath.orderInfoPath +
+            store.state.loginResponseEntity.orderMasterEntity.orderId
+                .toString() +
+            "/info")
         .then((baseResult) {
-       print("订单详情成果");
-       ///1.轮数+1
-       Store<StateInfo> store = CommonUtils.getStore(context);
-       store.state.loginResponseEntity.setting.currentRound += 1;
-       store.state.loginResponseEntity.setting.isTimeFinish=false;
-       store.state.loginResponseEntity.orderMasterEntity=OrderMasterEntity.fromJson(baseResult.data["data"]);
-       ///2.保存已点轮数和roundid
-       if(store.state.loginResponseEntity.orderMasterEntity!=null){
-         store.state.loginResponseEntity.orderMasterEntity.orderRounds.forEach((rounds){
-           store.state.loginResponseEntity.roundIdMap[rounds.num]=rounds.id;
-         });
-       }
-       ///3.更新到store
-       store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
-       ///4.开始动画
-       animationController.reverse(from: 1.0);
+      print("订单详情成功");
+
+      ///1.轮数+1
+      Store<StateInfo> store = CommonUtils.getStore(context);
+      store.state.loginResponseEntity.setting.currentRound += 1;
+      store.state.loginResponseEntity.setting.isTimeFinish = false;
+      store.state.loginResponseEntity.orderMasterEntity =
+          OrderMasterEntity.fromJson(baseResult.data["data"]);
+
+      ///2.保存已点轮数和roundid
+      if (store.state.loginResponseEntity.orderMasterEntity != null) {
+        store.state.loginResponseEntity.orderMasterEntity.orderRounds
+            .forEach((rounds) {
+          store.state.loginResponseEntity.roundIdMap[rounds.num] = rounds.id;
+        });
+      }
+
+      ///3.更新到store
+      store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
+
+      ///4.开始倒计时
+      _startCountdown();
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
     });
@@ -128,10 +141,44 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     }
   }
 
+  ///通知付款
+  _toNotifyPay() async {
+    Store<StateInfo> store = CommonUtils.getStore(context);
+    return await HttpGo.getInstance()
+        .post(UrlPath.notifyPay +
+            "?orderId=" +
+            store.state.loginResponseEntity.orderMasterEntity.orderId
+                .toString())
+        .then((baseResult) {
+      ///跳转到服务员设置界面
+      Fluttertoast.showToast(msg: "通知付款成功");
+      NavigatorUtils.pushReplacementNamed(
+          context, RoutePath.SERVICE_CONTROL_PATH);
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: error.toString());
+    });
+  }
+
+  _toPay() {
+    _toNotifyPay();
+  }
+
+  ///通知付款
+  _showDialog(Future<dynamic> requestCallBack) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) {
+          return new NetLoadingDialog(
+            requestCallBack: requestCallBack,
+            outsideDismiss: false,
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
-      print('打印信息');
       return new Scaffold(
         appBar: AppBar(
           title: Text(CommonUtils.getLocale(context).customWorkbenchService),
@@ -169,79 +216,31 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Text(
-                              'Warten auf die nächste runde',
+                              CommonUtils.getLocale(context).waitingTip,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
+                                fontSize: MyTextStyle.smallTextSize,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: AspectRatio(
-                                  aspectRatio: 1.0,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      ///倒计时进度条
-                                      Positioned.fill(
-                                        child: AnimatedBuilder(
-                                          animation: animationController,
-                                          builder: (BuildContext context,
-                                              Widget child) {
-                                            return CustomPaint(
-                                              painter: TimerPainter(
-                                                  animation:
-                                                      animationController,
-                                                  backgroundColor: Colors.white,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                            );
-                                          },
-                                        ),
-                                      ),
 
-                                      ///倒计时文字
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: AnimatedBuilder(
-                                            animation: animationController,
-                                            builder: (_, Widget child) {
-                                              return animationController
-                                                          .value !=
-                                                      0
-                                                  ? Text(
-                                                      timerString,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 42.0,
-                                                      ),
-                                                    )
-                                                  : InkWell(
-                                                      onTap: () {
-                                                        this._toOrderFood();
-                                                      },
-                                                      child: Text(
-                                                        CommonUtils.getLocale(
-                                                                context)
-                                                            .menu,
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 25.0,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    );
-                                            }),
-                                      ),
-                                    ],
-                                  )),
-                            ),
+                          ///倒计时文字
+                          Expanded(
+                            child: Center(
+                                child: Text(
+                              currentTimeSecond != 0
+                                  ? timerString
+                                  : CommonUtils.getLocale(context).countTimer,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: MyTextStyle.hugeBigTextSize,
+                              ),
+                            )),
                           ),
+
+                          ///桌号
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -250,11 +249,14 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 fit: BoxFit.cover,
                               ),
                               Text(
-                                store
-                                    .state.loginResponseEntity.setting.tableNum,
+                                store.state.loginResponseEntity.setting
+                                        .buyerName +
+                                    "-" +
+                                    store.state.loginResponseEntity.setting
+                                        .tableNum,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 30.0,
+                                  fontSize: MyTextStyle.bigTextSize,
                                   color: Colors.orange,
                                 ),
                               )
@@ -366,7 +368,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     ///服务
                     Expanded(
                       child: InkWell(
-                        onTap:  (){
+                        onTap: () {
                           NavigatorUtils.navigatorRouter(
                               context, MenuServicePage());
                         },
@@ -402,31 +404,81 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
                     ///支付/买单
                     Expanded(
-                      child: Container(
-                        margin: EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 5.0,
-                          ),
-                        ]),
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: Image.asset(
-                                'static/images/hm4_de.png',
-                                width: window.physicalSize.width / 4,
-                                fit: BoxFit.cover,
-                              ),
+                      child: InkWell(
+                        onTap: () {
+                          ///提示
+                          showDialog<Null>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return new AlertDialog(
+                                title: new Text(
+                                  CommonUtils.getLocale(context).tip,
+                                  style: TextStyle(
+                                      fontSize: MyTextStyle.normalTextSize),
+                                ),
+                                content: new Text(
+                                  CommonUtils.getLocale(context).payTip,
+                                  style: TextStyle(
+                                      fontSize: MyTextStyle.bigTextSize),
+                                ),
+                                actions: <Widget>[
+                                  new FlatButton(
+                                    child: new Text(
+                                      CommonUtils.getLocale(context).cancel,
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: MyTextStyle.normalTextSize),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  new FlatButton(
+                                    child: new Text(
+                                      CommonUtils.getLocale(context).sure,
+                                      style: TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: MyTextStyle.normalTextSize),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      _toPay();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ).then((val) {
+                            print(val);
+                          });
+                        },
+                        child: Container(
+                          margin: EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                              color: Colors.black,
+                              blurRadius: 5.0,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                CommonUtils.getLocale(context).payment,
-                                style: MyTextStyle.largeTextWhiteBold,
+                          ]),
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: Image.asset(
+                                  'static/images/hm4_de.png',
+                                  width: window.physicalSize.width / 4,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            )
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  CommonUtils.getLocale(context).payment,
+                                  style: MyTextStyle.largeTextWhiteBold,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -442,13 +494,12 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
   @override
   void dispose() {
-    if (animationController != null) {
-      animationController.dispose();
-    }
     if (stream != null) {
       stream.cancel();
       stream = null;
     }
+    countdownTimer?.cancel();
+    countdownTimer = null;
     super.dispose();
   }
 }
@@ -521,13 +572,16 @@ class _RoundInfoState extends State<RoundInfo> {
             onPress: () {
               ///已点酒水
               if (index == 10) {
-                NavigatorUtils.navigatorRouter(context, DrinkRecord(Config.DETAIL_DRINK_TYPE));
+                NavigatorUtils.navigatorRouter(
+                    context, DrinkRecord(Config.DETAIL_DRINK_TYPE));
               }
+
               ///已点轮菜单
-              else if(widget.currentRound > index + 1){
+              else if (widget.currentRound > index + 1) {
                 Store<StateInfo> store = CommonUtils.getStore(context);
-                int roundId=store.state.loginResponseEntity.roundIdMap[index+1];
-                if(roundId!=null) {
+                int roundId =
+                    store.state.loginResponseEntity.roundIdMap[index + 1];
+                if (roundId != null) {
                   NavigatorUtils.navigatorRouter(context,
                       DrinkRecord(Config.DETAIL_FOOD_TYPE, round: roundId));
                 }
@@ -537,6 +591,7 @@ class _RoundInfoState extends State<RoundInfo> {
                 ? Colors.red
                 : (index == 10 ? Colors.green : Colors.blueAccent),
             textColor: Colors.white,
+            fontSize: MyTextStyle.normalTextSize,
             text: item,
           )),
     );

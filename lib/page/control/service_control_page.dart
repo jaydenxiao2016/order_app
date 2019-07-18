@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/route_path.dart';
@@ -104,7 +105,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                     color: _buyerId == index
                                         ? Colors.white
                                         : Colors.black,
-                                    fontSize: MyTextStyle.middleTextWhiteSize,
+                                    fontSize: MyTextStyle.normalTextSize,
                                   )),
                             ),
                           );
@@ -133,31 +134,43 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                 Expanded(
                                     child: PlusDecreaseInput(
                                   textEditingController: _adultController,
-                                  titleWidth: 200.0,
+                                  fontSize: MyTextStyle.bigTextSize,
+                                  titleWidth:
+                                      ScreenUtil.getInstance().setWidth(250),
                                   title: CommonUtils.getLocale(context).adult,
+                                  titleFontSize: MyTextStyle.bigTextSize,
                                 )),
                                 Expanded(
                                     child: PlusDecreaseInput(
                                   textEditingController: _childrenController,
-                                  titleWidth: 200.0,
+                                  fontSize: MyTextStyle.bigTextSize,
+                                  titleWidth:
+                                      ScreenUtil.getInstance().setWidth(250),
                                   title:
                                       CommonUtils.getLocale(context).children,
+                                  titleFontSize: MyTextStyle.bigTextSize,
                                 )),
                                 Expanded(
                                     child: PlusDecreaseInput(
                                   textEditingController: _tableNumController,
-                                  titleWidth: 200.0,
+                                  fontSize: MyTextStyle.bigTextSize,
+                                  titleWidth:
+                                      ScreenUtil.getInstance().setWidth(250),
                                   title:
                                       CommonUtils.getLocale(context).tableNum,
+                                  titleFontSize: MyTextStyle.bigTextSize,
                                 )),
                                 Expanded(
                                     child: PlusDecreaseInput(
                                   textEditingController: _passwordController,
-                                  titleWidth: 200.0,
+                                  fontSize: MyTextStyle.bigTextSize,
+                                  titleWidth:
+                                      ScreenUtil.getInstance().setWidth(250),
                                   decreaseVisible: false,
                                   plusVisible: false,
                                   title:
                                       CommonUtils.getLocale(context).password,
+                                  titleFontSize: MyTextStyle.bigTextSize,
                                 )),
                               ],
                             ),
@@ -180,7 +193,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                 child: SlideBar(
                                   title:
                                       CommonUtils.getLocale(context).lunchItem,
-                                  titleFontSize: 18.0,
+                                  titleFontSize: MyTextStyle.bigTextSize,
                                   titleColor: Colors.redAccent,
                                   onChanged: (value) {
                                     _lunchItem = value.toInt();
@@ -197,7 +210,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                 child: SlideBar(
                                   title:
                                       CommonUtils.getLocale(context).dinnerItem,
-                                  titleFontSize: 18.0,
+                                  titleFontSize: MyTextStyle.bigTextSize,
                                   titleColor: Colors.redAccent,
                                   onChanged: (value) {
                                     _dinnerItem = value.toInt();
@@ -213,7 +226,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                               Expanded(
                                 child: SlideBar(
                                   title: CommonUtils.getLocale(context).timer,
-                                  titleFontSize: 18.0,
+                                  titleFontSize: MyTextStyle.bigTextSize,
                                   titleColor: Colors.redAccent,
                                   onChanged: (value) {
                                     _timerItem = value.toInt();
@@ -241,6 +254,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                     color: Colors.white,
                                     textColor: Colors.black,
                                     text: CommonUtils.getLocale(context).lunch,
+                                    fontSize: MyTextStyle.normalTextSize,
                                     onPress: () {
                                       _startToMenu(
                                           context,
@@ -259,6 +273,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                     color: Colors.white,
                                     textColor: Colors.black,
                                     text: CommonUtils.getLocale(context).dinner,
+                                    fontSize: MyTextStyle.normalTextSize,
                                     onPress: () {
                                       _startToMenu(
                                           context,
@@ -287,19 +302,19 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
   _startToMenu(BuildContext context, Store<StateInfo> store, String path,
       bool isLunch, bool isDinner) {
     if (_buyerId == -1) {
-      Fluttertoast.showToast(msg: "餐区不能为空");
+      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).buyerEmptyTip);
       return;
     }
     if (_adultController.text.length <= 0 || _adultController.text == '0') {
-      Fluttertoast.showToast(msg: "成人数不能为空");
+      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).adultEmptyTip);
       return;
     }
     if (_tableNumController.text.length <= 0) {
-      Fluttertoast.showToast(msg: "台号不能为空");
+      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).tableEmptyTip);
       return;
     }
     if (_passwordController.text.length <= 0) {
-      Fluttertoast.showToast(msg: "密码不能为空");
+      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).passwordEmptyTip);
       return;
     }
 
@@ -307,7 +322,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     LoginResponseEntity loginInfoEntity = store.state.loginResponseEntity;
     LoginInfoSetting loginInfoSetting = loginInfoEntity.setting;
     if (_passwordController.text != loginInfoSetting.appPwd) {
-      Fluttertoast.showToast(msg: "密码错误");
+      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).passwordWrongTip);
       return;
     }
     loginInfoSetting.adult = int.parse(_adultController.text);
@@ -324,6 +339,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     loginInfoSetting.currentRound = 1;
     loginInfoSetting.isTimeFinish = true;
     loginInfoSetting.buyerId = loginInfoEntity.areas[_buyerId].id;
+    loginInfoSetting.buyerName = loginInfoEntity.areas[_buyerId].name;
     loginInfoEntity.setting = loginInfoSetting;
 
     ///2.下单
@@ -340,7 +356,8 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
         .post(UrlPath.orderConfirmPath, params: orderMasterEntity.toJson())
         .then((baseResult) {
       ///1.保存本次订单主表信息
-      OrderMasterEntity orderMasterEntity = OrderMasterEntity.fromJson(baseResult.data['data']);
+      OrderMasterEntity orderMasterEntity =
+          OrderMasterEntity.fromJson(baseResult.data['data']);
       loginInfoEntity.orderMasterEntity = orderMasterEntity;
 
       ///2.更新到store

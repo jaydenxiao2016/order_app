@@ -24,6 +24,10 @@ class StringZh extends StringBase {
   String appNotNewVersion = "当前没有新版本";
   @override
   String appVersionTitle = "版本更新";
+  @override
+  String workbenchTitle = "工作台";
+  @override
+  String controlTitle = "控制台";
 
   @override
   String languageDefault = "默认";
@@ -78,63 +82,99 @@ class StringZh extends StringBase {
   @override
   String login = "登录";
   @override
-  String loginUserTitle="请输入用户名";
+  String loginUserTitle = "请输入用户名";
   @override
-  String loginPswTip="请输入密码";
+  String loginPswTip = "请输入密码";
   @override
-  String loginUserEmpty="用户名不能为空";
+  String loginUserEmpty = "用户名不能为空";
   @override
-  String loginPswEmpty="密码不能为空";
+  String loginPswEmpty = "密码不能为空";
+  @override
+  String buyerEmptyTip = "餐区不能为空";
+  @override
+  String adultEmptyTip = "成人数不能为空";
+  @override
+  String tableEmptyTip = "台号不能为空";
+  @override
+  String passwordEmptyTip = "密码不能为空";
+  @override
+  String passwordWrongTip = "密码错误";
 
   @override
-  String menuContent="菜单内容";
+  String menuContent = "菜单内容";
   @override
-  String adult="成人";
+  String adult = "成人";
   @override
-  String children="小孩";
+  String children = "小孩";
   @override
-  String tableNum="桌号";
+  String tableNum = "桌号";
   @override
-  String password="密码";
+  String password = "密码";
   @override
-  String lunchItem="午餐项目";
+  String lunchItem = "午餐项目";
   @override
-  String dinnerItem="晚餐项目";
+  String dinnerItem = "晚餐项目";
   @override
-  String timer="等待时间（分）";
+  String timer = "等待时间（分）";
   @override
-  String updateMenu="更新(菜单)";
+  String updateMenu = "更新(菜单)";
   @override
-  String service="服务";
+  String service = "服务";
   @override
-  String lunch="午餐";
+  String lunch = "午餐";
   @override
-  String dinner="晚餐";
+  String dinner = "晚餐";
+  @override
+  String emptyTip = "请至少选择一项";
+  @override
+  String countTimer = "倒计时";
+  @override
+  String waitingTip = "等待下一轮";
 
   @override
-  String reOrderFoodTip="请在倒计时完后再下单";
+  String reOrderFoodTip = "请在倒计时完后再下单";
   @override
-  String orderFoodTooMuchTip="食品下单已达次数上限";
+  String orderFoodTooMuchTip = "食品下单已达次数上限";
   @override
-  String order="点餐";
+  String order = "点餐";
   @override
-  String round="轮";
+  String round = "轮";
   @override
-  String customWorkbenchService="客人工作台";
+  String customWorkbenchService = "客人工作台";
   @override
-  String drink="酒水";
+  String drink = "酒水";
   @override
-  String menu="餐单";
+  String menu = "餐单";
   @override
-  String payment="支付";
+  String payment = "支付";
   @override
-  String orderNumLimitTip="本次点餐数目已到达上限";
+  String orderNumLimitTip = "本次点餐数目已到达上限";
   @override
-  String sure="确认";
+  String sure = "确认";
   @override
-  String buy="订购";
+  String buy = "订购";
   @override
-  String back="返回";
+  String back = "返回";
   @override
-  String orderSure="订单确认";
+  String orderSure = "订单确认";
+  @override
+  String serialNum = "序号";
+  @override
+  String category = "类别";
+  @override
+  String categories = "类目";
+  @override
+  String name = "名称";
+  @override
+  String num = "数量";
+  @override
+  String price = "价格";
+  @override
+  String orderSuccess = "下单成功";
+  @override
+  String tip="提示";
+  @override
+  String payTip="确定要通知付款吗";
+  @override
+  String cancel="取消";
 }

@@ -3,20 +3,20 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/model/category.dart';
 import 'package:order_app/common/model/category_response_entity.dart';
 import 'package:order_app/common/model/order_detail.dart';
-import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/model/product.dart';
 import 'package:order_app/common/model/product_response_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
+import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
-import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
@@ -53,7 +53,9 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   @override
   void initState() {
     super.initState();
-    _requestDrinkCategoryData();
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      _requestDrinkCategoryData();
+    });
   }
 
   ///计算已点数目
@@ -62,7 +64,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
     selected.forEach((index, value) => total += value);
     print("total" + total.toString());
     selectedProductList.clear();
-    selectedProduct.forEach((key,value){
+    selectedProduct.forEach((key, value) {
       selectedProductList.add(value);
     });
     setState(() {
@@ -71,7 +73,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   }
 
   ///获取酒水分类
-  _requestDrinkCategoryData() async{
+  _requestDrinkCategoryData() async {
     print('请求酒水');
     if (mounted) {
       await HttpGo.getInstance()
@@ -99,7 +101,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   }
 
   ///获取商品信息
-  _requestDrinkProductData(int cId) async{
+  _requestDrinkProductData(int cId) async {
     print('请求商品');
     if (mounted) {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
@@ -113,6 +115,23 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
       });
+    }
+  }
+
+  ///跳转到确认菜单并监听返回结果
+  _skipToRecordPage() {
+    if (selectedProductList != null && selectedProductList.length > 0) {
+      Navigator.push<bool>(
+              context,
+              new CupertinoPageRoute(
+                  builder: (context) => MenuRecord(1, selectedProductList)))
+          .then((isFinish) {
+        if (isFinish != null && isFinish) {
+          Navigator.pop(context);
+        }
+      });
+    } else {
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).emptyTip);
     }
   }
 
@@ -139,13 +158,13 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                   children: <Widget>[
                     ///已点数目显示
                     SizedBox(
-                      height: 70.0,
+                      height: ScreenUtil.getInstance().setWidth(90),
                       child: Center(
                         child: Text(
                           currentNum.toInt().toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 60.0,
+                              fontSize: MyTextStyle.hugeTextSize,
                               color: Colors.orangeAccent,
                               fontWeight: FontWeight.bold),
                         ),
@@ -174,7 +193,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                             },
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
-                                height: 60.0,
+                                height: ScreenUtil.getInstance().setWidth(80),
                                 color: index == selectTypeIndex
                                     ? Colors.lightBlue
                                     : Colors.black,
@@ -188,13 +207,15 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                   },
                                   leading: CommonUtils.displayImageWidget(
                                       Config.BASE_URL +
-                                          categoryInfoEntity.imgPath +
-                                          (categoryInfoEntity.data[index].pic)??""),
+                                              categoryInfoEntity.imgPath +
+                                              (categoryInfoEntity
+                                                  .data[index].pic) ??
+                                          ""),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
+                                        fontSize: MyTextStyle.bigTextSize,
                                         color: index == selectTypeIndex
                                             ? Colors.white
                                             : Color(
@@ -212,23 +233,15 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
 
                     ///操作按钮
                     Container(
-                      height: 70.0,
+                      height:ScreenUtil.getInstance().setWidth(80),
                       margin: EdgeInsets.all(5.0),
                       child: FlexButton(
                         color: Colors.deepOrange,
                         textColor: Colors.white,
+                        fontSize: MyTextStyle.bigTextSize,
                         text: CommonUtils.getLocale(context).buy,
                         onPress: () {
-                          ///跳转到确认菜单并监听返回结果
-                          Navigator.push<bool>(
-                                  context,
-                                  new CupertinoPageRoute(
-                                      builder: (context) => MenuRecord(1,selectedProductList)))
-                              .then((isFinish) {
-                            if (isFinish!= null&&isFinish) {
-                              Navigator.pop(context);
-                            }
-                          });
+                          _skipToRecordPage();
                         },
                       ),
                     )
@@ -242,7 +255,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 70.0,
+                      height: ScreenUtil.getInstance().setWidth(90),
                       child: Center(
                         child: Text(
                           categoryInfoEntity.data.length > 0
@@ -250,7 +263,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                               : "",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 40.0,
+                              fontSize: MyTextStyle.bigTextSize,
                               color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
@@ -281,7 +294,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                         margin: const EdgeInsets.only(
                                             left: 10.0, right: 15.0),
                                         padding: EdgeInsets.all(5.0),
-                                        width: 110.0,
+                                        width: ScreenUtil.getInstance().setWidth(130),
                                         decoration: BoxDecoration(
                                             color: Colors.yellow,
                                             borderRadius: BorderRadius.all(
@@ -290,39 +303,21 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                           product.price.toString(),
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 25.0),
+                                            fontSize: MyTextStyle.bigTextSize,),
                                         )),
 
                                     ///标题
                                     Expanded(
-                                        child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          product.id.toString() +
-                                              ")    " +
-                                              product.name,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 25.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Text(
-                                            "第二标题",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        )
-                                      ],
-                                    )),
+                                      child: Text(
+                                        product.id.toString() +
+                                            ")    " +
+                                            product.name,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: MyTextStyle.bigTextSize,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
 
                                     ///数量
                                     Container(
@@ -340,6 +335,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                             selected[key] = num;
                                             print('已选中');
                                             print(selected);
+
                                             ///加入订单
                                             OrderDetail orderDetail =
                                                 selectedProduct[key];
@@ -371,14 +367,16 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                             selected.remove(key);
                                             selectedProduct.remove(key);
                                           }
+
                                           ///计算已定餐单总数和总价
                                           _calculateCurrentNum();
                                         },
                                         color: Colors.white,
+                                        fontSize: MyTextStyle.lagerTextSize,
                                         decreaseImg: 'static/images/minus.png',
                                         plusImg: 'static/images/plus.png',
                                       ),
-                                      width: 200.0,
+                                      width: ScreenUtil.getInstance().setWidth(280),
                                     ),
                                   ],
                                 ),

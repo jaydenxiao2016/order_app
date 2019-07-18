@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
@@ -84,8 +85,8 @@ class PlusDecreaseText extends StatelessWidget {
         Opacity(
           opacity: decreaseVisible ? 1.0 : 0.0,
           child: Container(
-            height: 65.0,
-            width: 65.0,
+            height: ScreenUtil.getInstance().setWidth(80),
+            width: ScreenUtil.getInstance().setWidth(80),
             child: IconButton(
               icon: Image.asset(
                 decreaseImg,
@@ -133,8 +134,8 @@ class PlusDecreaseText extends StatelessWidget {
         Opacity(
           opacity: plusVisible ? (plusEnable ? 1 : 0.5) : 0.0,
           child: Container(
-            height: 65.0,
-            width: 65.0,
+            height: ScreenUtil.getInstance().setWidth(80),
+            width: ScreenUtil.getInstance().setWidth(80),
             child: IconButton(
               icon: Image.asset(
                 plusImg,

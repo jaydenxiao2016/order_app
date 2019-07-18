@@ -24,6 +24,10 @@ class StringDe extends StringBase {
   String appNotNewVersion = "No new version.";
   @override
   String appVersionTitle = "Update Version";
+  @override
+  String workbenchTitle="Arbeitsplatz";
+  @override
+  String controlTitle="Konsole";
 
   @override
   String languageDefault = "Die standard";
@@ -87,6 +91,16 @@ class StringDe extends StringBase {
   String loginUserEmpty="用户名不能为空";
   @override
   String loginPswEmpty="密码不能为空";
+  @override
+  String buyerEmptyTip="Der Essbereich sollte nicht leer sein";
+  @override
+  String adultEmptyTip="Die Anzahl der Erwachsenen sollte nicht leer sein";
+  @override
+  String tableEmptyTip="Die Tabellennummer kann nicht leer sein";
+  @override
+  String passwordEmptyTip="Passwort kann nicht leer sein";
+  @override
+  String passwordWrongTip="Fehler beim Passwort";
 
   @override
   String menuContent="Inhalt des Menüs";
@@ -112,6 +126,12 @@ class StringDe extends StringBase {
   String lunch="Mittag";
   @override
   String dinner="Abend";
+  @override
+  String emptyTip="Bitte wählen Sie mindestens eine";
+  @override
+  String countTimer="Zählen Sie ab";
+  @override
+  String waitingTip="Warten auf die nächste runde";
 
   @override
   String orderFoodTooMuchTip="Die Zahl der bestellungen obergrenze erreicht Hat, Essen";
@@ -139,4 +159,24 @@ class StringDe extends StringBase {
   String back="Zurück";
   @override
   String orderSure="Bestätigung der Bestellung";
+  @override
+  String serialNum="Laufende Nummer";
+  @override
+  String category="Kategorie";
+  @override
+  String categories="Kategorien";
+  @override
+  String name="Name";
+  @override
+  String num="Anzahl";
+  @override
+  String price="Preis";
+  @override
+  String orderSuccess="Erfolg der Kasse";
+  @override
+  String tip="Tipps";
+  @override
+  String payTip="Sind Sie sicher, dass Sie die Zahlung benachrichtigen möchten?";
+  @override
+  String cancel="Stornieren";
 }

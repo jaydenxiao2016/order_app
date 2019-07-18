@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/redux/state_info.dart';
+import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/sp_util.dart';
 ///设置语言
@@ -25,7 +26,9 @@ class _LanguageSettingState extends State<LanguageSetting> {
               Expanded(
                 child: RadioListTile<Locale>(
                   value: CommonUtils.getLanguageList(context)[1],
-                  title: Text(CommonUtils.getLocale(context).languageDe),
+                  title: Text(CommonUtils.getLocale(context).languageDe,style: TextStyle(
+                    fontSize: MyTextStyle.smallTextSize,
+                  ),),
                   groupValue: store.state.locale,
                   onChanged: (value) {
                     CommonUtils.changeLocale(store, context, 1);
@@ -37,7 +40,9 @@ class _LanguageSettingState extends State<LanguageSetting> {
               Expanded(
                 child: RadioListTile<Locale>(
                   value: CommonUtils.getLanguageList(context)[2],
-                  title: Text(CommonUtils.getLocale(context).languageZh),
+                  title: Text(CommonUtils.getLocale(context).languageZh,style: TextStyle(
+                    fontSize: MyTextStyle.smallTextSize
+                  ),),
                   groupValue: store.state.locale,
                   onChanged: (value) {
                     CommonUtils.changeLocale(store, context, 2);
@@ -49,7 +54,9 @@ class _LanguageSettingState extends State<LanguageSetting> {
               Expanded(
                 child: RadioListTile<Locale>(
                   value: CommonUtils.getLanguageList(context)[3],
-                  title: Text(CommonUtils.getLocale(context).languageEn),
+                  title: Text(CommonUtils.getLocale(context).languageEn,style: TextStyle(
+                      fontSize: MyTextStyle.smallTextSize
+                  )),
                   groupValue: store.state.locale,
                   onChanged: (value) {
                     CommonUtils.changeLocale(store, context, 3);

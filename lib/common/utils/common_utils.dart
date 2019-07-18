@@ -5,6 +5,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_statusbar/flutter_statusbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/localization/default_localizations.dart';
@@ -253,7 +254,7 @@ class CommonUtils {
   }
 
   ///显示图片
-  static Widget displayImageWidget(String url,{double height=50,double width=50}) {
+  static Widget displayImageWidget(String url,{double height=60,double width=60}) {
     return CachedNetworkImage(
       height:height,
       width:width,

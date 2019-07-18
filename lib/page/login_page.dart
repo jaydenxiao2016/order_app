@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
@@ -39,9 +40,9 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(
                   color: Color(ColorsStyle.white),
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              height: 340.0,
-              padding: EdgeInsets.all(20.0),
-              width: 400.0,
+              height: ScreenUtil.getInstance().setWidth(400),
+              padding: EdgeInsets.all(ScreenUtil.getInstance().setWidth(30)),
+              width: ScreenUtil.getInstance().setWidth(500),
               child: new SingleChildScrollView(
                 child: new Column(
                   children: <Widget>[
@@ -78,35 +79,50 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Row(
                       children: <Widget>[
-                        //中文
+                        ///工作台
                         Expanded(
                           child: RadioListTile<String>(
-                            value: '工作台',
-                            title: Text('工作台'),
-                            groupValue: '工作台',
-                            onChanged: (value) {
-                            },
+                            value:
+                                CommonUtils.getLocale(context).workbenchTitle,
+                            title: Text(
+                              CommonUtils.getLocale(context).workbenchTitle,
+                              style: TextStyle(
+                                fontSize: MyTextStyle.normalTextSize,
+                              ),
+                            ),
+                            groupValue:
+                                CommonUtils.getLocale(context).workbenchTitle,
+                            onChanged: (value) {},
                           ),
                         ),
-                        //英文
+
+                        ///控制台
                         Expanded(
                           child: RadioListTile<String>(
-                            value: '控制台',
-                            title: Text('控制台'),
-                            groupValue: '工作台',
-                            onChanged: (value) {
-                            },
+                            value: CommonUtils.getLocale(context).controlTitle,
+                            title: Text(
+                                CommonUtils.getLocale(context).controlTitle,
+                                style: TextStyle(
+                                  fontSize: MyTextStyle.normalTextSize,
+                                )),
+                            groupValue:
+                                CommonUtils.getLocale(context).workbenchTitle,
+                            onChanged: (value) {},
                           ),
                         ),
                       ],
                     ),
                     Container(
-                      width: 300.0,
-                      margin: EdgeInsets.only(top: 10.0),
+                      width: ScreenUtil.getInstance().setWidth(400),
+                      margin: EdgeInsets.only(
+                          top: ScreenUtil.getInstance().setWidth(20)),
                       child: new MaterialButton(
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
-                        child: new Text(CommonUtils.getLocale(context).login),
+                        child: new Text(CommonUtils.getLocale(context).login,
+                            style: TextStyle(
+                              fontSize: MyTextStyle.normalTextSize,
+                            )),
                         onPressed: () {
                           _login(context, store);
                         },

@@ -79,6 +79,8 @@ class LoginInfoSetting {
   String ctlAppPwd;
   ///餐区
   int buyerId;
+  ///餐区名字
+  String buyerName;
   ///成人数
   int adult;
 
@@ -118,6 +120,7 @@ class LoginInfoSetting {
       this.waitTime,
       this.ctlAppPwd,
       this.buyerId,
+      this.buyerName,
       this.adult,
       this.children,
       this.tableNum,
@@ -145,6 +148,7 @@ class LoginInfoSetting {
     waitTime = json['waitTime'];
     ctlAppPwd = json['ctlAppPwd'];
     buyerId = json['buyerId'];
+    buyerName = json['buyerName'];
     adult = json['adult'];
     children = json['children'];
     tableNum = json['tableNum'];
@@ -173,6 +177,7 @@ class LoginInfoSetting {
     data['waitTime'] = this.waitTime;
     data['ctlAppPwd'] = this.ctlAppPwd;
     data['buyerId'] = this.buyerId;
+    data['buyerName'] = this.buyerName;
     data['adult'] = this.adult;
     data['children'] = this.children;
     data['tableNum'] = this.tableNum;

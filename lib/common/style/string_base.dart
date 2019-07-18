@@ -11,6 +11,8 @@ abstract class StringBase {
   String appBackTip;
   String appNotNewVersion;
   String appVersionTitle;
+  String workbenchTitle;
+  String controlTitle;
 
   String languageDefault;
   String languageDe;
@@ -45,7 +47,6 @@ abstract class StringBase {
   String loginUserEmpty;
   String loginPswEmpty;
 
-
   String menuContent;
   String adult;
   String children;
@@ -58,6 +59,12 @@ abstract class StringBase {
   String service;
   String lunch;
   String dinner;
+  String buyerEmptyTip;
+  String adultEmptyTip;
+  String tableEmptyTip;
+  String passwordEmptyTip;
+  String passwordWrongTip;
+
 
   String reOrderFoodTip;
   String orderFoodTooMuchTip;
@@ -67,10 +74,24 @@ abstract class StringBase {
   String drink;
   String menu;
   String payment;
+  String emptyTip;
+  String waitingTip;
+  String countTimer;
 
   String orderNumLimitTip;
   String buy;
   String sure;
   String back;
   String orderSure;
+  String serialNum;
+  String category;
+  String categories;
+  String name;
+  String num;
+  String price;
+  String orderSuccess;
+
+  String tip;
+  String payTip;
+  String cancel;
 }

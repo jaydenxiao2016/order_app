@@ -16,5 +16,7 @@ static const productListPath="/app/product/queryListByPage";//分页查询菜品
 
 static const getCategoryByPidPath="/app/getCategorysByPid";//获取菜单分类
 
+static const notifyPay="/app/order/notifyPay";//通知付款
+
 static const signInPath="/app/signin";//App登录接口
 }

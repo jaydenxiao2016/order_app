@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:order_app/common/config/route_path.dart';
-import 'package:order_app/common/event/http_error_event.dart';
 import 'package:order_app/common/localization/my_localizations_delegate.dart';
 import 'package:order_app/common/model/user.dart';
-import 'package:order_app/common/net/code.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/sp_util.dart';
@@ -153,54 +151,5 @@ class _MyLocalizations extends State<MyLocalizations> {
         child: widget.child,
       );
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    stream = Code.eventBus.on<HttpErrorEvent>().listen((event) {
-      errorHandleFunction(event.code, event.message);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (stream != null) {
-      stream.cancel();
-      stream = null;
-    }
-  }
-
-  errorHandleFunction(int code, message) {
-    switch (code) {
-      case Code.NETWORK_ERROR:
-        Fluttertoast.showToast(
-            msg: CommonUtils.getLocale(context).networkError);
-        break;
-      case 401:
-        Fluttertoast.showToast(
-            msg: CommonUtils.getLocale(context).networkError401);
-        break;
-      case 403:
-        Fluttertoast.showToast(
-            msg: CommonUtils.getLocale(context).networkError403);
-        break;
-      case 404:
-        Fluttertoast.showToast(
-            msg: CommonUtils.getLocale(context).networkError404);
-        break;
-      case Code.NETWORK_TIMEOUT:
-        //超时
-        Fluttertoast.showToast(
-            msg: CommonUtils.getLocale(context).networkErrorTimeout);
-        break;
-      default:
-        Fluttertoast.showToast(
-            msg: CommonUtils.getLocale(context).networkErrorUnknown +
-                " " +
-                message);
-        break;
-    }
   }
 }

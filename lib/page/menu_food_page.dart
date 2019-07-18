@@ -3,20 +3,20 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/model/category.dart';
 import 'package:order_app/common/model/category_response_entity.dart';
 import 'package:order_app/common/model/order_detail.dart';
-import 'package:order_app/common/model/order_round_detail_entity.dart';
 import 'package:order_app/common/model/product.dart';
 import 'package:order_app/common/model/product_response_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
+import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
-import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
@@ -36,6 +36,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
 
   ///已点餐单和数目
   Map<int, int> selected = new Map();
+
   ///已点餐单key:分类id+商品id value:订单明细
   Map<int, OrderDetail> selectedProduct = new Map();
   List<OrderDetail> selectedProductList = new List();
@@ -48,7 +49,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
 
   ///食品分类
   CategoryResponseEntity categoryInfoEntity =
-  new CategoryResponseEntity(data: List<Category>(), imgPath: "");
+      new CategoryResponseEntity(data: List<Category>(), imgPath: "");
 
   ///当前商品信息
   List<Product> productList = new List();
@@ -58,7 +59,9 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   @override
   void initState() {
     super.initState();
-    _requestDrinkCategoryData();
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      _requestDrinkCategoryData();
+    });
   }
 
   ///计算已点数目
@@ -67,7 +70,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
     selected.forEach((index, value) => total += value);
     print("total" + total.toString());
     selectedProductList.clear();
-    selectedProduct.forEach((key,value){
+    selectedProduct.forEach((key, value) {
       selectedProductList.add(value);
     });
     setState(() {
@@ -77,17 +80,17 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   }
 
   ///获取食品分类
-  _requestDrinkCategoryData() async{
+  _requestDrinkCategoryData() async {
     print('请求食品');
     if (mounted) {
       await HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
-          "?parentId=" +
-          Config.DETAIL_FOOD_TYPE.toString())
+              "?parentId=" +
+              Config.DETAIL_FOOD_TYPE.toString())
           .then((baseResult) {
         ///默认选中第一个分类
         CategoryResponseEntity categoryResponseEntity =
-        CategoryResponseEntity.fromJson(baseResult.data);
+            CategoryResponseEntity.fromJson(baseResult.data);
         if (categoryResponseEntity != null &&
             categoryResponseEntity.data != null &&
             categoryResponseEntity.data.length > 0) {
@@ -105,7 +108,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   }
 
   ///获取商品信息
-  _requestDrinkProductData(int cId) async{
+  _requestDrinkProductData(int cId) async {
     print('请求商品');
     if (mounted) {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
@@ -122,6 +125,23 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
     }
   }
 
+  ///跳转到确认菜单并监听返回结果
+  _skipToRecordPage() {
+    if (selectedProductList != null && selectedProductList.length > 0) {
+      Navigator.push<bool>(
+              context,
+              new CupertinoPageRoute(
+                  builder: (context) => MenuRecord(2, selectedProductList)))
+          .then((isFinish) {
+        if (isFinish != null && isFinish) {
+          Navigator.pop(context);
+        }
+      });
+    } else {
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).emptyTip);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
@@ -131,7 +151,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
       String title = store.state.loginResponseEntity.setting.isLunch
           ? CommonUtils.getLocale(context).lunch
           : CommonUtils.getLocale(context).dinner;
-      title+=" " +CommonUtils.getLocale(context).menu;
+      title += " " + CommonUtils.getLocale(context).menu;
       return Scaffold(
         appBar: AppBar(
           title: Text(title),
@@ -149,7 +169,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                   children: <Widget>[
                     //已点数目显示
                     SizedBox(
-                      height: 70.0,
+                      height: ScreenUtil.getInstance().setWidth(90),
                       child: Center(
                         child: Text(
                           currentNum.toInt().toString() +
@@ -157,7 +177,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                               totalNumLimited.toInt().toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 60.0,
+                              fontSize: MyTextStyle.hugeTextSize,
                               color: Colors.orangeAccent,
                               fontWeight: FontWeight.bold),
                         ),
@@ -185,7 +205,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                             },
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
-                                height: 60.0,
+                                height: ScreenUtil.getInstance().setWidth(80),
                                 color: index == selectTypeIndex
                                     ? Colors.lightBlue
                                     : Colors.black,
@@ -199,13 +219,15 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                   },
                                   leading: CommonUtils.displayImageWidget(
                                       Config.BASE_URL +
-                                          categoryInfoEntity.imgPath +
-                                          (categoryInfoEntity.data[index].pic)??""),
+                                              categoryInfoEntity.imgPath +
+                                              (categoryInfoEntity
+                                                  .data[index].pic) ??
+                                          ""),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
+                                        fontSize: MyTextStyle.bigTextSize,
                                         color: index == selectTypeIndex
                                             ? Colors.white
                                             : Color(
@@ -222,23 +244,15 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                     ),
                     //操作按钮
                     Container(
-                      height: 70.0,
+                      height:ScreenUtil.getInstance().setWidth(80),
                       margin: EdgeInsets.all(5.0),
                       child: FlexButton(
                         color: Colors.deepOrange,
                         textColor: Colors.white,
+                        fontSize: MyTextStyle.bigTextSize,
                         text: CommonUtils.getLocale(context).buy,
                         onPress: () {
-                          ///跳转到确认菜单并监听返回结果
-                          Navigator.push<bool>(
-                              context,
-                              new CupertinoPageRoute(
-                                  builder: (context) => MenuRecord(2,selectedProductList)))
-                              .then((isFinish) {
-                            if (isFinish!=null&&isFinish) {
-                              Navigator.pop(context);
-                            }
-                          });
+                          _skipToRecordPage();
                         },
                       ),
                     )
@@ -251,15 +265,15 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 70.0,
+                      height: ScreenUtil.getInstance().setWidth(90),
                       child: Center(
                         child: Text(
                           categoryInfoEntity.data.length > 0
-                            ? categoryInfoEntity.data[selectTypeIndex].name
-                            : "",
+                              ? categoryInfoEntity.data[selectTypeIndex].name
+                              : "",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 40.0,
+                              fontSize: MyTextStyle.bigTextSize,
                               color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
@@ -279,63 +293,55 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                             },
                             itemBuilder: (BuildContext context, int index) {
                               Product product =
-                              productResponseEntity.data.list[index];
+                                  productResponseEntity.data.list[index];
                               return Container(
-                                padding: EdgeInsets.only(top: 20.0,bottom: 20.0),
+                                padding:
+                                    EdgeInsets.only(top: 10.0, bottom: 10.0),
                                 child: Row(
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(left:10.0,right: 15.0),
+                                      padding: const EdgeInsets.only(
+                                          left: 10.0, right: 15.0),
                                       child: CommonUtils.displayImageWidget(
                                           Config.BASE_URL +
                                               productResponseEntity.imgPath +
-                                              (product.pic??""),height: 90,width: 90),
+                                              (product.pic ?? ""),
+                                          height: ScreenUtil.getInstance().setWidth(150),
+                                          width: ScreenUtil.getInstance().setWidth(150)),
                                     ),
+
+                                    ///标题
                                     Expanded(
-                                        child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                        product.name,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 25.0,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top:8.0),
-                                          child: Text(
-                                            "第二标题",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        )
-                                      ],
-                                    )),
+                                      child: Text(
+                                        product.id.toString() +
+                                            ")    " +
+                                            product.name,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: MyTextStyle.bigTextSize,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
                                     Container(
                                       child: PlusDecreaseText(
                                         plusEnable: plusEnable,
                                         inputValue: selected[categoryInfoEntity
-                                            .data[selectTypeIndex].id +
-                                            product.id]
+                                                    .data[selectTypeIndex].id +
+                                                product.id]
                                             ?.toString(),
                                         callback: (String value) {
                                           int key = categoryInfoEntity
-                                              .data[selectTypeIndex].id +
+                                                  .data[selectTypeIndex].id +
                                               product.id;
                                           int num = int.parse(value);
                                           if (num > 0) {
                                             selected[key] = num;
                                             print('已选中');
                                             print(selected);
+
                                             ///加入订单
                                             OrderDetail orderDetail =
-                                            selectedProduct[key];
+                                                selectedProduct[key];
                                             if (orderDetail == null) {
                                               orderDetail = new OrderDetail(
                                                   productId: product.id,
@@ -344,15 +350,19 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                                       .loginResponseEntity
                                                       .orderMasterEntity
                                                       .orderId,
-                                                  roundId: store.state.loginResponseEntity.setting.currentRound,
+                                                  roundId: store
+                                                      .state
+                                                      .loginResponseEntity
+                                                      .setting
+                                                      .currentRound,
                                                   productNumber: num,
                                                   categoryName:
-                                                  categoryInfoEntity
-                                                      .data[selectTypeIndex]
-                                                      .name,
+                                                      categoryInfoEntity
+                                                          .data[selectTypeIndex]
+                                                          .name,
                                                   productName: product.name,
                                                   detailType:
-                                                  Config.DETAIL_FOOD_TYPE,
+                                                      Config.DETAIL_FOOD_TYPE,
                                                   categoryId: categoryInfoEntity
                                                       .data[selectTypeIndex].id,
                                                   productPrice: product.price);
@@ -369,10 +379,11 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                           _calculateCurrentNum(context);
                                         },
                                         color: Colors.white,
+                                        fontSize: MyTextStyle.lagerTextSize,
                                         decreaseImg: 'static/images/minus.png',
                                         plusImg: 'static/images/plus.png',
                                       ),
-                                      width: 200.0,
+                                      width: ScreenUtil.getInstance().setWidth(280),
                                     ),
                                   ],
                                 ),
