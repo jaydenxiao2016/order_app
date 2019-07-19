@@ -154,8 +154,13 @@ class _LoginPageState extends State<LoginPage> {
       loginInfo.orderMasterEntity=OrderMasterEntity(orderRounds: new List());
       print(loginInfo);
       store.dispatch(RefreshLoginInfoAction(loginInfo));
+
+//      NavigatorUtils.pushReplacementNamed(
+//          context, RoutePath.SERVICE_CONTROL_PATH);
+
       NavigatorUtils.pushReplacementNamed(
-          context, RoutePath.SERVICE_CONTROL_PATH);
+          context, RoutePath.CONSOLE_PATH);
+
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
     });
