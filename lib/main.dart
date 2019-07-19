@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/localization/my_localizations_delegate.dart';
 import 'package:order_app/common/model/user.dart';
@@ -110,7 +109,7 @@ class _FlutterReduxAppState extends State<FlutterReduxApp> {
               ///服务台
               RoutePath.SERVICE_CONTROL_PATH: (context) {
                 return new MyLocalizations(
-                  child: new ServiceControlPage(),
+                  child: new ServiceControlPage(1),
                 );
               },
 

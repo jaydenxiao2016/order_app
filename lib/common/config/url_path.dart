@@ -4,6 +4,8 @@ static const orderInfoPath="/app/order/";//{orderId}/info";//根据orderId获取
 
 static const orderConfirmPath="/app/order/confirm";//午餐/晚餐确认∂
 
+static const orderUpdate="/app/order/update";//更新订单
+
 static const drinkConfirmPath="/app/order/drinks/confirm";//酒水分类下单
 
 static const orderNeedServicePath="/app/order/needService/confirm";//点需要服务接口

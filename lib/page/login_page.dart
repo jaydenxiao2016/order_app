@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/model/login_response_entity.dart';
+import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/login_info_redux.dart';
 import 'package:order_app/common/redux/state_info.dart';
@@ -150,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
     }).then((baseResult) {
       LoginResponseEntity loginInfo =
           LoginResponseEntity.fromJson(baseResult.data);
+      loginInfo.orderMasterEntity=OrderMasterEntity(orderRounds: new List());
       print(loginInfo);
       store.dispatch(RefreshLoginInfoAction(loginInfo));
       NavigatorUtils.pushReplacementNamed(

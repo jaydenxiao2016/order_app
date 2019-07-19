@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -126,6 +127,7 @@ Widget _getContent(int i, OrderDetail value) {
 }
 
 class _DrinkRecordState extends State<DrinkRecord> {
+  CancelToken cancelToken = new CancelToken();
   ///订单明细
   List<OrderDetail> orderDetailList = new List();
 
@@ -147,7 +149,7 @@ class _DrinkRecordState extends State<DrinkRecord> {
         "detailType": widget.type,
         "orderId": CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId,
         "roundId":widget.round
-      }).then((baseResult) {
+      },cancelToken: cancelToken).then((baseResult) {
         List<OrderDetail>selectedDrinkProduct=new List();
         (baseResult.data['data']['list'] as List).forEach((v) {
           selectedDrinkProduct.add(new OrderDetail.fromJson(v));
@@ -320,5 +322,11 @@ class _DrinkRecordState extends State<DrinkRecord> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    //取消网络请求
+    cancelToken.cancel("cancelled");
+    super.dispose();
   }
 }

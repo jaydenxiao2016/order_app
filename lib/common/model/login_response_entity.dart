@@ -11,7 +11,7 @@ class LoginResponseEntity {
   ///已点菜单key:轮数 value:roundId
   Map<int,int>roundIdMap=new Map();
 
-  LoginResponseEntity({this.areas, this.setting});
+  LoginResponseEntity({this.areas, this.setting,this.orderMasterEntity});
 
   LoginResponseEntity.fromJson(Map<String, dynamic> json) {
     if (json['areas'] != null) {
@@ -23,6 +23,9 @@ class LoginResponseEntity {
     setting = json['setting'] != null
         ? new LoginInfoSetting.fromJson(json['setting'])
         : null;
+    orderMasterEntity = json['orderMasterEntity'] != null
+        ? new OrderMasterEntity.fromJson(json['orderMasterEntity'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +35,9 @@ class LoginResponseEntity {
     }
     if (this.setting != null) {
       data['setting'] = this.setting.toJson();
+    }
+    if (this.orderMasterEntity != null) {
+      data['orderMasterEntity'] = this.orderMasterEntity.toJson();
     }
     return data;
   }
@@ -97,9 +103,6 @@ class LoginInfoSetting {
   ///晚餐
   bool isDiner;
 
-  ///当前轮数
-  int currentRound=1;
-
   ///倒计时是否结束
   bool isTimeFinish=true;
 
@@ -127,7 +130,6 @@ class LoginInfoSetting {
       this.password,
       this.isLunch,
       this.isDiner,
-      this.currentRound=1,
       this.isTimeFinish=true,
       this.currentTime,
       });
@@ -155,7 +157,6 @@ class LoginInfoSetting {
     password = json['password'];
     isLunch = json['isLunch'];
     isDiner = json['isDiner'];
-    currentRound = json['currentRound'];
     isTimeFinish = json['isTimeFinish'];
     currentTime = json['currentTime'];
   }
@@ -184,7 +185,6 @@ class LoginInfoSetting {
     data['password'] = this.password;
     data['isLunch'] = this.isLunch;
     data['isDiner'] = this.isDiner;
-    data['currentRound'] = this.currentRound;
     data['isTimeFinish'] = this.isTimeFinish;
     data['currentTime'] = this.currentTime;
     return data;

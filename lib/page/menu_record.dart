@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -128,12 +129,12 @@ class MenuRecord extends StatefulWidget {
   }
 
 class _MenuRecordState extends State<MenuRecord> {
-
+  CancelToken cancelToken = new CancelToken();
 
   ///酒水下单
   _requestDrinkConfirm(BuildContext context) async{
     print('请求酒水下单');
-    await HttpGo.getInstance().post(UrlPath.drinkConfirmPath, params: widget.selectedDrinkProduct.map((v) => v.toJson()).toList()).then((baseResult) {
+    await HttpGo.getInstance().post(UrlPath.drinkConfirmPath, params: widget.selectedDrinkProduct.map((v) => v.toJson()).toList(),cancelToken: cancelToken).then((baseResult) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).orderSuccess);
       Navigator.pop(context, true);
     }).catchError((error) {
@@ -151,9 +152,9 @@ class _MenuRecordState extends State<MenuRecord> {
     print('请求每轮点餐下单');
     OrderRoundDetailEntity orderRoundDetailEntity=new OrderRoundDetailEntity();
     orderRoundDetailEntity.orderDetails=widget.selectedDrinkProduct;
-    orderRoundDetailEntity.num=CommonUtils.getStore(context).state.loginResponseEntity.setting.currentRound;
+    orderRoundDetailEntity.num=CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderRounds.length+1;
     orderRoundDetailEntity.orderId=CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId;
-    await HttpGo.getInstance().post(UrlPath.orderRoundConfirmPath, params: orderRoundDetailEntity.toJson()).then((baseResult) {
+    await HttpGo.getInstance().post(UrlPath.orderRoundConfirmPath, params: orderRoundDetailEntity.toJson(),cancelToken: cancelToken).then((baseResult) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).orderSuccess);
       CommonUtils.eventBus.fire(TimerEvent());
       Navigator.pop(context, true);
@@ -166,7 +167,7 @@ class _MenuRecordState extends State<MenuRecord> {
     print('请求服务下单');
     OrderServiceDetailEntity orderServiceDetailEntity=new OrderServiceDetailEntity(orderId: CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId,
     needServiceDetails: widget.selectedDrinkProduct);
-    await HttpGo.getInstance().post(UrlPath.orderNeedServicePath, params: orderServiceDetailEntity.toJson()).then((baseResult) {
+    await HttpGo.getInstance().post(UrlPath.orderNeedServicePath, params: orderServiceDetailEntity.toJson(),cancelToken: cancelToken).then((baseResult) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).orderSuccess);
       if(widget.type==2) {
         CommonUtils.eventBus.fire(TimerEvent());
@@ -356,5 +357,11 @@ class _MenuRecordState extends State<MenuRecord> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    //取消网络请求
+    cancelToken.cancel("cancelled");
+    super.dispose();
   }
 }

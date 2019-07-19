@@ -3,12 +3,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/event/timer_event.dart';
+import 'package:order_app/common/event/timer_refresh_event.dart';
 import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/login_info_redux.dart';
@@ -17,10 +19,10 @@ import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:order_app/page/control/service_control_page.dart';
 import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_drink_page.dart';
 import 'package:order_app/page/menu_service_page.dart';
-import 'package:order_app/widget/NetLoadingDialog.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
@@ -36,6 +38,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     with TickerProviderStateMixin {
   ///监听
   StreamSubscription stream;
+
+  ///监听更新操作
+  StreamSubscription streamUpdate;
 
   ///定时器
   Timer countdownTimer;
@@ -58,6 +63,21 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       ///获取最新订单详情
       _getOrderDetail();
     });
+
+    ///监听更新操作
+    streamUpdate = CommonUtils.eventBus.on<TimerFreshEvent>().listen((event) {
+      print("接收到更新");
+      if (!CommonUtils.getStore(context)
+          .state
+          .loginResponseEntity
+          .setting
+          .isTimeFinish) {
+        print("更新");
+
+        ///重新开始倒计时
+        _startCountdown();
+      }
+    });
   }
 
   ///开始倒计时
@@ -69,8 +89,11 @@ class _CustomMenuPageState extends State<CustomMenuPage>
             .setting
             .waitTime *
         60;
+    if (countdownTimer != null) {
+      countdownTimer.cancel();
+      countdownTimer = null;
+    }
     countdownTimer = new Timer.periodic(new Duration(seconds: 1), (timer) {
-      print(currentTimeSecond);
       if (currentTimeSecond > 0) {
         setState(() {
           currentTimeSecond = currentTimeSecond - 1;
@@ -103,7 +126,6 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
       ///1.轮数+1
       Store<StateInfo> store = CommonUtils.getStore(context);
-      store.state.loginResponseEntity.setting.currentRound += 1;
       store.state.loginResponseEntity.setting.isTimeFinish = false;
       store.state.loginResponseEntity.orderMasterEntity =
           OrderMasterEntity.fromJson(baseResult.data["data"]);
@@ -131,8 +153,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     if (CommonUtils.getStore(context)
             .state
             .loginResponseEntity
-            .setting
-            .currentRound >
+            .orderMasterEntity
+            .orderRounds
+            .length >
         10) {
       Fluttertoast.showToast(
           msg: CommonUtils.getLocale(context).orderFoodTooMuchTip);
@@ -152,37 +175,101 @@ class _CustomMenuPageState extends State<CustomMenuPage>
         .then((baseResult) {
       ///跳转到服务员设置界面
       Fluttertoast.showToast(msg: "通知付款成功");
-      NavigatorUtils.pushReplacementNamed(
-          context, RoutePath.SERVICE_CONTROL_PATH);
+      NavigatorUtils.pushReplacementNamed(context, RoutePath.LOGIN_PATH);
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
     });
   }
 
-  _toPay() {
-    _toNotifyPay();
-  }
-
-  ///通知付款
-  _showDialog(Future<dynamic> requestCallBack) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) {
-          return new NetLoadingDialog(
-            requestCallBack: requestCallBack,
-            outsideDismiss: false,
-          );
-        });
+  ///更新设置 type 1:退出确认 2：设置更新
+  _updateOrderSetting(int type) {
+    TextEditingController _passwordController = new TextEditingController();
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text(
+            CommonUtils.getLocale(context).password,
+            style: TextStyle(fontSize: MyTextStyle.normalTextSize),
+          ),
+          content: new TextField(
+            controller: _passwordController,
+            autofocus: false,
+            style: MyTextStyle.largeText,
+            decoration: new InputDecoration(
+              labelText: CommonUtils.getLocale(context).loginPswTip,
+              suffixIcon: new IconButton(
+                icon: new Icon(Icons.clear, color: Colors.black45),
+                onPressed: () {
+                  _passwordController.text = "";
+                },
+              ),
+            ),
+            obscureText: true,
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text(
+                CommonUtils.getLocale(context).sure,
+                style: TextStyle(
+                    color: Colors.blue, fontSize: MyTextStyle.normalTextSize),
+              ),
+              onPressed: () {
+                if (_passwordController.text !=
+                    CommonUtils.getStore(context)
+                        .state
+                        .loginResponseEntity
+                        .setting
+                        .appPwd) {
+                  Fluttertoast.showToast(
+                      msg: CommonUtils.getLocale(context).passwordWrongTip);
+                } else {
+                  Navigator.of(context).pop();
+                  if (1 == type) {
+                    NavigatorUtils.pushReplacementNamed(
+                        context, RoutePath.LOGIN_PATH);
+                  } else {
+                    NavigatorUtils.navigatorRouter(
+                        context, ServiceControlPage(2));
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
+    ).whenComplete(() {
+      if (_passwordController != null) {
+        _passwordController.dispose();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new StoreBuilder<StateInfo>(builder: (context, store) {
+    return WillPopScope(onWillPop: () {
+      return _updateOrderSetting(1);
+    }, child: new StoreBuilder<StateInfo>(builder: (context, store) {
       return new Scaffold(
         appBar: AppBar(
           title: Text(CommonUtils.getLocale(context).customWorkbenchService),
           centerTitle: true,
+          actions: <Widget>[
+            InkWell(
+              onTap: () {
+                _updateOrderSetting(2);
+              },
+              child: Container(
+                margin: EdgeInsets.only(right: 20.0),
+                child: Image.asset(
+                  'static/images/icon_setting.png',
+                  height: ScreenUtil.getInstance().setWidth(45),
+                  width: ScreenUtil.getInstance().setWidth(45),
+                ),
+              ),
+            )
+          ],
         ),
         body: Container(
           alignment: Alignment.topLeft,
@@ -202,9 +289,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     ///轮信息
                     Expanded(
                       flex: 4,
-                      child: RoundInfo(
-                          currentRound: store
-                              .state.loginResponseEntity.setting.currentRound),
+                      child: RoundInfo(),
                     ),
 
                     ///中间倒计时信息
@@ -443,7 +528,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      _toPay();
+                                      _toNotifyPay();
                                     },
                                   ),
                                 ],
@@ -489,7 +574,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           ),
         ),
       );
-    });
+    }));
   }
 
   @override
@@ -497,6 +582,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     if (stream != null) {
       stream.cancel();
       stream = null;
+    }
+    if (streamUpdate != null) {
+      streamUpdate.cancel();
+      streamUpdate = null;
     }
     countdownTimer?.cancel();
     countdownTimer = null;
@@ -506,10 +595,6 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
 ///轮信息
 class RoundInfo extends StatefulWidget {
-  final int currentRound;
-
-  RoundInfo({Key key, this.currentRound}) : super(key: key);
-
   @override
   _RoundInfoState createState() => _RoundInfoState();
 }
@@ -562,6 +647,7 @@ class _RoundInfoState extends State<RoundInfo> {
   }
 
   Widget getItemContainer(BuildContext context, String item, int index) {
+    Store<StateInfo> store = CommonUtils.getStore(context);
     return InkWell(
       onTap: () {
         NavigatorUtils.navigatorRouter(context, MenuFoodPage());
@@ -577,8 +663,9 @@ class _RoundInfoState extends State<RoundInfo> {
               }
 
               ///已点轮菜单
-              else if (widget.currentRound > index + 1) {
-                Store<StateInfo> store = CommonUtils.getStore(context);
+              else if (store.state.loginResponseEntity.orderMasterEntity
+                      .orderRounds.length >
+                  index) {
                 int roundId =
                     store.state.loginResponseEntity.roundIdMap[index + 1];
                 if (roundId != null) {
@@ -587,7 +674,9 @@ class _RoundInfoState extends State<RoundInfo> {
                 }
               }
             },
-            color: widget.currentRound > index + 1
+            color: store.state.loginResponseEntity.orderMasterEntity.orderRounds
+                        .length >
+                    index
                 ? Colors.red
                 : (index == 10 ? Colors.green : Colors.blueAccent),
             textColor: Colors.white,

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -28,6 +29,7 @@ class MenuServicePage extends StatefulWidget {
 }
 
 class _MenuServicePageState extends State<MenuServicePage> {
+  CancelToken cancelToken = new CancelToken();
   ///已点数目
   int currentNum = 0;
 
@@ -79,7 +81,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
       await HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
               "?parentId=" +
-              Config.DRINK_SERVICE_ID.toString())
+              Config.DRINK_SERVICE_ID.toString(),cancelToken: cancelToken)
           .then((baseResult) {
         ///默认选中第一个分类
         CategoryResponseEntity categoryResponseEntity =
@@ -107,7 +109,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
         "cid": cId,
         "pageSize": Config.PAGE_SIZE,
-      }).then((baseResult) {
+      },cancelToken: cancelToken).then((baseResult) {
         this.setState(() {
           productResponseEntity =
               ProductResponseEntity.fromJson(baseResult.data);
@@ -386,5 +388,11 @@ class _MenuServicePageState extends State<MenuServicePage> {
         ),
       );
     });
+  }
+  @override
+  void dispose() {
+    //取消网络请求
+    cancelToken.cancel("cancelled");
+    super.dispose();
   }
 }

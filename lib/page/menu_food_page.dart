@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -28,6 +29,7 @@ class MenuFoodPage extends StatefulWidget {
 }
 
 class _MenuFoodPageState extends State<MenuFoodPage> {
+  CancelToken cancelToken = new CancelToken();
   ///已点数目
   int currentNum = 0;
 
@@ -86,7 +88,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
       await HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
               "?parentId=" +
-              Config.DETAIL_FOOD_TYPE.toString())
+              Config.DETAIL_FOOD_TYPE.toString(),cancelToken: cancelToken)
           .then((baseResult) {
         ///默认选中第一个分类
         CategoryResponseEntity categoryResponseEntity =
@@ -114,7 +116,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
         "cid": cId,
         "pageSize": Config.PAGE_SIZE,
-      }).then((baseResult) {
+      },cancelToken: cancelToken).then((baseResult) {
         this.setState(() {
           productResponseEntity =
               ProductResponseEntity.fromJson(baseResult.data);
@@ -352,11 +354,6 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                                       .loginResponseEntity
                                                       .orderMasterEntity
                                                       .orderId,
-                                                  roundId: store
-                                                      .state
-                                                      .loginResponseEntity
-                                                      .setting
-                                                      .currentRound,
                                                   productNumber: num,
                                                   categoryName:
                                                       categoryInfoEntity
@@ -401,5 +398,11 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
         ),
       );
     });
+  }
+  @override
+  void dispose() {
+    //取消网络请求
+    cancelToken.cancel("cancelled");
+    super.dispose();
   }
 }

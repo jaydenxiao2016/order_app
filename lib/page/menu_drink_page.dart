@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -28,6 +29,8 @@ class MenuDrinkPage extends StatefulWidget {
 }
 
 class _MenuDrinkPageState extends State<MenuDrinkPage> {
+  CancelToken cancelToken = new CancelToken();
+
   ///已点数目
   int currentNum = 0;
 
@@ -79,7 +82,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
       await HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
               "?parentId=" +
-              Config.DRINK_CATEGORY_ID.toString())
+              Config.DRINK_CATEGORY_ID.toString(),cancelToken: cancelToken)
           .then((baseResult) {
         ///默认选中第一个分类
         CategoryResponseEntity categoryResponseEntity =
@@ -107,7 +110,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
         "cid": cId,
         "pageSize": Config.PAGE_SIZE,
-      }).then((baseResult) {
+      },cancelToken: cancelToken).then((baseResult) {
         this.setState(() {
           productResponseEntity =
               ProductResponseEntity.fromJson(baseResult.data);
@@ -210,8 +213,11 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                               categoryInfoEntity.imgPath +
                                               (categoryInfoEntity
                                                   .data[index].pic) ??
-                                          "",height: ScreenUtil.getInstance().setWidth(80)
-                                  ,width: ScreenUtil.getInstance().setWidth(80)),
+                                          "",
+                                      height:
+                                          ScreenUtil.getInstance().setWidth(80),
+                                      width: ScreenUtil.getInstance()
+                                          .setWidth(80)),
                                   title: new Text(
                                     categoryInfoEntity.data[index].name,
                                     style: TextStyle(
@@ -234,7 +240,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
 
                     ///操作按钮
                     Container(
-                      height:ScreenUtil.getInstance().setWidth(80),
+                      height: ScreenUtil.getInstance().setWidth(80),
                       margin: EdgeInsets.all(5.0),
                       child: FlexButton(
                         color: Colors.deepOrange,
@@ -295,7 +301,8 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                         margin: const EdgeInsets.only(
                                             left: 10.0, right: 15.0),
                                         padding: EdgeInsets.all(5.0),
-                                        width: ScreenUtil.getInstance().setWidth(130),
+                                        width: ScreenUtil.getInstance()
+                                            .setWidth(130),
                                         decoration: BoxDecoration(
                                             color: Colors.yellow,
                                             borderRadius: BorderRadius.all(
@@ -303,8 +310,9 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                         child: Text(
                                           product.price.toString(),
                                           style: TextStyle(
-                                              color: Colors.white,
-                                            fontSize: MyTextStyle.bigTextSize,),
+                                            color: Colors.white,
+                                            fontSize: MyTextStyle.bigTextSize,
+                                          ),
                                         )),
 
                                     ///标题
@@ -378,7 +386,8 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                         decreaseImg: 'static/images/minus.png',
                                         plusImg: 'static/images/plus.png',
                                       ),
-                                      width: ScreenUtil.getInstance().setWidth(280),
+                                      width: ScreenUtil.getInstance()
+                                          .setWidth(280),
                                     ),
                                   ],
                                 ),
@@ -394,5 +403,12 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
         ),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    //取消网络请求
+    cancelToken.cancel("cancelled");
+    super.dispose();
   }
 }

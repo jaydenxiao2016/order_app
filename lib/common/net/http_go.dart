@@ -39,16 +39,16 @@ class HttpGo {
 
   //get请求
   Future<BaseResult> get(String url,
-      {params, Map<String, dynamic> header}) async {
+      {params, Map<String, dynamic> header,CancelToken cancelToken}) async {
     Options options = new Options(method: "GET");
     return netFetch(url, params, header, options);
   }
 
   //post请求
   Future<BaseResult> post(String url,
-      {params, Map<String, dynamic> header, loading = true}) async {
+      {params, Map<String, dynamic> header, loading = true,CancelToken cancelToken}) async {
     Options options = new Options(method: "POST");
-    return netFetch(url, params, header, options, loading: loading);
+    return netFetch(url, params, header, options, loading: loading,cancelToken: cancelToken);
   }
 
   ///发起网络请求
@@ -58,7 +58,7 @@ class HttpGo {
   ///[ option] 配置
   Future<BaseResult> netFetch(
       url, params, Map<String, dynamic> header, Options option,
-      {loading = true}) async {
+      {loading = true,CancelToken cancelToken}) async {
     Map<String, dynamic> headers = new HashMap();
     if (header != null) {
       headers.addAll(header);
@@ -76,11 +76,15 @@ class HttpGo {
     print(params.toString());
     Response response;
     try {
-      response = await dio.request(url, data: params, options: option);
+      response = await dio.request(url, data: params, options: option,cancelToken: cancelToken);
     } on DioError catch (e) {
-      print("api请求报错：");
-      print(e);
-      return new Future.error("api请求失败");
+      if (CancelToken.isCancel(e)) {
+        print('Request canceled! '+ e.message);
+      }else{
+        print("api请求报错：");
+        print(e);
+        return new Future.error("api请求失败");
+      }
     }
     if (response.statusCode == HttpStatus.ok ||
         response.statusCode == HttpStatus.created) {

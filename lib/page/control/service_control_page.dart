@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
+import 'package:order_app/common/event/timer_refresh_event.dart';
 import 'package:order_app/common/model/login_response_entity.dart';
 import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
@@ -23,6 +24,11 @@ import 'package:redux/redux.dart';
 
 ///开台服务界面
 class ServiceControlPage extends StatefulWidget {
+  ///1：新增 2：修改
+  int type;
+
+  ServiceControlPage(this.type, {Key key}) : super(key: key);
+
   @override
   _ServiceControlPageState createState() => _ServiceControlPageState();
 }
@@ -52,12 +58,39 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
   //餐区
   int _buyerId = -1;
 
+  //餐区名称
+  String _buyerName;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      if (mounted) {
+        Store<StateInfo> store = CommonUtils.getStore(context);
+        _lunchItem = store.state.loginResponseEntity.setting.lunchNum;
+        _dinnerItem = store.state.loginResponseEntity.setting.dinnerNum;
+        _timerItem = store.state.loginResponseEntity.setting.waitTime;
+
+        ///修改进来时要初始化值
+        if (widget.type == 2) {
+          _adultController.text =
+              store.state.loginResponseEntity.setting.adult.toString();
+          _childrenController.text =
+              store.state.loginResponseEntity.setting.children.toString();
+          _tableNumController.text =
+              store.state.loginResponseEntity.setting.tableNum.toString();
+          this.setState(() {
+            _buyerId = store.state.loginResponseEntity.setting.buyerId;
+            _buyerName = store.state.loginResponseEntity.setting.buyerName;
+          });
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
-      _lunchItem = store.state.loginResponseEntity.setting.lunchNum;
-      _dinnerItem = store.state.loginResponseEntity.setting.dinnerNum;
-      _timerItem = store.state.loginResponseEntity.setting.waitTime;
       return Scaffold(
         resizeToAvoidBottomPadding: false, //输入框抵住键盘
         appBar: AppBar(
@@ -88,13 +121,25 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                           return InkWell(
                             onTap: () {
                               this.setState(() {
-                                _buyerId = _buyerId == index ? -1 : index;
+                                if (_buyerId ==
+                                    store.state.loginResponseEntity.areas[index]
+                                        .id) {
+                                  _buyerId = -1;
+                                  _buyerName = "";
+                                } else {
+                                  _buyerId = store.state.loginResponseEntity
+                                      .areas[index].id;
+                                  _buyerName = store.state.loginResponseEntity
+                                      .areas[index].name;
+                                }
                               });
                             },
                             child: Container(
                               padding: EdgeInsets.all(5.0),
                               alignment: Alignment.center,
-                              color: _buyerId == index
+                              color: _buyerId ==
+                                      store.state.loginResponseEntity
+                                          .areas[index].id
                                   ? Colors.lightBlue
                                   : Colors.white,
                               child: Text(
@@ -102,7 +147,9 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                       .name,
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
-                                    color: _buyerId == index
+                                    color: _buyerId ==
+                                            store.state.loginResponseEntity
+                                                .areas[index].id
                                         ? Colors.white
                                         : Colors.black,
                                     fontSize: MyTextStyle.normalTextSize,
@@ -200,9 +247,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                   },
                                   min: 0.0,
                                   max: 50.0,
-                                  value: store.state.loginResponseEntity.setting
-                                      .lunchNum
-                                      .toDouble(),
+                                  value: _lunchItem.toDouble(),
                                   divisions: 50,
                                 ),
                               ),
@@ -217,9 +262,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                   },
                                   min: 0.0,
                                   max: 50.0,
-                                  value: store.state.loginResponseEntity.setting
-                                      .dinnerNum
-                                      .toDouble(),
+                                  value: _dinnerItem.toDouble(),
                                   divisions: 50,
                                 ),
                               ),
@@ -233,9 +276,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                   },
                                   min: 0.0,
                                   max: 30.0,
-                                  value: store.state.loginResponseEntity.setting
-                                      .waitTime
-                                      .toDouble(),
+                                  value: _timerItem.toDouble(),
                                   divisions: 30,
                                 ),
                               ),
@@ -251,11 +292,13 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: Container(
-                                    height: ScreenUtil.getInstance().setWidth(80),
+                                    height:
+                                        ScreenUtil.getInstance().setWidth(80),
                                     child: FlexButton(
                                       color: Colors.redAccent,
                                       textColor: Colors.white,
-                                      text: CommonUtils.getLocale(context).lunch,
+                                      text:
+                                          CommonUtils.getLocale(context).lunch,
                                       fontSize: MyTextStyle.normalTextSize,
                                       onPress: () {
                                         _startToMenu(
@@ -268,16 +311,18 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.all(5.0),
+                                SizedBox(
+                                  width: ScreenUtil.getInstance().setWidth(30),
                                 ),
                                 Expanded(
                                   child: Container(
-                                     height: ScreenUtil.getInstance().setWidth(80),
+                                    height:
+                                        ScreenUtil.getInstance().setWidth(80),
                                     child: FlexButton(
                                       color: Colors.lightBlue,
                                       textColor: Colors.white,
-                                      text: CommonUtils.getLocale(context).dinner,
+                                      text:
+                                          CommonUtils.getLocale(context).dinner,
                                       fontSize: MyTextStyle.normalTextSize,
                                       onPress: () {
                                         _startToMenu(
@@ -308,19 +353,20 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
   _startToMenu(BuildContext context, Store<StateInfo> store, String path,
       bool isLunch, bool isDinner) {
     if (_buyerId == -1) {
-      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).buyerEmptyTip);
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).buyerEmptyTip);
       return;
     }
     if (_adultController.text.length <= 0 || _adultController.text == '0') {
-      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).adultEmptyTip);
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).adultEmptyTip);
       return;
     }
     if (_tableNumController.text.length <= 0) {
-      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).tableEmptyTip);
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableEmptyTip);
       return;
     }
     if (_passwordController.text.length <= 0) {
-      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).passwordEmptyTip);
+      Fluttertoast.showToast(
+          msg: CommonUtils.getLocale(context).passwordEmptyTip);
       return;
     }
 
@@ -328,7 +374,8 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     LoginResponseEntity loginInfoEntity = store.state.loginResponseEntity;
     LoginInfoSetting loginInfoSetting = loginInfoEntity.setting;
     if (_passwordController.text != loginInfoSetting.appPwd) {
-      Fluttertoast.showToast(msg:CommonUtils.getLocale(context).passwordWrongTip);
+      Fluttertoast.showToast(
+          msg: CommonUtils.getLocale(context).passwordWrongTip);
       return;
     }
     loginInfoSetting.adult = int.parse(_adultController.text);
@@ -342,14 +389,18 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     loginInfoSetting.waitTime = _timerItem;
     loginInfoSetting.isLunch = isLunch;
     loginInfoSetting.isDiner = isDinner;
-    loginInfoSetting.currentRound = 1;
-    loginInfoSetting.isTimeFinish = true;
-    loginInfoSetting.buyerId = loginInfoEntity.areas[_buyerId].id;
-    loginInfoSetting.buyerName = loginInfoEntity.areas[_buyerId].name;
+    loginInfoSetting.buyerId = _buyerId;
+    loginInfoSetting.buyerName = _buyerName;
     loginInfoEntity.setting = loginInfoSetting;
 
+    OrderMasterEntity orderMasterEntity;
     ///2.下单
-    OrderMasterEntity orderMasterEntity = new OrderMasterEntity();
+    if (1 == widget.type) {
+      loginInfoSetting.isTimeFinish = true;
+      orderMasterEntity = new OrderMasterEntity(orderRounds: new List());
+    } else {
+      orderMasterEntity = loginInfoEntity.orderMasterEntity;
+    }
     orderMasterEntity.orderType = isLunch ? "1" : "2";
     orderMasterEntity.dinnerNum = loginInfoSetting.dinnerNum;
     orderMasterEntity.lunchNum = loginInfoSetting.lunchNum;
@@ -358,22 +409,47 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     orderMasterEntity.adult = loginInfoSetting.adult;
     orderMasterEntity.child = loginInfoSetting.children;
     orderMasterEntity.waitTime = loginInfoSetting.waitTime;
-    HttpGo.getInstance()
-        .post(UrlPath.orderConfirmPath, params: orderMasterEntity.toJson())
-        .then((baseResult) {
-      ///1.保存本次订单主表信息
-      OrderMasterEntity orderMasterEntity =
-          OrderMasterEntity.fromJson(baseResult.data['data']);
-      loginInfoEntity.orderMasterEntity = orderMasterEntity;
 
-      ///2.更新到store
-      store.dispatch(RefreshLoginInfoAction(loginInfoEntity));
+    ///新增订单
+    if (1 == widget.type) {
+      HttpGo.getInstance()
+          .post(UrlPath.orderConfirmPath, params: orderMasterEntity.toJson())
+          .then((baseResult) {
+        ///1.保存本次订单主表信息
+        OrderMasterEntity orderMasterEntity =
+            OrderMasterEntity.fromJson(baseResult.data['data']);
+        loginInfoEntity.orderMasterEntity = orderMasterEntity;
 
-      ///3.打开客户工作台
-      NavigatorUtils.pushReplacementNamed(context, path);
-    }).catchError((error) {
-      Fluttertoast.showToast(msg: error.toString());
-    });
+        ///2.更新到store
+        store.dispatch(RefreshLoginInfoAction(loginInfoEntity));
+
+        ///3.打开客户工作台
+        NavigatorUtils.pushReplacementNamed(context, path);
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }
+
+    ///修改订单
+    else if (2 == widget.type) {
+      HttpGo.getInstance()
+          .post(UrlPath.orderUpdate, params: orderMasterEntity.toJson())
+          .then((baseResult) {
+        print(loginInfoEntity.setting.toJson());
+
+        ///1.更新到store
+        store.dispatch(RefreshLoginInfoAction(loginInfoEntity));
+
+        ///2.如正在倒计时，重新按最新时间开始倒计时
+        CommonUtils.eventBus.fire(TimerFreshEvent());
+
+        ///3.退出
+        Navigator.pop(context);
+        Fluttertoast.showToast(msg: "修改成功");
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }
   }
 
   @override
