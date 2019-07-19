@@ -25,10 +25,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _passwordController = new TextEditingController();
+  ///1:工作台 2：控制台
+  String type="1";
 
   @override
   Widget build(BuildContext context) {
-    _passwordController.text = '123456';
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       return new Scaffold(
         appBar: AppBar(
@@ -83,32 +84,37 @@ class _LoginPageState extends State<LoginPage> {
                         ///工作台
                         Expanded(
                           child: RadioListTile<String>(
-                            value:
-                                CommonUtils.getLocale(context).workbenchTitle,
+                            value: "1",
                             title: Text(
                               CommonUtils.getLocale(context).workbenchTitle,
                               style: TextStyle(
                                 fontSize: MyTextStyle.normalTextSize,
                               ),
                             ),
-                            groupValue:
-                                CommonUtils.getLocale(context).workbenchTitle,
-                            onChanged: (value) {},
+                            groupValue:type,
+                            onChanged: (value) {
+                              this.setState(() {
+                                type="1";
+                              });
+                            },
                           ),
                         ),
 
                         ///控制台
                         Expanded(
                           child: RadioListTile<String>(
-                            value: CommonUtils.getLocale(context).controlTitle,
+                            value: "2",
                             title: Text(
                                 CommonUtils.getLocale(context).controlTitle,
                                 style: TextStyle(
                                   fontSize: MyTextStyle.normalTextSize,
                                 )),
-                            groupValue:
-                                CommonUtils.getLocale(context).workbenchTitle,
-                            onChanged: (value) {},
+                            groupValue:type,
+                            onChanged: (value) {
+                              this.setState(() {
+                                type="2";
+                              });
+                            },
                           ),
                         ),
                       ],
@@ -145,20 +151,38 @@ class _LoginPageState extends State<LoginPage> {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).loginPswEmpty);
       return;
     }
-    HttpGo.getInstance().post(UrlPath.signInPath, params: {
-      'mac': "1322131",
-      'pwd': _passwordController.text
-    }).then((baseResult) {
-      LoginResponseEntity loginInfo =
-          LoginResponseEntity.fromJson(baseResult.data);
-      loginInfo.orderMasterEntity=OrderMasterEntity(orderRounds: new List());
-      print(loginInfo);
-      store.dispatch(RefreshLoginInfoAction(loginInfo));
-      NavigatorUtils.pushReplacementNamed(
-          context, RoutePath.SERVICE_CONTROL_PATH);
-    }).catchError((error) {
-      Fluttertoast.showToast(msg: error.toString());
-    });
+    if("1"==type) {
+      HttpGo.getInstance().post(UrlPath.signInPath, params: {
+        'mac': "1322131",
+        'pwd': _passwordController.text
+      }).then((baseResult) {
+        LoginResponseEntity loginInfo =
+        LoginResponseEntity.fromJson(baseResult.data);
+        loginInfo.orderMasterEntity =
+            OrderMasterEntity(orderRounds: new List());
+        print(loginInfo);
+        store.dispatch(RefreshLoginInfoAction(loginInfo));
+        NavigatorUtils.pushReplacementNamed(
+            context, RoutePath.SERVICE_CONTROL_PATH);
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }else{
+      HttpGo.getInstance().post(UrlPath.signInPath, params: {
+        'mac': "1322131",
+        'pwd': _passwordController.text
+      }).then((baseResult) {
+        LoginResponseEntity loginInfo =
+        LoginResponseEntity.fromJson(baseResult.data);
+        loginInfo.orderMasterEntity =
+            OrderMasterEntity(orderRounds: new List());
+        print(loginInfo);
+        store.dispatch(RefreshLoginInfoAction(loginInfo));
+        NavigatorUtils.pushNamed(context, RoutePath.CONSOLE_PATH);
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+    }
   }
 
   @override

@@ -10,6 +10,7 @@ import 'package:order_app/common/model/user.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/sp_util.dart';
+import 'package:order_app/page/console/console_page.dart';
 import 'package:order_app/page/control/service_control_page.dart';
 import 'package:order_app/page/customMenu/custom_menu_page.dart';
 import 'package:order_app/page/home_page.dart';
@@ -110,6 +111,12 @@ class _FlutterReduxAppState extends State<FlutterReduxApp> {
               RoutePath.SERVICE_CONTROL_PATH: (context) {
                 return new MyLocalizations(
                   child: new ServiceControlPage(1),
+                );
+              },
+              ///控制台
+              RoutePath.CONSOLE_PATH: (context) {
+                return new MyLocalizations(
+                  child: new ConsolePage(),
                 );
               },
 
