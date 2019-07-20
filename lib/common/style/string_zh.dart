@@ -177,4 +177,9 @@ class StringZh extends StringBase {
   String payTip="确定要通知付款吗";
   @override
   String cancel="取消";
+
+@override
+  String payedOrder="已确认付款";
+@override
+  String cancelOrder="取消订单";
 }

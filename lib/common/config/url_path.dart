@@ -25,4 +25,6 @@ static const signInPath="/app/signin";//App登录接口
 static const consolePath="/app/ctl/getAreaList";//控制台接口
 
 static const settlementPath="/app/ctl/order/settlement";//控制台确认结账接口
+
+static const cancelPath="/app/ctl/order/cancel";//控制台取消接口
 }

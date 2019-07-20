@@ -94,4 +94,7 @@ abstract class StringBase {
   String tip;
   String payTip;
   String cancel;
+
+  String payedOrder;
+  String cancelOrder;
 }

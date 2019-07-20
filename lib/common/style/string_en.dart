@@ -180,4 +180,9 @@ class StringEn extends StringBase {
   String payTip="Are you sure you want to notify the payment?";
   @override
   String cancel="Cancel";
+
+  @override
+  String payedOrder="Confirmed payment";
+  @override
+  String cancelOrder="Cancel order";
 }

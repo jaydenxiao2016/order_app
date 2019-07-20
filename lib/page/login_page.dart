@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -146,43 +148,43 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///登录
-  _login(BuildContext context, Store<StateInfo> store) {
+  _login(BuildContext context, Store<StateInfo> store) async{
     if (_passwordController.text.length <= 0) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).loginPswEmpty);
       return;
     }
-    if("1"==type) {
-      HttpGo.getInstance().post(UrlPath.signInPath, params: {
-        'mac': "1322131",
-        'pwd': _passwordController.text
-      }).then((baseResult) {
-        LoginResponseEntity loginInfo =
-        LoginResponseEntity.fromJson(baseResult.data);
-        loginInfo.orderMasterEntity =
-            OrderMasterEntity(orderRounds: new List());
-        print(loginInfo);
-        store.dispatch(RefreshLoginInfoAction(loginInfo));
-        NavigatorUtils.pushReplacementNamed(
-            context, RoutePath.SERVICE_CONTROL_PATH);
-      }).catchError((error) {
-        Fluttertoast.showToast(msg: error.toString());
-      });
-    }else{
-      HttpGo.getInstance().post(UrlPath.signInPath, params: {
-        'mac': "1322131",
-        'pwd': _passwordController.text
-      }).then((baseResult) {
-        LoginResponseEntity loginInfo =
-        LoginResponseEntity.fromJson(baseResult.data);
-        loginInfo.orderMasterEntity =
-            OrderMasterEntity(orderRounds: new List());
-        print(loginInfo);
-        store.dispatch(RefreshLoginInfoAction(loginInfo));
-        NavigatorUtils.pushNamed(context, RoutePath.CONSOLE_PATH);
-      }).catchError((error) {
-        Fluttertoast.showToast(msg: error.toString());
-      });
+    String macAddress;
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if(Platform.isIOS){
+      //ios相关代码
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      macAddress=iosInfo.identifierForVendor;
+    }else if(Platform.isAndroid){
+      //android相关代码
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      macAddress=androidInfo.id;
     }
+      await HttpGo.getInstance().post(UrlPath.signInPath, params: {
+        'mac': macAddress,
+        'pwd': _passwordController.text,
+        "type":type
+      }).then((baseResult) {
+        LoginResponseEntity loginInfo =
+        LoginResponseEntity.fromJson(baseResult.data);
+        loginInfo.orderMasterEntity =
+            OrderMasterEntity(orderRounds: new List());
+        print(loginInfo);
+        store.dispatch(RefreshLoginInfoAction(loginInfo));
+        if("1"==type) {
+          NavigatorUtils.pushReplacementNamed(
+              context, RoutePath.SERVICE_CONTROL_PATH);
+        }else{
+          NavigatorUtils.pushNamed(context, RoutePath.CONSOLE_PATH);
+        }
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
+
   }
 
   @override

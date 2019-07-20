@@ -32,6 +32,11 @@ class ConsolePage extends StatefulWidget {
 class _ConsolePageState extends State<ConsolePage> {
   CancelToken cancelToken = new CancelToken();
   List<AreaEntity> areaList = new List();
+  ///0:未付款 1：结账中 2：已付款 3:其他
+  Color notPayColor=Color(0xFFF2F2F2);
+  Color payingColor=Colors.redAccent;
+  Color payedColor=Colors.green;
+  Color otherColor=Colors.amber;
 
   @override
   void initState() {
@@ -41,7 +46,7 @@ class _ConsolePageState extends State<ConsolePage> {
     });
   }
 
-  ///获取酒水分类
+  ///请求餐区信息
   _requestAreaData() async {
     print('请求餐区信息');
     if (mounted) {
@@ -65,56 +70,71 @@ class _ConsolePageState extends State<ConsolePage> {
 
   ///确认结账
   _requestSettlement(int orderId) async {
-    print('请求确认结账');
     if (mounted) {
       ///提示
       showDialog<Null>(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return new AlertDialog(
-            title: new Text(
-              CommonUtils.getLocale(context).tip,
-              style: TextStyle(fontSize: MyTextStyle.normalTextSize),
-            ),
-            content: new Text(
-              "确认已经结账了吗",
-              style: TextStyle(fontSize: MyTextStyle.bigTextSize),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text(
-                  CommonUtils.getLocale(context).cancel,
-                  style: TextStyle(
-                      color: Colors.grey, fontSize: MyTextStyle.normalTextSize),
+          return Container(
+            margin: EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  width: ScreenUtil.getInstance().setWidth(400),
+                  height: ScreenUtil.getInstance().setWidth(90),
+                  margin: EdgeInsets.all(10.0),
+                  child: FlexButton(
+                    color: Colors.grey,
+                    textColor: Colors.white,
+                    fontSize: MyTextStyle.normalTextSize,
+                    text: CommonUtils.getLocale(context).cancelOrder,
+                    onPress: () {
+                      Navigator.of(context).pop();
+                      HttpGo.getInstance()
+                          .post(
+                          UrlPath.cancelPath +
+                              "?orderId=" +
+                              orderId.toString(),
+                          cancelToken: cancelToken)
+                          .then((baseResult) {
+                        Fluttertoast.showToast(msg: "取消订单成功");
+                        _requestAreaData();
+                      }).catchError((error) {
+                        Fluttertoast.showToast(msg: error.toString());
+                      });
+                    },
+                  ),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              new FlatButton(
-                child: new Text(
-                  CommonUtils.getLocale(context).sure,
-                  style: TextStyle(
-                      color: Colors.blue, fontSize: MyTextStyle.normalTextSize),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  HttpGo.getInstance()
-                      .post(
+                Container(
+                  width: ScreenUtil.getInstance().setWidth(400),
+                  height: ScreenUtil.getInstance().setWidth(90),
+                  margin: EdgeInsets.all(105.0),
+                  child: FlexButton(
+                    color: Colors.deepOrange,
+                    textColor: Colors.white,
+                    fontSize: MyTextStyle.normalTextSize,
+                    text: CommonUtils.getLocale(context).payedOrder,
+                    onPress: () {
+                      Navigator.of(context).pop();
+                      HttpGo.getInstance()
+                          .post(
                           UrlPath.settlementPath +
                               "?orderId=" +
                               orderId.toString(),
                           cancelToken: cancelToken)
-                      .then((baseResult) {
-                    Fluttertoast.showToast(msg: "确认结账成功");
-                    _requestAreaData();
-                  }).catchError((error) {
-                    Fluttertoast.showToast(msg: error.toString());
-                  });
-                },
-              ),
-            ],
+                          .then((baseResult) {
+                        Fluttertoast.showToast(msg: "确认结账成功");
+                        _requestAreaData();
+                      }).catchError((error) {
+                        Fluttertoast.showToast(msg: error.toString());
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
           );
         },
       );
@@ -136,7 +156,7 @@ class _ConsolePageState extends State<ConsolePage> {
                 height: 20,
                 width: 40,
                 margin: EdgeInsets.all(5.0),
-                color: Color(0xFFF2F2F2),
+                color: notPayColor,
               ),
               Text("未结账")
             ],
@@ -147,14 +167,39 @@ class _ConsolePageState extends State<ConsolePage> {
                 height: 20,
                 width: 40,
                 margin: EdgeInsets.all(5.0),
-                color: Colors.redAccent,
+                color: payingColor,
               ),
               Text("结账中"),
               SizedBox(
                 width: 10,
               )
             ],
-          )
+          ),
+//          Row(
+//            children: <Widget>[
+//              Container(
+//                height: 20,
+//                width: 40,
+//                margin: EdgeInsets.all(5.0),
+//                color: payedColor,
+//              ),
+//              Text("已结账"),
+//            ],
+//          ),
+//          Row(
+//            children: <Widget>[
+//              Container(
+//                height: 20,
+//                width: 40,
+//                margin: EdgeInsets.all(5.0),
+//                color: otherColor,
+//              ),
+//              Text("其他"),
+//              SizedBox(
+//                width: 10,
+//              )
+//            ],
+//          )
         ],
       );
       print(appBar.preferredSize.height);
@@ -170,11 +215,14 @@ class _ConsolePageState extends State<ConsolePage> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                          height: ScreenUtil.getInstance().setWidth(80),
+                          height: ScreenUtil.getInstance().setWidth(100),
                           alignment: Alignment.center,
                           width: ScreenUtil.getInstance().setWidth(360),
-                          color:
+                          decoration: BoxDecoration(
+                              color:
                               index.isEven ? Color(0xFFE0E0E0) : Colors.white,
+                            border: Border(bottom: BorderSide(color:Colors.grey,width: ScreenUtil.getInstance().setWidth(3) ))
+                          ),
                           child: new Text(
                             areaList[index].name,
                             style:
@@ -200,6 +248,22 @@ class _ConsolePageState extends State<ConsolePage> {
 //                                订单状态 0未结账 1结账中 2已结账 3已取消
                                 String status =
                                     areaList[index].orders[index2].status;
+                                Color bgColor=otherColor;
+                                switch (status){
+                                  case "0":
+                                    bgColor=notPayColor;
+                                    break;
+                                  case "1":
+                                    bgColor=payingColor;
+                                    break;
+                                  case "2":
+                                    bgColor=payedColor;
+                                    break;
+                                  default:
+                                    bgColor=otherColor;
+                                    break;
+
+                                }
                                 return Container(
                                     height: 60,
                                     width: 80,
@@ -208,9 +272,7 @@ class _ConsolePageState extends State<ConsolePage> {
                                         text: areaList[index]
                                             .orders[index2]
                                             .tableNum,
-                                        color: status == "0"
-                                            ? Color(0xFFF2F2F2)
-                                            : Colors.redAccent,
+                                        color: bgColor,
                                         fontSize: MyTextStyle.bigTextSize,
                                         onPress: () {
                                           _requestSettlement(areaList[index]
