@@ -99,6 +99,8 @@ class StringZh extends StringBase {
   String passwordEmptyTip = "密码不能为空";
   @override
   String passwordWrongTip = "密码错误";
+  @override
+  String tableUsingTip="台号已被占用，请重新输入台号";
 
   @override
   String menuContent = "菜单内容";
@@ -182,4 +184,10 @@ class StringZh extends StringBase {
   String payedOrder="已确认付款";
 @override
   String cancelOrder="取消订单";
+@override
+  String payedOrderSuccess="确认付款成功";
+@override
+  String cancelOrderSuccess="取消订单成功";
+@override
+  String updateSuccess="修改成功";
 }

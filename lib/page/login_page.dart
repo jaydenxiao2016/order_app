@@ -182,7 +182,11 @@ class _LoginPageState extends State<LoginPage> {
           NavigatorUtils.pushNamed(context, RoutePath.CONSOLE_PATH);
         }
       }).catchError((error) {
-        Fluttertoast.showToast(msg: error.toString());
+        if(error is int &&error==101){
+          Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
+        }else {
+          Fluttertoast.showToast(msg: error.toString());
+        }
       });
 
   }

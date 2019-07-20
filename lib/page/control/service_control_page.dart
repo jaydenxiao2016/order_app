@@ -426,7 +426,11 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
         ///3.打开客户工作台
         NavigatorUtils.pushReplacementNamed(context, path);
       }).catchError((error) {
-        Fluttertoast.showToast(msg: error.toString());
+        if(error is int &&error==101){
+          Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
+        }else {
+          Fluttertoast.showToast(msg: error.toString());
+        }
       });
     }
 
@@ -445,9 +449,12 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
 
         ///3.退出
         Navigator.pop(context);
-        Fluttertoast.showToast(msg: "修改成功");
-      }).catchError((error) {
+        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).updateSuccess);
+      }).catchError((error) {if(error is int &&error==101){
+        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
+      }else {
         Fluttertoast.showToast(msg: error.toString());
+      }
       });
     }
   }

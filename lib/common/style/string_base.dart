@@ -64,6 +64,7 @@ abstract class StringBase {
   String tableEmptyTip;
   String passwordEmptyTip;
   String passwordWrongTip;
+  String tableUsingTip;
 
 
   String reOrderFoodTip;
@@ -97,4 +98,8 @@ abstract class StringBase {
 
   String payedOrder;
   String cancelOrder;
+
+  String payedOrderSuccess;
+  String cancelOrderSuccess;
+  String updateSuccess;
 }

@@ -82,13 +82,13 @@ class _ConsolePageState extends State<ConsolePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: ScreenUtil.getInstance().setWidth(400),
+                  width: ScreenUtil.getInstance().setWidth(450),
                   height: ScreenUtil.getInstance().setWidth(90),
                   margin: EdgeInsets.all(10.0),
                   child: FlexButton(
                     color: Colors.grey,
                     textColor: Colors.white,
-                    fontSize: MyTextStyle.normalTextSize,
+                    fontSize: MyTextStyle.bigTextSize,
                     text: CommonUtils.getLocale(context).cancelOrder,
                     onPress: () {
                       Navigator.of(context).pop();
@@ -99,7 +99,7 @@ class _ConsolePageState extends State<ConsolePage> {
                               orderId.toString(),
                           cancelToken: cancelToken)
                           .then((baseResult) {
-                        Fluttertoast.showToast(msg: "取消订单成功");
+                        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).cancelOrderSuccess);
                         _requestAreaData();
                       }).catchError((error) {
                         Fluttertoast.showToast(msg: error.toString());
@@ -108,13 +108,13 @@ class _ConsolePageState extends State<ConsolePage> {
                   ),
                 ),
                 Container(
-                  width: ScreenUtil.getInstance().setWidth(400),
+                  width: ScreenUtil.getInstance().setWidth(450),
                   height: ScreenUtil.getInstance().setWidth(90),
                   margin: EdgeInsets.all(105.0),
                   child: FlexButton(
                     color: Colors.deepOrange,
                     textColor: Colors.white,
-                    fontSize: MyTextStyle.normalTextSize,
+                    fontSize: MyTextStyle.bigTextSize,
                     text: CommonUtils.getLocale(context).payedOrder,
                     onPress: () {
                       Navigator.of(context).pop();
@@ -125,7 +125,7 @@ class _ConsolePageState extends State<ConsolePage> {
                               orderId.toString(),
                           cancelToken: cancelToken)
                           .then((baseResult) {
-                        Fluttertoast.showToast(msg: "确认结账成功");
+                        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payedOrderSuccess);
                         _requestAreaData();
                       }).catchError((error) {
                         Fluttertoast.showToast(msg: error.toString());
@@ -144,17 +144,15 @@ class _ConsolePageState extends State<ConsolePage> {
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
-      String title = CommonUtils.getLocale(context).drink +
-          " " +
-          CommonUtils.getLocale(context).menu;
+      String title = CommonUtils.getLocale(context).controlTitle;
       AppBar appBar = AppBar(
         title: Text(title),
         actions: <Widget>[
           Row(
             children: <Widget>[
               Container(
-                height: 20,
-                width: 40,
+                height: ScreenUtil.getInstance().setWidth(30),
+                width: ScreenUtil.getInstance().setWidth(50),
                 margin: EdgeInsets.all(5.0),
                 color: notPayColor,
               ),
@@ -164,14 +162,14 @@ class _ConsolePageState extends State<ConsolePage> {
           Row(
             children: <Widget>[
               Container(
-                height: 20,
-                width: 40,
+                height: ScreenUtil.getInstance().setWidth(30),
+                width: ScreenUtil.getInstance().setWidth(50),
                 margin: EdgeInsets.all(5.0),
                 color: payingColor,
               ),
               Text("结账中"),
               SizedBox(
-                width: 10,
+                width: ScreenUtil.getInstance().setWidth(10),
               )
             ],
           ),
@@ -239,9 +237,9 @@ class _ConsolePageState extends State<ConsolePage> {
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
-                                      mainAxisSpacing: 25.0,
+                                      mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
                                       childAspectRatio: 2,
-                                      crossAxisSpacing: 10.0),
+                                      crossAxisSpacing: ScreenUtil.getInstance().setWidth(20)),
                               scrollDirection: Axis.vertical,
                               itemCount: areaList[index].orders.length,
                               itemBuilder: (BuildContext context, int index2) {
@@ -265,8 +263,8 @@ class _ConsolePageState extends State<ConsolePage> {
 
                                 }
                                 return Container(
-                                    height: 60,
-                                    width: 80,
+                                    height: ScreenUtil.getInstance().setWidth(100),
+                                    width: ScreenUtil.getInstance().setWidth(100),
                                     alignment: Alignment.center,
                                     child: FlexButton(
                                         text: areaList[index]

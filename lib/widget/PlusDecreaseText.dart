@@ -85,11 +85,13 @@ class PlusDecreaseText extends StatelessWidget {
         Opacity(
           opacity: decreaseVisible ? 1.0 : 0.0,
           child: Container(
-            height: ScreenUtil.getInstance().setWidth(80),
-            width: ScreenUtil.getInstance().setWidth(80),
+            height: ScreenUtil.getInstance().setWidth(100),
+            width: ScreenUtil.getInstance().setWidth(100),
             child: IconButton(
               icon: Image.asset(
                 decreaseImg,
+                height: ScreenUtil.getInstance().setWidth(100),
+                width: ScreenUtil.getInstance().setWidth(100),
               ),
               onPressed: () {
                 int num = 0;
@@ -134,13 +136,13 @@ class PlusDecreaseText extends StatelessWidget {
         Opacity(
           opacity: plusVisible ? (plusEnable ? 1 : 0.5) : 0.0,
           child: Container(
-            height: ScreenUtil.getInstance().setWidth(80),
-            width: ScreenUtil.getInstance().setWidth(80),
+            height: ScreenUtil.getInstance().setWidth(100),
+            width: ScreenUtil.getInstance().setWidth(100),
             child: IconButton(
               icon: Image.asset(
                 plusImg,
-                height: 80.0,
-                width: 80.0,
+                height: ScreenUtil.getInstance().setWidth(100),
+                width: ScreenUtil.getInstance().setWidth(100),
               ),
               onPressed: () {
                 if (plusEnable) {
