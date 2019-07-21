@@ -194,7 +194,7 @@ class _DrinkRecordState extends State<DrinkRecord> {
                     ///表头
                     Container(
                       color: Colors.yellowAccent,
-                      height: ScreenUtil.getInstance().setWidth(50),
+                      height: ScreenUtil.getInstance().setWidth(60),
                       child: Row(
                         children: <Widget>[
                           Expanded(
