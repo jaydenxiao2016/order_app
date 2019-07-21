@@ -103,6 +103,12 @@ class StringDe extends StringBase {
   String passwordWrongTip="Fehler beim Passwort";
   @override
   String tableUsingTip="TDie Nummer wurde belegt. Bitte geben Sie die Nummer erneut ein.";
+  @override
+  String lunchItemEmptyTip="Das Mittagessen sollte nicht weniger als 0 sein";
+  @override
+  String dinnerItemEmptyTip="Das Abendessen sollte nicht weniger als 0 sein";
+  @override
+  String waitTimeEmptyTip="Die Wartezeit sollte nicht weniger als 0 sein";
 
   @override
   String menuContent="Inhalt des Menüs";

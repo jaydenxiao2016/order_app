@@ -101,6 +101,12 @@ class StringZh extends StringBase {
   String passwordWrongTip = "密码错误";
   @override
   String tableUsingTip="台号已被占用，请重新输入台号";
+  @override
+  String lunchItemEmptyTip="午餐项目不能少于0";
+  @override
+  String dinnerItemEmptyTip="晚餐项目不能少于0";
+  @override
+  String waitTimeEmptyTip="等待时间不能少于0";
 
   @override
   String menuContent = "菜单内容";

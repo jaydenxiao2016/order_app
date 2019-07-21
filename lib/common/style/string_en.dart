@@ -106,6 +106,12 @@ class StringEn extends StringBase {
   String waitingTip="Waiting for the next round";
   @override
   String tableUsingTip="The number has been occupied. Please re-enter the number.";
+  @override
+  String lunchItemEmptyTip="Lunch items should not be less than zero";
+  @override
+  String dinnerItemEmptyTip="Dinner items should not be less than zero";
+  @override
+  String waitTimeEmptyTip="Waiting time should not be less than zero";
 
   @override
   String menuContent="Menu Content";

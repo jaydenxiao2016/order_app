@@ -5,7 +5,6 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_statusbar/flutter_statusbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/localization/default_localizations.dart';
@@ -260,7 +259,10 @@ class CommonUtils {
       width:width,
       imageUrl: url,
       placeholder: (context, url) => new CircularProgressIndicator(),
-      errorWidget: (context, url, error) => new Icon(Icons.error),
+      errorWidget: (context, url, error) => Image.asset(
+        'static/images/icon_wrong_default.png',
+        fit: BoxFit.cover,
+      ),
     );
   }
 }

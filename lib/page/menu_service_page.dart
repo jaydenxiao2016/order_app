@@ -200,32 +200,34 @@ class _MenuServicePageState extends State<MenuServicePage> {
                                 color: index == selectTypeIndex
                                     ? Colors.lightBlue
                                     : Colors.black,
-                                child: ListTile(
-                                  onTap: () {
-                                    _requestDrinkProductData(
-                                        categoryInfoEntity.data[index].id);
-                                    setState(() {
-                                      selectTypeIndex = index;
-                                    });
-                                  },
-                                  leading: CommonUtils.displayImageWidget(
-                                      Config.BASE_URL +
-                                          categoryInfoEntity.imgPath +
-                                          (categoryInfoEntity.data[index].pic ??
-                                              ""),height: ScreenUtil.getInstance().setWidth(80)
-                                    ,width: ScreenUtil.getInstance().setWidth(80)),
-                                  title: new Text(
-                                    categoryInfoEntity.data[index].name,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: index == selectTypeIndex
-                                            ? Colors.white
-                                            : Color(
-                                                ColorsStyle.lightGrayColor)),
-                                  ),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Color(ColorsStyle.lightGrayColor),
+                                child: Center(
+                                  child: ListTile(
+                                    onTap: () {
+                                      _requestDrinkProductData(
+                                          categoryInfoEntity.data[index].id);
+                                      setState(() {
+                                        selectTypeIndex = index;
+                                      });
+                                    },
+                                    leading: CommonUtils.displayImageWidget(
+                                        Config.BASE_URL +
+                                            categoryInfoEntity.imgPath +
+                                            (categoryInfoEntity.data[index].pic ??
+                                                ""),height: ScreenUtil.getInstance().setWidth(80)
+                                      ,width: ScreenUtil.getInstance().setWidth(80)),
+                                    title: new Text(
+                                      categoryInfoEntity.data[index].name,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: index == selectTypeIndex
+                                              ? Colors.white
+                                              : Color(
+                                                  ColorsStyle.lightGrayColor)),
+                                    ),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Color(ColorsStyle.lightGrayColor),
+                                    ),
                                   ),
                                 ),
                               );

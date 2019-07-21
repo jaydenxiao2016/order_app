@@ -62,6 +62,9 @@ abstract class StringBase {
   String buyerEmptyTip;
   String adultEmptyTip;
   String tableEmptyTip;
+  String lunchItemEmptyTip;
+  String dinnerItemEmptyTip;
+  String waitTimeEmptyTip;
   String passwordEmptyTip;
   String passwordWrongTip;
   String tableUsingTip;
