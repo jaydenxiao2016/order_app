@@ -112,11 +112,9 @@ class HttpGo {
         if (_code == 100) {
           return new BaseResult(_data, _msg, _code);
         }
-
         ///接口数据失败
         else {
-          Fluttertoast.showToast(msg: _msg);
-          return new Future.error(_msg);
+          return new Future.error(_code==101?_code:_msg);
         }
       } catch (e) {
         print(e);

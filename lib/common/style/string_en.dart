@@ -79,19 +79,19 @@ class StringEn extends StringBase {
   String loadingText = "Loading···";
 
   @override
-  String loginTitle = "登录";
+  String loginTitle = "Sign in";
   @override
-  String loginTip = "请登录";
+  String loginTip = "Please Sign In";
   @override
-  String login = "登录";
+  String login = "Sign in";
   @override
-  String loginUserTitle="请输入用户名";
+  String loginUserTitle="Please enter your user name";
   @override
-  String loginPswTip="请输入密码";
+  String loginPswTip="Please input a password";
   @override
-  String loginUserEmpty="用户名不能为空";
+  String loginUserEmpty="User name cannot be empty";
   @override
-  String loginPswEmpty="密码不能为空";
+  String loginPswEmpty="Password cannot be empty";
   @override
   String buyerEmptyTip="The dining area should not be empty";
   @override
@@ -104,6 +104,14 @@ class StringEn extends StringBase {
   String passwordWrongTip="Password error";
   @override
   String waitingTip="Waiting for the next round";
+  @override
+  String tableUsingTip="The number has been occupied. Please re-enter the number.";
+  @override
+  String lunchItemEmptyTip="Lunch items should not be less than zero";
+  @override
+  String dinnerItemEmptyTip="Dinner items should not be less than zero";
+  @override
+  String waitTimeEmptyTip="Waiting time should not be less than zero";
 
   @override
   String menuContent="Menu Content";
@@ -180,4 +188,15 @@ class StringEn extends StringBase {
   String payTip="Are you sure you want to notify the payment?";
   @override
   String cancel="Cancel";
+
+  @override
+  String payedOrder="Confirmed payment";
+  @override
+  String cancelOrder="Cancel order";
+  @override
+  String payedOrderSuccess="Confirmation of successful payment";
+  @override
+  String cancelOrderSuccess="Successful cancellation of orders";
+  @override
+  String updateSuccess="Successful revision";
 }

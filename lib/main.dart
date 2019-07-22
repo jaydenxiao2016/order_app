@@ -119,6 +119,7 @@ class _FlutterReduxAppState extends State<FlutterReduxApp> {
                   child: new ConsolePage(),
                 );
               },
+
               ///客户工作台
               RoutePath.CUSTOM_MENU_PATH: (context) {
                 return new MyLocalizations(

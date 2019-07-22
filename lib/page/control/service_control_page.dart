@@ -43,9 +43,6 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
   //桌号
   TextEditingController _tableNumController = TextEditingController();
 
-  //密码
-  TextEditingController _passwordController = TextEditingController();
-
   //午餐设置
   int _lunchItem = Config.LUNCH_ITEM;
 
@@ -207,18 +204,6 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                       CommonUtils.getLocale(context).tableNum,
                                   titleFontSize: MyTextStyle.bigTextSize,
                                 )),
-                                Expanded(
-                                    child: PlusDecreaseInput(
-                                  textEditingController: _passwordController,
-                                  fontSize: MyTextStyle.bigTextSize,
-                                  titleWidth:
-                                      ScreenUtil.getInstance().setWidth(250),
-                                  decreaseVisible: false,
-                                  plusVisible: false,
-                                  title:
-                                      CommonUtils.getLocale(context).password,
-                                  titleFontSize: MyTextStyle.bigTextSize,
-                                )),
                               ],
                             ),
                           )),
@@ -364,26 +349,26 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableEmptyTip);
       return;
     }
-    if (_passwordController.text.length <= 0) {
-      Fluttertoast.showToast(
-          msg: CommonUtils.getLocale(context).passwordEmptyTip);
+    if (_lunchItem <= 0) {
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).lunchItemEmptyTip);
       return;
     }
-
+    if (_dinnerItem <= 0) {
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).dinnerItemEmptyTip);
+      return;
+    }
+    if (_timerItem <= 0) {
+      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).waitTimeEmptyTip);
+      return;
+    }
     ///1.保存本次服务设置
     LoginResponseEntity loginInfoEntity = store.state.loginResponseEntity;
     LoginInfoSetting loginInfoSetting = loginInfoEntity.setting;
-    if (_passwordController.text != loginInfoSetting.appPwd) {
-      Fluttertoast.showToast(
-          msg: CommonUtils.getLocale(context).passwordWrongTip);
-      return;
-    }
     loginInfoSetting.adult = int.parse(_adultController.text);
     if (_childrenController.text.length > 0) {
       loginInfoSetting.children = int.parse(_childrenController.text);
     }
     loginInfoSetting.tableNum = _tableNumController.text;
-    loginInfoSetting.password = _passwordController.text;
     loginInfoSetting.lunchNum = _lunchItem;
     loginInfoSetting.dinnerNum = _dinnerItem;
     loginInfoSetting.waitTime = _timerItem;
@@ -426,7 +411,11 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
         ///3.打开客户工作台
         NavigatorUtils.pushReplacementNamed(context, path);
       }).catchError((error) {
-        Fluttertoast.showToast(msg: error.toString());
+        if(error is int &&error==101){
+          Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
+        }else {
+          Fluttertoast.showToast(msg: error.toString());
+        }
       });
     }
 
@@ -445,9 +434,12 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
 
         ///3.退出
         Navigator.pop(context);
-        Fluttertoast.showToast(msg: "修改成功");
-      }).catchError((error) {
+        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).updateSuccess);
+      }).catchError((error) {if(error is int &&error==101){
+        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
+      }else {
         Fluttertoast.showToast(msg: error.toString());
+      }
       });
     }
   }
@@ -458,6 +450,5 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     _adultController.dispose();
     _childrenController.dispose();
     _tableNumController.dispose();
-    _passwordController.dispose();
   }
 }

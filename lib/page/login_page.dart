@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +27,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _passwordController = new TextEditingController();
+  ///1:工作台 2：控制台
+  String type="1";
 
   @override
   Widget build(BuildContext context) {
-    _passwordController.text = '123456';
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       return new Scaffold(
         appBar: AppBar(
@@ -83,32 +86,37 @@ class _LoginPageState extends State<LoginPage> {
                         ///工作台
                         Expanded(
                           child: RadioListTile<String>(
-                            value:
-                                CommonUtils.getLocale(context).workbenchTitle,
+                            value: "1",
                             title: Text(
                               CommonUtils.getLocale(context).workbenchTitle,
                               style: TextStyle(
                                 fontSize: MyTextStyle.normalTextSize,
                               ),
                             ),
-                            groupValue:
-                                CommonUtils.getLocale(context).workbenchTitle,
-                            onChanged: (value) {},
+                            groupValue:type,
+                            onChanged: (value) {
+                              this.setState(() {
+                                type="1";
+                              });
+                            },
                           ),
                         ),
 
                         ///控制台
                         Expanded(
                           child: RadioListTile<String>(
-                            value: CommonUtils.getLocale(context).controlTitle,
+                            value: "2",
                             title: Text(
                                 CommonUtils.getLocale(context).controlTitle,
                                 style: TextStyle(
                                   fontSize: MyTextStyle.normalTextSize,
                                 )),
-                            groupValue:
-                                CommonUtils.getLocale(context).workbenchTitle,
-                            onChanged: (value) {},
+                            groupValue:type,
+                            onChanged: (value) {
+                              this.setState(() {
+                                type="2";
+                              });
+                            },
                           ),
                         ),
                       ],
@@ -140,30 +148,47 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///登录
-  _login(BuildContext context, Store<StateInfo> store) {
+  _login(BuildContext context, Store<StateInfo> store) async{
     if (_passwordController.text.length <= 0) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).loginPswEmpty);
       return;
     }
-    HttpGo.getInstance().post(UrlPath.signInPath, params: {
-      'mac': "1322131",
-      'pwd': _passwordController.text
-    }).then((baseResult) {
-      LoginResponseEntity loginInfo =
-          LoginResponseEntity.fromJson(baseResult.data);
-      loginInfo.orderMasterEntity=OrderMasterEntity(orderRounds: new List());
-      print(loginInfo);
-      store.dispatch(RefreshLoginInfoAction(loginInfo));
+    String macAddress;
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if(Platform.isIOS){
+      //ios相关代码
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      macAddress=iosInfo.identifierForVendor;
+    }else if(Platform.isAndroid){
+      //android相关代码
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      macAddress=androidInfo.id;
+    }
+      await HttpGo.getInstance().post(UrlPath.signInPath, params: {
+        'mac': macAddress,
+        'pwd': _passwordController.text,
+        "type":type
+      }).then((baseResult) {
+        LoginResponseEntity loginInfo =
+        LoginResponseEntity.fromJson(baseResult.data);
+        loginInfo.orderMasterEntity =
+            OrderMasterEntity(orderRounds: new List());
+        print(loginInfo);
+        store.dispatch(RefreshLoginInfoAction(loginInfo));
+        if("1"==type) {
+          NavigatorUtils.pushReplacementNamed(
+              context, RoutePath.SERVICE_CONTROL_PATH);
+        }else{
+          NavigatorUtils.pushNamed(context, RoutePath.CONSOLE_PATH);
+        }
+      }).catchError((error) {
+        if(error is int &&error==101){
+          Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
+        }else {
+          Fluttertoast.showToast(msg: error.toString());
+        }
+      });
 
-//      NavigatorUtils.pushReplacementNamed(
-//          context, RoutePath.SERVICE_CONTROL_PATH);
-
-      NavigatorUtils.pushReplacementNamed(
-          context, RoutePath.CONSOLE_PATH);
-
-    }).catchError((error) {
-      Fluttertoast.showToast(msg: error.toString());
-    });
   }
 
   @override

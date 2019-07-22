@@ -78,19 +78,19 @@ class StringDe extends StringBase {
 
 
   @override
-  String loginTitle = "登录";
+  String loginTitle = "Melden Sie sich";
   @override
-  String loginTip = "请登录";
+  String loginTip = "Bitte einloggen";
   @override
-  String login = "登录";
+  String login = "Melden Sie sich";
   @override
-  String loginUserTitle="请输入用户名";
+  String loginUserTitle="Geben Sie einen Benutzernamen ein";
   @override
-  String loginPswTip="请输入密码";
+  String loginPswTip="Bitte geben Sie ein Passwort ein";
   @override
-  String loginUserEmpty="用户名不能为空";
+  String loginUserEmpty="Benutzername kann nicht leer sein";
   @override
-  String loginPswEmpty="密码不能为空";
+  String loginPswEmpty="Passwort kann nicht leer sein";
   @override
   String buyerEmptyTip="Der Essbereich sollte nicht leer sein";
   @override
@@ -101,6 +101,14 @@ class StringDe extends StringBase {
   String passwordEmptyTip="Passwort kann nicht leer sein";
   @override
   String passwordWrongTip="Fehler beim Passwort";
+  @override
+  String tableUsingTip="TDie Nummer wurde belegt. Bitte geben Sie die Nummer erneut ein.";
+  @override
+  String lunchItemEmptyTip="Das Mittagessen sollte nicht weniger als 0 sein";
+  @override
+  String dinnerItemEmptyTip="Das Abendessen sollte nicht weniger als 0 sein";
+  @override
+  String waitTimeEmptyTip="Die Wartezeit sollte nicht weniger als 0 sein";
 
   @override
   String menuContent="Inhalt des Menüs";
@@ -179,4 +187,14 @@ class StringDe extends StringBase {
   String payTip="Sind Sie sicher, dass Sie die Zahlung benachrichtigen möchten?";
   @override
   String cancel="Stornieren";
+  @override
+  String payedOrder="Bestätigte Zahlung";
+  @override
+  String cancelOrder="Stornierung der Bestellung";
+  @override
+  String payedOrderSuccess="Bestätigung der erfolgreichen Zahlung";
+  @override
+  String cancelOrderSuccess="Erfolgreiche Stornierung von Bestellungen";
+  @override
+  String updateSuccess="Erfolgreiche Revision";
 }

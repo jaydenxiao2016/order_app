@@ -12,4 +12,6 @@ class RoutePath{
   static const String HOME_PATH="home";
   //客户工作台
   static const String CUSTOM_MENU_PATH="CustomMenuPage";
+  //控制台
+  static const String CONSOLE_PATH="ConsolePage";
 }
