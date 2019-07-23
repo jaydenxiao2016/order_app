@@ -12,6 +12,7 @@ import 'package:order_app/common/model/area_entity.dart';
 import 'package:order_app/common/model/category.dart';
 import 'package:order_app/common/model/category_response_entity.dart';
 import 'package:order_app/common/model/order_detail.dart';
+import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/model/product.dart';
 import 'package:order_app/common/model/product_response_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
@@ -19,6 +20,8 @@ import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
+import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:order_app/page/console/console_detail_page.dart';
 import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
@@ -32,11 +35,12 @@ class ConsolePage extends StatefulWidget {
 class _ConsolePageState extends State<ConsolePage> {
   CancelToken cancelToken = new CancelToken();
   List<AreaEntity> areaList = new List();
+
   ///0:未付款 1：结账中 2：已付款 3:其他
-  Color notPayColor=Color(0xFFF2F2F2);
-  Color payingColor=Colors.redAccent;
-  Color payedColor=Colors.green;
-  Color otherColor=Colors.amber;
+  Color notPayColor = Color(0xFFF2F2F2);
+  Color payingColor = Colors.redAccent;
+  Color payedColor = Colors.green;
+  Color otherColor = Colors.amber;
 
   @override
   void initState() {
@@ -94,12 +98,14 @@ class _ConsolePageState extends State<ConsolePage> {
                       Navigator.of(context).pop();
                       HttpGo.getInstance()
                           .post(
-                          UrlPath.cancelPath +
-                              "?orderId=" +
-                              orderId.toString(),
-                          cancelToken: cancelToken)
+                              UrlPath.cancelPath +
+                                  "?orderId=" +
+                                  orderId.toString(),
+                              cancelToken: cancelToken)
                           .then((baseResult) {
-                        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).cancelOrderSuccess);
+                        Fluttertoast.showToast(
+                            msg: CommonUtils.getLocale(context)
+                                .cancelOrderSuccess);
                         _requestAreaData();
                       }).catchError((error) {
                         Fluttertoast.showToast(msg: error.toString());
@@ -120,12 +126,14 @@ class _ConsolePageState extends State<ConsolePage> {
                       Navigator.of(context).pop();
                       HttpGo.getInstance()
                           .post(
-                          UrlPath.settlementPath +
-                              "?orderId=" +
-                              orderId.toString(),
-                          cancelToken: cancelToken)
+                              UrlPath.settlementPath +
+                                  "?orderId=" +
+                                  orderId.toString(),
+                              cancelToken: cancelToken)
                           .then((baseResult) {
-                        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payedOrderSuccess);
+                        Fluttertoast.showToast(
+                            msg: CommonUtils.getLocale(context)
+                                .payedOrderSuccess);
                         _requestAreaData();
                       }).catchError((error) {
                         Fluttertoast.showToast(msg: error.toString());
@@ -217,10 +225,14 @@ class _ConsolePageState extends State<ConsolePage> {
                           alignment: Alignment.center,
                           width: ScreenUtil.getInstance().setWidth(360),
                           decoration: BoxDecoration(
-                              color:
-                              index.isEven ? Color(0xFFE0E0E0) : Colors.white,
-                            border: Border(bottom: BorderSide(color:Colors.grey,width: ScreenUtil.getInstance().setWidth(3) ))
-                          ),
+                              color: index.isEven
+                                  ? Color(0xFFE0E0E0)
+                                  : Colors.white,
+                              border: Border(
+                                  bottom: BorderSide(
+                                      color: Colors.grey,
+                                      width: ScreenUtil.getInstance()
+                                          .setWidth(3)))),
                           child: new Text(
                             areaList[index].name,
                             style:
@@ -236,46 +248,64 @@ class _ConsolePageState extends State<ConsolePage> {
                           child: GridView.builder(
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
-                                      childAspectRatio: 2,
-                                      crossAxisSpacing: ScreenUtil.getInstance().setWidth(20)),
+                                      crossAxisCount: 1,
+                                      mainAxisSpacing:
+                                          ScreenUtil.getInstance().setWidth(20),
+                                      childAspectRatio: 4,
+                                      crossAxisSpacing: ScreenUtil.getInstance()
+                                          .setWidth(20)),
                               scrollDirection: Axis.vertical,
                               itemCount: areaList[index].orders.length,
                               itemBuilder: (BuildContext context, int index2) {
 //                                订单状态 0未结账 1结账中 2已结账 3已取消
                                 String status =
                                     areaList[index].orders[index2].status;
-                                Color bgColor=otherColor;
-                                switch (status){
+                                Color bgColor = otherColor;
+                                switch (status) {
                                   case "0":
-                                    bgColor=notPayColor;
+                                    bgColor = notPayColor;
                                     break;
                                   case "1":
-                                    bgColor=payingColor;
+                                    bgColor = payingColor;
                                     break;
                                   case "2":
-                                    bgColor=payedColor;
+                                    bgColor = payedColor;
                                     break;
                                   default:
-                                    bgColor=otherColor;
+                                    bgColor = otherColor;
                                     break;
-
                                 }
                                 return Container(
-                                    height: ScreenUtil.getInstance().setWidth(100),
-                                    width: ScreenUtil.getInstance().setWidth(100),
+                                    height:
+                                        ScreenUtil.getInstance().setWidth(100),
+                                    width:
+                                        ScreenUtil.getInstance().setWidth(100),
                                     alignment: Alignment.center,
                                     child: FlexButton(
                                         text: areaList[index]
-                                            .orders[index2]
-                                            .tableNum,
+                                                .orders[index2]
+                                                .tableNum +
+                                            "（" +
+                                            areaList[index]
+                                                .orders[index2]
+                                                .adult
+                                                .toString() +
+                                            "." +
+                                            (areaList[index]
+                                                        .orders[index2]
+                                                        .child !=
+                                                    null
+                                                ? areaList[index]
+                                                    .orders[index2]
+                                                    .child.toString()
+                                                : "0") +
+                                            "）",
                                         color: bgColor,
                                         fontSize: MyTextStyle.bigTextSize,
                                         onPress: () {
-                                          _requestSettlement(areaList[index]
+                                          NavigatorUtils.navigatorRouter(context, ConsoleDetailPage(areaList[index]
                                               .orders[index2]
-                                              .orderId);
+                                              .orderId));
                                         }));
                               }),
                         ),
