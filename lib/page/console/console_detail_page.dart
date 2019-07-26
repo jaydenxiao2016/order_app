@@ -297,8 +297,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                                 MyTextStyle.normalTextSize),
                                       ),
                                       Text(
-                                          orderMasterEntity.drinksTotalAmount
-                                              .toString(),
+                                          orderMasterEntity.drinksTotalAmount!=null?orderMasterEntity.drinksTotalAmount.toString():"0",
                                           style: TextStyle(
                                               fontSize: MyTextStyle.bigTextSize,
                                               color: Colors.red)),

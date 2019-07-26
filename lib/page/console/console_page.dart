@@ -223,7 +223,7 @@ class _ConsolePageState extends State<ConsolePage> {
                       Container(
                           height: ScreenUtil.getInstance().setWidth(100),
                           alignment: Alignment.center,
-                          width: ScreenUtil.getInstance().setWidth(360),
+                          width: ScreenUtil.getInstance().setWidth(300),
                           decoration: BoxDecoration(
                               color: index.isEven
                                   ? Color(0xFFE0E0E0)
@@ -244,7 +244,7 @@ class _ConsolePageState extends State<ConsolePage> {
                               index.isEven ? Color(0xFFE0E0E0) : Colors.white,
                           padding: EdgeInsets.all(
                               ScreenUtil.getInstance().setWidth(20)),
-                          width: ScreenUtil.getInstance().setWidth(360),
+                          width: ScreenUtil.getInstance().setWidth(300),
                           child: GridView.builder(
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
