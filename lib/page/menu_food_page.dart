@@ -21,6 +21,7 @@ import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/page/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
+import 'package:redux/src/store.dart';
 
 //食品餐单
 class MenuFoodPage extends StatefulWidget {
@@ -148,9 +149,9 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
-      totalNumLimited = store.state.loginResponseEntity.setting.isLunch
-          ? store.state.loginResponseEntity.setting.lunchNum
-          : store.state.loginResponseEntity.setting.dinnerNum;
+      ///计算限制点餐总数
+      _calculateTotalNumLimited(store);
+      ///标题
       String title = store.state.loginResponseEntity.setting.isLunch
           ? CommonUtils.getLocale(context).lunch
           : CommonUtils.getLocale(context).dinner;
@@ -402,6 +403,20 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
         ),
       );
     });
+  }
+  ///计算限制点餐总数
+  void _calculateTotalNumLimited(Store<StateInfo> store) {
+     if(store.state.loginResponseEntity.setting.isLunch){
+      totalNumLimited=store.state.loginResponseEntity.setting.lunchNum*store.state.loginResponseEntity.setting.adult;
+      if(store.state.loginResponseEntity.setting.children!=null){
+        totalNumLimited=totalNumLimited+store.state.loginResponseEntity.setting.lunchNum*store.state.loginResponseEntity.setting.children;
+      }
+    }else{
+      totalNumLimited=store.state.loginResponseEntity.setting.dinnerNum*store.state.loginResponseEntity.setting.adult;
+      if(store.state.loginResponseEntity.setting.children!=null){
+        totalNumLimited=totalNumLimited+store.state.loginResponseEntity.setting.dinnerNum*store.state.loginResponseEntity.setting.children;
+      }
+    }
   }
   @override
   void dispose() {
