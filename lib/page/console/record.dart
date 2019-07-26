@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/event/type_refresh_event.dart';
 import 'package:order_app/common/model/order_detail.dart';
@@ -169,7 +170,9 @@ class _RecordState extends State<Record> {
               params: {
                 "detailType": widget.type,
                 "orderId": widget.orderId,
-                "roundId": widget.round
+                "roundId": widget.round,
+                "pageNum": 1,
+                "pageSize": Config.PAGE_SIZE,
               },
               cancelToken: cancelToken)
           .then((baseResult) {
@@ -199,7 +202,7 @@ class _RecordState extends State<Record> {
           Expanded(
             flex: 1,
             child: Container(
-              margin: EdgeInsets.all(10.0),
+              margin: EdgeInsets.all(2.0),
               decoration: BoxDecoration(
                   color: Colors.grey,
                   border: Border.all(

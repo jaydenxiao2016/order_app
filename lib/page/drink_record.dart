@@ -148,7 +148,9 @@ class _DrinkRecordState extends State<DrinkRecord> {
       await HttpGo.getInstance().post(UrlPath.orderDetailPath, params: {
         "detailType": widget.type,
         "orderId": CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId,
-        "roundId":widget.round
+        "roundId":widget.round,
+        "pageNum": 1,
+        "pageSize": Config.PAGE_SIZE,
       },cancelToken: cancelToken).then((baseResult) {
         List<OrderDetail>selectedDrinkProduct=new List();
         (baseResult.data['data']['list'] as List).forEach((v) {

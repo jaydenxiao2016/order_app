@@ -5,21 +5,26 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/url_path.dart';
+import 'package:order_app/common/event/console_refresh_event.dart';
 import 'package:order_app/common/event/type_refresh_event.dart';
 import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
+import 'package:order_app/common/utils/date_format_base.dart';
 import 'package:order_app/page/console/record.dart';
 import 'package:order_app/widget/flex_button.dart';
+import 'package:order_app/common/utils/common_utils.dart';
 
 //控制台详情
 class ConsoleDetailPage extends StatefulWidget {
   /// 订单id
   int orderId;
+  /// 台区
+  String buyerName;
 
-  ConsoleDetailPage(this.orderId, {Key key}) : super(key: key);
+  ConsoleDetailPage(this.orderId, this.buyerName,{Key key}) : super(key: key);
 
   @override
   _ConsoleDetailPageState createState() => _ConsoleDetailPageState();
@@ -69,84 +74,144 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
   ///确认结账
   _requestSettlement() async {
     if (mounted) {
-      ///提示
+      BuildContext rootContext = context;
       showDialog<Null>(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return Container(
-            margin: EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: ScreenUtil.getInstance().setWidth(450),
-                  height: ScreenUtil.getInstance().setWidth(90),
-                  margin: EdgeInsets.all(10.0),
-                  child: FlexButton(
-                    color: Colors.grey,
-                    textColor: Colors.white,
-                    fontSize: MyTextStyle.bigTextSize,
-                    text: CommonUtils.getLocale(context).cancelOrder,
-                    onPress: () {
-                      Navigator.of(context).pop();
-                      HttpGo.getInstance()
-                          .post(
-                              UrlPath.cancelPath +
-                                  "?orderId=" +
-                                  widget.orderId.toString(),
-                              cancelToken: cancelToken)
-                          .then((baseResult) {
-                        Fluttertoast.showToast(
-                            msg: CommonUtils.getLocale(context)
-                                .cancelOrderSuccess);
-
-                        ///刷新工作面板
-                      }).catchError((error) {
-                        Fluttertoast.showToast(msg: error.toString());
-                      });
-                    },
-                  ),
-                ),
-                Container(
-                  width: ScreenUtil.getInstance().setWidth(450),
-                  height: ScreenUtil.getInstance().setWidth(90),
-                  margin: EdgeInsets.all(105.0),
-                  child: FlexButton(
-                    color: Colors.deepOrange,
-                    textColor: Colors.white,
-                    fontSize: MyTextStyle.bigTextSize,
-                    text: CommonUtils.getLocale(context).payedOrder,
-                    onPress: () {
-                      Navigator.of(context).pop();
-                      HttpGo.getInstance()
-                          .post(
-                              UrlPath.settlementPath +
-                                  "?orderId=" +
-                                  widget.orderId.toString(),
-                              cancelToken: cancelToken)
-                          .then((baseResult) {
-                        Fluttertoast.showToast(
-                            msg: CommonUtils.getLocale(context)
-                                .payedOrderSuccess);
-
-                        ///刷新工作面板
-                      }).catchError((error) {
-                        Fluttertoast.showToast(msg: error.toString());
-                      });
-                    },
-                  ),
-                ),
-              ],
+          return new AlertDialog(
+            title: new Text(
+              CommonUtils.getLocale(context).tip,
+              style: TextStyle(fontSize: MyTextStyle.normalTextSize),
             ),
+            content: new Text(
+              "确认已结账吗",
+              style: TextStyle(fontSize: MyTextStyle.bigTextSize),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text(
+                  CommonUtils.getLocale(context).cancel,
+                  style: TextStyle(
+                      color: Colors.grey, fontSize: MyTextStyle.normalTextSize),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text(
+                  CommonUtils.getLocale(context).sure,
+                  style: TextStyle(
+                      color: Colors.blue, fontSize: MyTextStyle.normalTextSize),
+                ),
+                onPressed: () {
+                  HttpGo.getInstance()
+                      .post(
+                          UrlPath.cancelPath +
+                              "?orderId=" +
+                              widget.orderId.toString(),
+                          cancelToken: cancelToken)
+                      .then((baseResult) {
+                    Fluttertoast.showToast(
+                        msg: CommonUtils.getLocale(rootContext)
+                            .payedOrderSuccess);
+                   CommonUtils.eventBus.fire(ConsoleRefreshEvent());
+                    ///刷新工作面板
+                    Navigator.of(context).pop();
+                    Navigator.of(rootContext).pop();
+                  });
+                },
+              ),
+            ],
           );
         },
-      );
+      ).then((val) {});
     }
+  }
+
+  ///取消订单
+  _cancelOrder() {
+    TextEditingController _passwordController = new TextEditingController();
+    BuildContext rootContext = context;
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text(
+            CommonUtils.getLocale(context).password,
+            style: TextStyle(fontSize: MyTextStyle.normalTextSize),
+          ),
+          content: new TextField(
+            controller: _passwordController,
+            autofocus: false,
+            style: MyTextStyle.largeText,
+            decoration: new InputDecoration(
+              labelText: CommonUtils.getLocale(context).loginPswTip,
+              suffixIcon: new IconButton(
+                icon: new Icon(Icons.clear, color: Colors.black45),
+                onPressed: () {
+                  _passwordController.text = "";
+                },
+              ),
+            ),
+            obscureText: true,
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text(
+                CommonUtils.getLocale(context).sure,
+                style: TextStyle(
+                    color: Colors.blue, fontSize: MyTextStyle.normalTextSize),
+              ),
+              onPressed: () {
+                if (_passwordController.text !=
+                    CommonUtils.getStore(context)
+                        .state
+                        .loginResponseEntity
+                        .setting
+                        .ctlAppPwd) {
+                  Fluttertoast.showToast(
+                      msg: CommonUtils.getLocale(context).passwordWrongTip);
+                } else {
+                  HttpGo.getInstance()
+                      .post(
+                          UrlPath.cancelPath +
+                              "?orderId=" +
+                              widget.orderId.toString(),
+                          cancelToken: cancelToken)
+                      .then((baseResult) {
+                    Fluttertoast.showToast(
+                        msg: CommonUtils.getLocale(context).cancelOrderSuccess);
+                    CommonUtils.eventBus.fire(ConsoleRefreshEvent());
+                    ///刷新工作面板
+                    Navigator.of(context).pop();
+                    Navigator.of(rootContext).pop();
+                  }).catchError((error) {
+                    Fluttertoast.showToast(msg: error.toString());
+                  });
+                }
+              },
+            ),
+          ],
+        );
+      },
+    ).whenComplete(() {
+      if (_passwordController != null) {
+        _passwordController.dispose();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    ///开台时间
+    String openTimeStr = orderMasterEntity.openTime != null
+        ? formatDate(
+            DateTime.fromMillisecondsSinceEpoch(orderMasterEntity.openTime),
+            [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn]).toString()
+        : "";
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       String title = CommonUtils.getLocale(context).controlTitle;
       AppBar appBar = AppBar(
@@ -178,7 +243,9 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                       type = "2";
                                       roundId = orderMasterEntity
                                           .orderRounds[index].id;
-                                      CommonUtils.eventBus.fire(new TypeRefreshEvent(type,widget.orderId,roundId));
+                                      CommonUtils.eventBus.fire(
+                                          new TypeRefreshEvent(
+                                              type, widget.orderId, roundId));
                                     });
                                   },
                                   child: Container(
@@ -190,10 +257,14 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                                 roundId
                                             ? Colors.lightBlue
                                             : Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2)),
                                         border: Border.all(
-                                            color: Colors.grey, width: 2)),
+                                            color: Colors.grey,
+                                            width: ScreenUtil.getInstance()
+                                                .setWidth(2))),
                                     height:
-                                        ScreenUtil.getInstance().setWidth(80),
+                                        ScreenUtil.getInstance().setWidth(70),
                                     child: Text(CommonUtils.getLocale(context)
                                             .round +
                                         " " +
@@ -213,16 +284,69 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                             ///总金额和台号信息
                             Row(
                               children: <Widget>[
-                                Text('酒水总价：1000'),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        "酒水总价",
+                                        style: TextStyle(
+                                            fontSize:
+                                                MyTextStyle.normalTextSize),
+                                      ),
+                                      Text(
+                                          orderMasterEntity.drinksTotalAmount
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: MyTextStyle.bigTextSize,
+                                              color: Colors.red)),
+                                    ],
+                                  ),
+                                ),
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
-                                      height: ScreenUtil.getInstance()
-                                          .setWidth(100),
-                                      alignment: Alignment.center,
-                                      child: Text("101")),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "桌号：",
+                                        style: TextStyle(
+                                            fontSize: MyTextStyle.bigTextSize),
+                                      ),
+                                      Text(
+                                        widget.buyerName+"-"+orderMasterEntity.tableNum.toString() +
+                                            "（" +
+                                            openTimeStr +
+                                            "）",
+                                        style: TextStyle(
+                                            fontSize: MyTextStyle.bigTextSize),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text("共消费：1230"),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 15),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        "总消费",
+                                        style: TextStyle(
+                                            fontSize:
+                                                MyTextStyle.normalTextSize),
+                                      ),
+                                      Text(
+                                          orderMasterEntity.totalAmount
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: MyTextStyle.bigTextSize,
+                                              color: Colors.red)),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
 
@@ -252,15 +376,16 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                           height: ScreenUtil.getInstance().setWidth(70),
                           margin: EdgeInsets.all(5.0),
                           child: FlexButton(
-                            color: Colors.grey,
+                            color: Colors.deepOrange,
                             textColor: Colors.white,
                             fontSize: MyTextStyle.normalTextSize,
                             text: "总订单",
                             onPress: () {
                               this.setState(() {
-                                type = "1";
-                                roundId=null;
-                                CommonUtils.eventBus.fire(new TypeRefreshEvent(type,widget.orderId,roundId));
+                                type = "";
+                                roundId = null;
+                                CommonUtils.eventBus.fire(new TypeRefreshEvent(
+                                    type, widget.orderId, roundId));
                               });
                             },
                           ),
@@ -278,8 +403,9 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                             onPress: () {
                               this.setState(() {
                                 type = "1";
-                                roundId=null;
-                                CommonUtils.eventBus.fire(new TypeRefreshEvent(type,widget.orderId,roundId));
+                                roundId = null;
+                                CommonUtils.eventBus.fire(new TypeRefreshEvent(
+                                    type, widget.orderId, roundId));
                               });
                             },
                           ),
@@ -305,12 +431,12 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                           height: ScreenUtil.getInstance().setWidth(70),
                           margin: EdgeInsets.all(5.0),
                           child: FlexButton(
-                            color: Colors.deepOrange,
+                            color: Colors.grey,
                             textColor: Colors.white,
                             fontSize: MyTextStyle.normalTextSize,
                             text: "取消订单",
                             onPress: () {
-                              _requestSettlement();
+                              _cancelOrder();
                             },
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
@@ -6,24 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/url_path.dart';
+import 'package:order_app/common/event/console_refresh_event.dart';
 import 'package:order_app/common/model/area_entity.dart';
-import 'package:order_app/common/model/category.dart';
-import 'package:order_app/common/model/category_response_entity.dart';
-import 'package:order_app/common/model/order_detail.dart';
-import 'package:order_app/common/model/order_master_entity.dart';
-import 'package:order_app/common/model/product.dart';
-import 'package:order_app/common/model/product_response_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/state_info.dart';
-import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/console/console_detail_page.dart';
-import 'package:order_app/page/menu_record.dart';
-import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
 
 //控制台
@@ -34,6 +26,9 @@ class ConsolePage extends StatefulWidget {
 
 class _ConsolePageState extends State<ConsolePage> {
   CancelToken cancelToken = new CancelToken();
+
+  ///监听更新操作
+  StreamSubscription streamUpdate;
   List<AreaEntity> areaList = new List();
 
   ///0:未付款 1：结账中 2：已付款 3:其他
@@ -47,6 +42,11 @@ class _ConsolePageState extends State<ConsolePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       _requestAreaData();
+      ///监听更新操作
+      streamUpdate =
+          CommonUtils.eventBus.on<ConsoleRefreshEvent>().listen((event) {
+        _requestAreaData();
+      });
     });
   }
 
@@ -297,15 +297,18 @@ class _ConsolePageState extends State<ConsolePage> {
                                                     null
                                                 ? areaList[index]
                                                     .orders[index2]
-                                                    .child.toString()
+                                                    .child
+                                                    .toString()
                                                 : "0") +
                                             "）",
                                         color: bgColor,
                                         fontSize: MyTextStyle.bigTextSize,
                                         onPress: () {
-                                          NavigatorUtils.navigatorRouter(context, ConsoleDetailPage(areaList[index]
-                                              .orders[index2]
-                                              .orderId));
+                                          NavigatorUtils.navigatorRouter(
+                                              context,
+                                              ConsoleDetailPage(areaList[index]
+                                                  .orders[index2]
+                                                  .orderId,areaList[index].name));
                                         }));
                               }),
                         ),
@@ -323,6 +326,9 @@ class _ConsolePageState extends State<ConsolePage> {
   void dispose() {
     //取消网络请求
     cancelToken.cancel("cancelled");
+    if (streamUpdate != null) {
+      streamUpdate.cancel();
+    }
     super.dispose();
   }
 }

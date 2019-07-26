@@ -108,6 +108,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
     if (mounted) {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
         "cid": cId,
+        "pageNum": 1,
         "pageSize": Config.PAGE_SIZE,
       },cancelToken: cancelToken).then((baseResult) {
         this.setState(() {
@@ -196,7 +197,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
                                 padding: EdgeInsets.all(8.0),
-                                height: ScreenUtil.getInstance().setWidth(110),
+                                height: ScreenUtil.getInstance().setWidth(100),
                                 color: index == selectTypeIndex
                                     ? Colors.lightBlue
                                     : Colors.black,
