@@ -275,6 +275,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                           child: Container(
                             child: Row(
                               children: <Widget>[
+                                (widget.type==2&&store.state.loginResponseEntity.setting.isLunch)||widget.type==1?
                                 Expanded(
                                   child: Container(
                                     height:
@@ -295,10 +296,11 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                       },
                                     ),
                                   ),
-                                ),
-                                SizedBox(
+                                ):Container(),
+                                widget.type!=2? SizedBox(
                                   width: ScreenUtil.getInstance().setWidth(30),
-                                ),
+                                ):Container(),
+                              (widget.type==2&&store.state.loginResponseEntity.setting.isDiner)||widget.type==1?
                                 Expanded(
                                   child: Container(
                                     height:
@@ -319,7 +321,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                                       },
                                     ),
                                   ),
-                                ),
+                                ):Container(),
                               ],
                             ),
                           )),

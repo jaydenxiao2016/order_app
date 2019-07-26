@@ -199,4 +199,17 @@ class StringEn extends StringBase {
   String cancelOrderSuccess="Successful cancellation of orders";
   @override
   String updateSuccess="Successful revision";
+
+  @override
+  String statusNotPay="Unpaid";
+  @override
+  String statusPaying="In payment";
+  @override
+  String totalPrice="Total Consumption";
+  @override
+  String drinkPrice="Drinking consumption";
+  @override
+  String allOrderDetail="Total order";
+  @override
+  String drinkDetail="Liquor orders";
 }

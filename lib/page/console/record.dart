@@ -226,6 +226,8 @@ class _RecordState extends State<Record> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               CommonUtils.getLocale(context).serialNum,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: MyTextStyle.smallTextSize),

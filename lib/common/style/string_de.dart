@@ -197,4 +197,17 @@ class StringDe extends StringBase {
   String cancelOrderSuccess="Erfolgreiche Stornierung von Bestellungen";
   @override
   String updateSuccess="Erfolgreiche Revision";
+
+  @override
+  String statusNotPay="Unbezahlte";
+  @override
+  String statusPaying="In Zahlung";
+  @override
+  String totalPrice="Verbrauch insgesamt";
+  @override
+  String drinkPrice="Alkoholkonsum und -konsum";
+  @override
+  String allOrderDetail="Bestellung insgesamt";
+  @override
+  String drinkDetail="Bestellungen für Alkohol";
 }

@@ -72,82 +72,6 @@ class _ConsolePageState extends State<ConsolePage> {
     }
   }
 
-  ///确认结账
-  _requestSettlement(int orderId) async {
-    if (mounted) {
-      ///提示
-      showDialog<Null>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return Container(
-            margin: EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: ScreenUtil.getInstance().setWidth(450),
-                  height: ScreenUtil.getInstance().setWidth(90),
-                  margin: EdgeInsets.all(10.0),
-                  child: FlexButton(
-                    color: Colors.grey,
-                    textColor: Colors.white,
-                    fontSize: MyTextStyle.bigTextSize,
-                    text: CommonUtils.getLocale(context).cancelOrder,
-                    onPress: () {
-                      Navigator.of(context).pop();
-                      HttpGo.getInstance()
-                          .post(
-                              UrlPath.cancelPath +
-                                  "?orderId=" +
-                                  orderId.toString(),
-                              cancelToken: cancelToken)
-                          .then((baseResult) {
-                        Fluttertoast.showToast(
-                            msg: CommonUtils.getLocale(context)
-                                .cancelOrderSuccess);
-                        _requestAreaData();
-                      }).catchError((error) {
-                        Fluttertoast.showToast(msg: error.toString());
-                      });
-                    },
-                  ),
-                ),
-                Container(
-                  width: ScreenUtil.getInstance().setWidth(450),
-                  height: ScreenUtil.getInstance().setWidth(90),
-                  margin: EdgeInsets.all(105.0),
-                  child: FlexButton(
-                    color: Colors.deepOrange,
-                    textColor: Colors.white,
-                    fontSize: MyTextStyle.bigTextSize,
-                    text: CommonUtils.getLocale(context).payedOrder,
-                    onPress: () {
-                      Navigator.of(context).pop();
-                      HttpGo.getInstance()
-                          .post(
-                              UrlPath.settlementPath +
-                                  "?orderId=" +
-                                  orderId.toString(),
-                              cancelToken: cancelToken)
-                          .then((baseResult) {
-                        Fluttertoast.showToast(
-                            msg: CommonUtils.getLocale(context)
-                                .payedOrderSuccess);
-                        _requestAreaData();
-                      }).catchError((error) {
-                        Fluttertoast.showToast(msg: error.toString());
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +88,7 @@ class _ConsolePageState extends State<ConsolePage> {
                 margin: EdgeInsets.all(5.0),
                 color: notPayColor,
               ),
-              Text("未结账")
+              Text(CommonUtils.getLocale(context).statusNotPay)
             ],
           ),
           Row(
@@ -175,7 +99,7 @@ class _ConsolePageState extends State<ConsolePage> {
                 margin: EdgeInsets.all(5.0),
                 color: payingColor,
               ),
-              Text("结账中"),
+              Text(CommonUtils.getLocale(context).statusPaying),
               SizedBox(
                 width: ScreenUtil.getInstance().setWidth(10),
               )

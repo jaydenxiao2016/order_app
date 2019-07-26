@@ -203,7 +203,10 @@ class _DrinkRecordState extends State<DrinkRecord> {
                             flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(CommonUtils.getLocale(context).serialNum, textAlign: TextAlign.center,style: TextStyle(
+                              child: Text(CommonUtils.getLocale(context).serialNum, textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
                                   fontSize: MyTextStyle.smallTextSize
                               ),),
                             ),

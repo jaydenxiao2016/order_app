@@ -105,4 +105,11 @@ abstract class StringBase {
   String payedOrderSuccess;
   String cancelOrderSuccess;
   String updateSuccess;
+
+  String statusNotPay;
+  String statusPaying;
+  String totalPrice;
+  String drinkPrice;
+  String allOrderDetail;
+  String drinkDetail;
 }

@@ -85,7 +85,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
               style: TextStyle(fontSize: MyTextStyle.normalTextSize),
             ),
             content: new Text(
-              "确认已结账吗",
+              CommonUtils.getLocale(context).payedOrderSuccess,
               style: TextStyle(fontSize: MyTextStyle.bigTextSize),
             ),
             actions: <Widget>[
@@ -269,7 +269,12 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                             .round +
                                         " " +
                                         orderMasterEntity.orderRounds[index].num
-                                            .toString()),
+                                            .toString(),style: TextStyle(
+                                      fontSize: MyTextStyle.normalTextSize,
+                                        color:orderMasterEntity
+                                            .orderRounds[index].id ==
+                                            roundId?Colors.white:Colors.black
+                                    ),),
                                   ),
                                 );
                               }),
@@ -278,7 +283,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
 
                       ///右边总金额和订单明细
                       Expanded(
-                        flex: 4,
+                        flex: 5,
                         child: Column(
                           children: <Widget>[
                             ///总金额和台号信息
@@ -291,7 +296,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        "酒水总价",
+                                        CommonUtils.getLocale(context).drinkPrice,
                                         style: TextStyle(
                                             fontSize:
                                                 MyTextStyle.normalTextSize),
@@ -310,7 +315,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
-                                        "桌号：",
+                                        CommonUtils.getLocale(context).tableNum,
                                         style: TextStyle(
                                             fontSize: MyTextStyle.bigTextSize),
                                       ),
@@ -332,7 +337,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        "总消费",
+                                        CommonUtils.getLocale(context).totalPrice,
                                         style: TextStyle(
                                             fontSize:
                                                 MyTextStyle.normalTextSize),
@@ -378,10 +383,10 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                             color: Colors.deepOrange,
                             textColor: Colors.white,
                             fontSize: MyTextStyle.normalTextSize,
-                            text: "总订单",
+                            text: CommonUtils.getLocale(context).allOrderDetail,
                             onPress: () {
                               this.setState(() {
-                                type = "";
+                                type = "1,2";
                                 roundId = null;
                                 CommonUtils.eventBus.fire(new TypeRefreshEvent(
                                     type, widget.orderId, roundId));
@@ -398,7 +403,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                             color: Colors.deepOrange,
                             textColor: Colors.white,
                             fontSize: MyTextStyle.normalTextSize,
-                            text: "酒水订单",
+                            text: CommonUtils.getLocale(context).drinkDetail,
                             onPress: () {
                               this.setState(() {
                                 type = "1";
@@ -418,7 +423,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                             color: Colors.deepOrange,
                             textColor: Colors.white,
                             fontSize: MyTextStyle.normalTextSize,
-                            text: "确认已付款",
+                            text: CommonUtils.getLocale(context).payedOrder,
                             onPress: () {
                               _requestSettlement();
                             },
@@ -433,7 +438,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                             color: Colors.grey,
                             textColor: Colors.white,
                             fontSize: MyTextStyle.normalTextSize,
-                            text: "取消订单",
+                            text: CommonUtils.getLocale(context).cancelOrder,
                             onPress: () {
                               _cancelOrder();
                             },

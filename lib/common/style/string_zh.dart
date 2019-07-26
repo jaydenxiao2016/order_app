@@ -196,4 +196,17 @@ class StringZh extends StringBase {
   String cancelOrderSuccess="取消订单成功";
 @override
   String updateSuccess="修改成功";
+
+  @override
+  String statusNotPay="未付款";
+  @override
+  String statusPaying="付款中";
+  @override
+  String totalPrice="总消费";
+  @override
+  String drinkPrice="酒水消费";
+  @override
+  String allOrderDetail="总订单";
+  @override
+  String drinkDetail="酒水订单";
 }

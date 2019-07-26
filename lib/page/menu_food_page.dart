@@ -210,7 +210,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
                                 padding: EdgeInsets.all(8.0),
-                                height: ScreenUtil.getInstance().setWidth(100),
+                                height: ScreenUtil.getInstance().setWidth(110),
                                 color: index == selectTypeIndex
                                     ? Colors.lightBlue
                                     : Colors.black,
