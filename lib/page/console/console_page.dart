@@ -16,6 +16,7 @@ import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/console/console_detail_page.dart';
+import 'package:order_app/widget/AvoidDoubleClickInkWell.dart';
 import 'package:order_app/widget/flex_button.dart';
 
 //控制台
@@ -105,6 +106,17 @@ class _ConsolePageState extends State<ConsolePage> {
               )
             ],
           ),
+          AvoidDoubleClickInkWell(
+            onTap: (){
+              _requestAreaData();
+            },
+            child: Container(
+              alignment: Alignment.center,
+                padding: EdgeInsets.only(left: 15,right: 25),
+                child: Text("刷新",style: TextStyle(
+                  fontSize: MyTextStyle.normalTextSize
+                ),)),
+          ),
 //          Row(
 //            children: <Widget>[
 //              Container(
@@ -132,7 +144,6 @@ class _ConsolePageState extends State<ConsolePage> {
 //          )
         ],
       );
-      print(appBar.preferredSize.height);
       return Scaffold(
         appBar: appBar,
         body: Container(
