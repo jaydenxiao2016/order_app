@@ -23,6 +23,7 @@ import 'package:order_app/page/control/service_control_page.dart';
 import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_drink_page.dart';
 import 'package:order_app/page/menu_service_page.dart';
+import 'package:order_app/widget/AvoidDoubleClickInkWell.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
@@ -379,7 +380,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                   children: <Widget>[
                     ///酒水
                     Expanded(
-                      child: InkWell(
+                      child: AvoidDoubleClickInkWell(
                         onTap: () {
                           NavigatorUtils.navigatorRouter(
                               context, MenuDrinkPage());
@@ -416,7 +417,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
                     ///餐单
                     Expanded(
-                      child: InkWell(
+                      child: AvoidDoubleClickInkWell(
                         onTap: () {
                           this._toOrderFood();
                         },
@@ -452,7 +453,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
                     ///服务
                     Expanded(
-                      child: InkWell(
+                      child: AvoidDoubleClickInkWell(
                         onTap: () {
                           NavigatorUtils.navigatorRouter(
                               context, MenuServicePage());
@@ -489,7 +490,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
                     ///支付/买单
                     Expanded(
-                      child: InkWell(
+                      child: AvoidDoubleClickInkWell(
                         onTap: () {
                           ///提示
                           showDialog<Null>(

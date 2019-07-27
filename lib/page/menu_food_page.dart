@@ -116,6 +116,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
     if (mounted) {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
         "cid": cId,
+        "type": CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderType,
         "pageNum": 1,
         "pageSize": Config.PAGE_SIZE,
       },cancelToken: cancelToken).then((baseResult) {

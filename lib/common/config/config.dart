@@ -20,6 +20,7 @@ class Config {
   ///服务菜单id
   static const int DRINK_SERVICE_ID = 3;
   ///明细类型 1 酒水类明细 2菜品类明细 3服务类明细
+  static const String ALL_TYPE = '0';
   static const String DETAIL_DRINK_TYPE = '1';
   static const String DETAIL_FOOD_TYPE = '2';
   static const String DETAIL_SERVICE_TYPE = '3';
