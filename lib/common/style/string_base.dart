@@ -97,6 +97,7 @@ abstract class StringBase {
 
   String tip;
   String payTip;
+  String payTipSuccess;
   String cancel;
 
   String payedOrder;

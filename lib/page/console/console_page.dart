@@ -175,7 +175,7 @@ class _ConsolePageState extends State<ConsolePage> {
                                       crossAxisCount: 1,
                                       mainAxisSpacing:
                                           ScreenUtil.getInstance().setWidth(20),
-                                      childAspectRatio: 4,
+                                      childAspectRatio: 3,
                                       crossAxisSpacing: ScreenUtil.getInstance()
                                           .setWidth(20)),
                               scrollDirection: Axis.vertical,
@@ -200,40 +200,46 @@ class _ConsolePageState extends State<ConsolePage> {
                                     break;
                                 }
                                 return Container(
-                                    height:
-                                        ScreenUtil.getInstance().setWidth(100),
                                     width:
                                         ScreenUtil.getInstance().setWidth(100),
+                                    color: Colors.black,
                                     alignment: Alignment.center,
-                                    child: FlexButton(
-                                        text: areaList[index]
-                                                .orders[index2]
-                                                .tableNum +
-                                            "（" +
-                                            areaList[index]
-                                                .orders[index2]
-                                                .adult
-                                                .toString() +
-                                            "." +
-                                            (areaList[index]
-                                                        .orders[index2]
-                                                        .child !=
-                                                    null
-                                                ? areaList[index]
-                                                    .orders[index2]
-                                                    .child
-                                                    .toString()
-                                                : "0") +
-                                            "）",
-                                        color: bgColor,
-                                        fontSize: MyTextStyle.bigTextSize,
-                                        onPress: () {
-                                          NavigatorUtils.navigatorRouter(
-                                              context,
-                                              ConsoleDetailPage(areaList[index]
+                                    child: Column(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: FlexButton(
+                                              text: areaList[index]
                                                   .orders[index2]
-                                                  .orderId,areaList[index].name));
-                                        }));
+                                                  .tableNum +
+                                                  "（" +
+                                                  areaList[index]
+                                                      .orders[index2]
+                                                      .adult
+                                                      .toString() +
+                                                  "." +
+                                                  (areaList[index]
+                                                      .orders[index2]
+                                                      .child !=
+                                                      null
+                                                      ? areaList[index]
+                                                      .orders[index2]
+                                                      .child
+                                                      .toString()
+                                                      : "0") +
+                                                  "）",
+                                              color: bgColor,
+                                              fontSize: MyTextStyle.bigTextSize,
+                                              maxLines: 2,
+                                              onPress: () {
+                                                NavigatorUtils.navigatorRouter(
+                                                    context,
+                                                    ConsoleDetailPage(areaList[index]
+                                                        .orders[index2]
+                                                        .orderId,areaList[index].name));
+                                              })
+                                        )
+                                      ],
+                                    ));
                               }),
                         ),
                       ),

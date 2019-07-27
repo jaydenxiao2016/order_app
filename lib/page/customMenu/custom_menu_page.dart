@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +20,7 @@ import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:order_app/page/console/pay_detail_page.dart';
 import 'package:order_app/page/control/service_control_page.dart';
 import 'package:order_app/page/drink_record.dart';
 import 'package:order_app/page/menu_drink_page.dart';
@@ -492,51 +494,16 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          ///提示
-                          showDialog<Null>(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                              return new AlertDialog(
-                                title: new Text(
-                                  CommonUtils.getLocale(context).tip,
-                                  style: TextStyle(
-                                      fontSize: MyTextStyle.normalTextSize),
-                                ),
-                                content: new Text(
-                                  CommonUtils.getLocale(context).payTip,
-                                  style: TextStyle(
-                                      fontSize: MyTextStyle.bigTextSize),
-                                ),
-                                actions: <Widget>[
-                                  new FlatButton(
-                                    child: new Text(
-                                      CommonUtils.getLocale(context).cancel,
-                                      style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: MyTextStyle.normalTextSize),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  new FlatButton(
-                                    child: new Text(
-                                      CommonUtils.getLocale(context).sure,
-                                      style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: MyTextStyle.normalTextSize),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      _toNotifyPay();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          ).then((val) {
-                            print(val);
+                          Navigator.push<bool>(
+                              context,
+                              new CupertinoPageRoute(
+                                  builder: (context) => PageDetailPage(store.state.loginResponseEntity.orderMasterEntity.orderId,
+                                      store.state.loginResponseEntity.setting.buyerName)))
+                              .then((isFinish) {
+                            if (isFinish != null && isFinish) {
+                              Navigator.pop(context);
+                              NavigatorUtils.pushReplacementNamed(context, RoutePath.LOGIN_PATH);
+                            }
                           });
                         },
                         child: Container(

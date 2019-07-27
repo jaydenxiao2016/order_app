@@ -71,11 +71,11 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
         ///修改进来时要初始化值
         if (widget.type == 2) {
           _adultController.text =
-              store.state.loginResponseEntity.setting.adult.toString();
+              store.state.loginResponseEntity.setting.adult.toString()??"";
           _childrenController.text =
-              store.state.loginResponseEntity.setting.children.toString();
+              store.state.loginResponseEntity.setting.children!=null?store.state.loginResponseEntity.setting.children.toString():"";
           _tableNumController.text =
-              store.state.loginResponseEntity.setting.tableNum.toString();
+              store.state.loginResponseEntity.setting.tableNum.toString()??"";
           this.setState(() {
             _buyerId = store.state.loginResponseEntity.setting.buyerId;
             _buyerName = store.state.loginResponseEntity.setting.buyerName;
@@ -160,10 +160,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
                   flex: 2,
                   child: Column(
                     children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: LanguageSetting(),
-                      ),
+                      LanguageSetting(),
                       //客人位数信息
                       Expanded(
                           flex: 4,

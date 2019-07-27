@@ -184,6 +184,8 @@ class StringZh extends StringBase {
   @override
   String payTip="确定要通知付款吗";
   @override
+  String payTipSuccess="通知付款成功";
+  @override
   String cancel="取消";
 
 @override

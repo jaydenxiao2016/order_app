@@ -187,6 +187,8 @@ class StringEn extends StringBase {
   @override
   String payTip="Are you sure you want to notify the payment?";
   @override
+  String payTipSuccess="Meldung der erfolgreichen Zahlung";
+  @override
   String cancel="Cancel";
 
   @override

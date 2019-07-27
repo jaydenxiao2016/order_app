@@ -186,6 +186,8 @@ class StringDe extends StringBase {
   @override
   String payTip="Sind Sie sicher, dass Sie die Zahlung benachrichtigen möchten?";
   @override
+  String payTipSuccess="Notification of successful payment";
+  @override
   String cancel="Stornieren";
   @override
   String payedOrder="Bestätigte Zahlung";
