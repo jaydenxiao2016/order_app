@@ -27,7 +27,7 @@ class StringDe extends StringBase {
   @override
   String workbenchTitle="Arbeitsplatz";
   @override
-  String controlTitle="Konsole";
+  String controlTitle="Verwaltung";
 
   @override
   String languageDefault = "Die standard";
@@ -78,11 +78,11 @@ class StringDe extends StringBase {
 
 
   @override
-  String loginTitle = "Melden Sie sich";
+  String loginTitle = "Anmelden";
   @override
   String loginTip = "Bitte einloggen";
   @override
-  String login = "Melden Sie sich";
+  String login = "Anmelden";
   @override
   String loginUserTitle="Geben Sie einen Benutzernamen ein";
   @override
@@ -117,7 +117,7 @@ class StringDe extends StringBase {
   @override
   String children="Kinder";
   @override
-  String tableNum="TischNumber";
+  String tableNum="Tisch Nr";
   @override
   String password="Passwort";
   @override
@@ -129,7 +129,7 @@ class StringDe extends StringBase {
   @override
   String updateMenu="Update(Speisekarte)";
   @override
-  String service="Dienstleistungen";
+  String service="Extra Wunsch";
   @override
   String lunch="Mittag";
   @override
@@ -137,7 +137,7 @@ class StringDe extends StringBase {
   @override
   String emptyTip="Bitte wählen Sie mindestens eine";
   @override
-  String countTimer="Zählen Sie ab";
+  String countTimer="";
   @override
   String waitingTip="Warten auf die nächste runde";
 
@@ -150,7 +150,7 @@ class StringDe extends StringBase {
   @override
   String round="Runde";
   @override
-  String customWorkbenchService="Die gäste arbeitstisch";
+  String customWorkbenchService="";
   @override
   String drink="Getränke";
   @override
@@ -168,9 +168,9 @@ class StringDe extends StringBase {
   @override
   String orderSure="Bestätigung der Bestellung";
   @override
-  String serialNum="Laufende Nummer";
+  String serialNum="Nr";
   @override
-  String category="Kategorie";
+  String category="";
   @override
   String categories="Kategorien";
   @override
@@ -180,11 +180,12 @@ class StringDe extends StringBase {
   @override
   String price="Preis";
   @override
-  String orderSuccess="Erfolg der Kasse";
+  String orderSuccess="Bestellung Erfolgreich";
   @override
   String tip="Tipps";
   @override
   String payTip="Sind Sie sicher, dass Sie die Zahlung benachrichtigen möchten?";
+
   @override
   String payTipSuccess="Notification of successful payment";
   @override
@@ -201,15 +202,16 @@ class StringDe extends StringBase {
   String updateSuccess="Erfolgreiche Revision";
 
   @override
-  String statusNotPay="Unbezahlte";
+  String statusNotPay="Offen";
   @override
   String statusPaying="In Zahlung";
   @override
-  String totalPrice="Verbrauch insgesamt";
+  String totalPrice="Summe";
   @override
-  String drinkPrice="Alkoholkonsum und -konsum";
+  String drinkPrice="Getränke";
   @override
   String allOrderDetail="Bestellung insgesamt";
   @override
-  String drinkDetail="Bestellungen für Alkohol";
+  String drinkDetail="Getränke";
 }
+

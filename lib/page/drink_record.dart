@@ -35,23 +35,7 @@ Widget _getContent(int i, OrderDetail value) {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              (i+1).toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-            ),
-          ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              value.categoryId.toString(),
+              value.productId.toString(),
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
             ),
@@ -209,20 +193,6 @@ class _DrinkRecordState extends State<DrinkRecord> {
                                 style: TextStyle(
                                   fontSize: MyTextStyle.smallTextSize
                               ),),
-                            ),
-                          ),
-                          Container(
-                            color: Colors.white,
-                            height: 35.0,
-                            width: 1,
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(CommonUtils.getLocale(context).category, textAlign: TextAlign.center,style: TextStyle(
-                                  fontSize: MyTextStyle.smallTextSize
-                              )),
                             ),
                           ),
                           Container(
