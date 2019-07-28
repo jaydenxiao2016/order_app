@@ -114,7 +114,7 @@ class HttpGo {
         }
         ///接口数据失败
         else {
-          return new Future.error(_code==101?_code:_msg);
+          return new Future.error((_code==101||_code==102)?_code:_msg);
         }
       } catch (e) {
         print(e);

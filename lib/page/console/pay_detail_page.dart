@@ -122,7 +122,13 @@ class _PageDetailPageState extends State<PageDetailPage> {
                   Navigator.of(context).pop();
                   Navigator.of(rootContext).pop(true);
                 }).catchError((error) {
-                  Fluttertoast.showToast(msg: error.toString());
+                  if(error==102){
+                    Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payTipSuccess);
+                    Navigator.of(context).pop();
+                    Navigator.of(rootContext).pop(true);
+                  }else {
+                    Fluttertoast.showToast(msg: error.toString());
+                  }
                 });
               },
             ),

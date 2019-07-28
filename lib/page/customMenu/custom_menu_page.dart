@@ -52,7 +52,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
   int currentTimeSecond = 0;
 
   ///是否能操作
-  bool isCanOperate=true;
+  bool isCanOperate = true;
 
   ///时间字符串
   String get timerString {
@@ -108,10 +108,11 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       }
     });
   }
+
   ///结束倒计时
-  _cancelCountdown(){
+  _cancelCountdown() {
     //倒计时结束
-    if(countdownTimer!=null) {
+    if (countdownTimer != null) {
       countdownTimer.cancel();
       countdownTimer = null;
     }
@@ -174,7 +175,6 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       NavigatorUtils.navigatorRouter(context, MenuFoodPage());
     }
   }
-
 
   ///更新设置 type 1:退出确认 2：设置更新
   _updateOrderSetting(int type) {
@@ -253,12 +253,14 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           actions: <Widget>[
             InkWell(
               onTap: () {
-                _updateOrderSetting(2);
+                if(isCanOperate) {
+                  _updateOrderSetting(2);
+                }
               },
               child: Container(
-                margin: EdgeInsets.only(right: 20.0),
+                padding: EdgeInsets.only(left:20.0,right: 20.0),
                 child: Image.asset(
-                  'static/images/icon_setting.png',
+                  'static/images/icon_setting.png',color: isCanOperate?Colors.white:Colors.grey,
                   height: ScreenUtil.getInstance().setWidth(45),
                   width: ScreenUtil.getInstance().setWidth(45),
                 ),
@@ -309,7 +311,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           Expanded(
                             child: Center(
                                 child: Text(
-                              currentTimeSecond != 0
+                                    (currentTimeSecond != 0&&isCanOperate)
                                   ? timerString
                                   : CommonUtils.getLocale(context).countTimer,
                               style: TextStyle(
@@ -376,7 +378,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          if(isCanOperate) {
+                          if (isCanOperate) {
                             NavigatorUtils.navigatorRouter(
                                 context, MenuDrinkPage());
                           }
@@ -403,7 +405,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 child: Text(
                                   CommonUtils.getLocale(context).drink,
                                   style: TextStyle(
-                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    color: isCanOperate
+                                        ? Colors.white
+                                        : Colors.grey,
                                     fontSize: MyTextStyle.bigTextSize,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -419,7 +423,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          if(isCanOperate) {
+                          if (isCanOperate) {
                             this._toOrderFood();
                           }
                         },
@@ -445,7 +449,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 child: Text(
                                   CommonUtils.getLocale(context).menu,
                                   style: TextStyle(
-                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    color: isCanOperate
+                                        ? Colors.white
+                                        : Colors.grey,
                                     fontSize: MyTextStyle.bigTextSize,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -461,10 +467,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                            if(isCanOperate) {
-                              NavigatorUtils.navigatorRouter(
-                                  context, MenuServicePage());
-                            }
+                          if (isCanOperate) {
+                            NavigatorUtils.navigatorRouter(
+                                context, MenuServicePage());
+                          }
                         },
                         child: Container(
                           margin: EdgeInsets.all(5.0),
@@ -488,7 +494,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 child: Text(
                                   CommonUtils.getLocale(context).service,
                                   style: TextStyle(
-                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    color: isCanOperate
+                                        ? Colors.white
+                                        : Colors.grey,
                                     fontSize: MyTextStyle.bigTextSize,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -504,25 +512,24 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          if(isCanOperate) {
-                            Navigator.push<bool>(
-                                context,
-                                new CupertinoPageRoute(
-                                    builder: (context) =>
-                                        PageDetailPage(
-                                            store.state.loginResponseEntity.orderMasterEntity.orderId,
-                                            store.state.loginResponseEntity.setting.buyerName)))
-                                .then((isFinish) {
-                              if (isFinish != null && isFinish) {
-                                ///已通知支付后停止倒计时
-                                _cancelCountdown();
-                                ///已通知支付后上锁
-                                setState(() {
-                                  isCanOperate = false;
-                                });
-                              }
-                            });
-                          }
+                          Navigator.push<bool>(
+                              context,
+                              new CupertinoPageRoute(
+                                  builder: (context) => PageDetailPage(
+                                      store.state.loginResponseEntity
+                                          .orderMasterEntity.orderId,
+                                      store.state.loginResponseEntity.setting
+                                          .buyerName))).then((isFinish) {
+                            if (isFinish != null && isFinish) {
+                              ///已通知支付后停止倒计时
+                              _cancelCountdown();
+
+                              ///已通知支付后上锁
+                              setState(() {
+                                isCanOperate = false;
+                              });
+                            }
+                          });
                         },
                         child: Container(
                           margin: EdgeInsets.all(5.0),
@@ -546,7 +553,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 child: Text(
                                   CommonUtils.getLocale(context).payment,
                                   style: TextStyle(
-                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    color: Colors.white,
                                     fontSize: MyTextStyle.bigTextSize,
                                     fontWeight: FontWeight.bold,
                                   ),
