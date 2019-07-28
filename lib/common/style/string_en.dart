@@ -134,6 +134,8 @@ class StringEn extends StringBase {
   @override
   String service="Service";
   @override
+  String serviceControl="Service";
+  @override
   String lunch="Lunch";
   @override
   String dinner="Dinner";
@@ -214,4 +216,6 @@ class StringEn extends StringBase {
   String allOrderDetail="Total order";
   @override
   String drinkDetail="Liquor orders";
+  @override
+  String refresh="Refresh";
 }

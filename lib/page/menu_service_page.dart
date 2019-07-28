@@ -141,9 +141,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
-      String title = CommonUtils.getLocale(context).service +
-          " " +
-          CommonUtils.getLocale(context).menu;
+      String title = CommonUtils.getLocale(context).service;
       return Scaffold(
         appBar: AppBar(
           title: Text(title),

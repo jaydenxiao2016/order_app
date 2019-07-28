@@ -129,6 +129,8 @@ class StringDe extends StringBase {
   @override
   String updateMenu="Update(Speisekarte)";
   @override
+  String serviceControl="Service";
+  @override
   String service="Extra Wunsch";
   @override
   String lunch="Mittag";
@@ -213,5 +215,8 @@ class StringDe extends StringBase {
   String allOrderDetail="Bestellung insgesamt";
   @override
   String drinkDetail="Getränke";
+  @override
+  String refresh="Aktualisieren";
+
 }
 

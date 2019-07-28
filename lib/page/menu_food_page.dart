@@ -153,10 +153,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
       ///计算限制点餐总数
       _calculateTotalNumLimited(store);
       ///标题
-      String title = store.state.loginResponseEntity.setting.isLunch
-          ? CommonUtils.getLocale(context).lunch
-          : CommonUtils.getLocale(context).dinner;
-      title += " " + CommonUtils.getLocale(context).menu;
+      String title = CommonUtils.getLocale(context).menu;
       return Scaffold(
         appBar: AppBar(
           title: Text(title),

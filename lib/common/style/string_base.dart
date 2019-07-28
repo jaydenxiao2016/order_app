@@ -56,6 +56,7 @@ abstract class StringBase {
   String dinnerItem;
   String timer;
   String updateMenu;
+  String serviceControl;
   String service;
   String lunch;
   String dinner;
@@ -113,4 +114,5 @@ abstract class StringBase {
   String drinkPrice;
   String allOrderDetail;
   String drinkDetail;
+  String refresh;
 }

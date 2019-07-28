@@ -129,6 +129,8 @@ class StringZh extends StringBase {
   @override
   String service = "服务";
   @override
+  String serviceControl="服务";
+  @override
   String lunch = "午餐";
   @override
   String dinner = "晚餐";
@@ -211,4 +213,6 @@ class StringZh extends StringBase {
   String allOrderDetail="总订单";
   @override
   String drinkDetail="酒水订单";
+  @override
+  String refresh="刷新";
 }

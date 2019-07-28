@@ -142,9 +142,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   @override
   Widget build(BuildContext context) {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
-      String title = CommonUtils.getLocale(context).drink +
-          " " +
-          CommonUtils.getLocale(context).menu;
+      String title = CommonUtils.getLocale(context).drink;
       return Scaffold(
         appBar: AppBar(
           title: Text(title),

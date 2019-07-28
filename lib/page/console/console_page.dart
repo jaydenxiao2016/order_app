@@ -113,35 +113,10 @@ class _ConsolePageState extends State<ConsolePage> {
             child: Container(
               alignment: Alignment.center,
                 padding: EdgeInsets.only(left: 15,right: 25),
-                child: Text("刷新",style: TextStyle(
+                child: Text(CommonUtils.getLocale(context).refresh,style: TextStyle(
                   fontSize: MyTextStyle.normalTextSize
                 ),)),
           ),
-//          Row(
-//            children: <Widget>[
-//              Container(
-//                height: 20,
-//                width: 40,
-//                margin: EdgeInsets.all(5.0),
-//                color: payedColor,
-//              ),
-//              Text("已结账"),
-//            ],
-//          ),
-//          Row(
-//            children: <Widget>[
-//              Container(
-//                height: 20,
-//                width: 40,
-//                margin: EdgeInsets.all(5.0),
-//                color: otherColor,
-//              ),
-//              Text("其他"),
-//              SizedBox(
-//                width: 10,
-//              )
-//            ],
-//          )
         ],
       );
       return Scaffold(

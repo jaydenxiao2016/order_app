@@ -91,7 +91,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
       return Scaffold(
         resizeToAvoidBottomPadding: false, //输入框抵住键盘
         appBar: AppBar(
-          title: Text(CommonUtils.getLocale(context).service),
+          title: Text(CommonUtils.getLocale(context).serviceControl),
           centerTitle: true,
         ),
         body: Container(
