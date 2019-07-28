@@ -214,6 +214,10 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
         : "";
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       String title = CommonUtils.getLocale(context).controlTitle;
+      double adultPrice=orderMasterEntity.orderType=="1"?store.state.loginResponseEntity.setting.adultLunchPrice:store.state.loginResponseEntity.setting.adultDinnerPrice;
+      double childPrice=orderMasterEntity.orderType=="1"?store.state.loginResponseEntity.setting.childLunchPrice:store.state.loginResponseEntity.setting.childDinnerPrice;
+      double adultTotalPrice=adultPrice*(orderMasterEntity.adult??0);
+      double childTotalPrice=childPrice*(orderMasterEntity.child??0);
       AppBar appBar = AppBar(
         title: Text(title),
       );
@@ -303,6 +307,46 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                                       ),
                                       Text(
                                           orderMasterEntity.drinksTotalAmount!=null?orderMasterEntity.drinksTotalAmount.toString():"0",
+                                          style: TextStyle(
+                                              fontSize: MyTextStyle.bigTextSize,
+                                              color: Colors.red)),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        CommonUtils.getLocale(context).adult.toString()+"("+orderMasterEntity.adult.toString()+")",
+                                        style: TextStyle(
+                                            fontSize:
+                                            MyTextStyle.normalTextSize),
+                                      ),
+                                      Text(
+                                          adultTotalPrice.toString(),
+                                          style: TextStyle(
+                                              fontSize: MyTextStyle.bigTextSize,
+                                              color: Colors.red)),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        CommonUtils.getLocale(context).children.toString()+"("+(orderMasterEntity.child.toString()??"0")+")",
+                                        style: TextStyle(
+                                            fontSize:
+                                            MyTextStyle.normalTextSize),
+                                      ),
+                                      Text(
+                                          childTotalPrice.toString(),
                                           style: TextStyle(
                                               fontSize: MyTextStyle.bigTextSize,
                                               color: Colors.red)),

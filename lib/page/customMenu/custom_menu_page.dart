@@ -51,6 +51,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
   ///倒计时总时长（秒）
   int currentTimeSecond = 0;
 
+  ///是否能操作
+  bool isCanOperate=true;
+
   ///时间字符串
   String get timerString {
     Duration duration = new Duration(seconds: currentTimeSecond);
@@ -75,8 +78,6 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           .loginResponseEntity
           .setting
           .isTimeFinish) {
-        print("更新");
-
         ///重新开始倒计时
         _startCountdown();
       }
@@ -102,14 +103,21 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           currentTimeSecond = currentTimeSecond - 1;
         });
       } else {
-        //倒计时结束
-        countdownTimer.cancel();
-        countdownTimer = null;
-        Store<StateInfo> store = CommonUtils.getStore(context);
-        store.state.loginResponseEntity.setting.isTimeFinish = true;
-        store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
+        ///倒计时结束
+        _cancelCountdown();
       }
     });
+  }
+  ///结束倒计时
+  _cancelCountdown(){
+    //倒计时结束
+    if(countdownTimer!=null) {
+      countdownTimer.cancel();
+      countdownTimer = null;
+    }
+    Store<StateInfo> store = CommonUtils.getStore(context);
+    store.state.loginResponseEntity.setting.isTimeFinish = true;
+    store.dispatch(RefreshLoginInfoAction(store.state.loginResponseEntity));
   }
 
   ///获取主订单详情
@@ -167,22 +175,6 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     }
   }
 
-  ///通知付款
-  _toNotifyPay() async {
-    Store<StateInfo> store = CommonUtils.getStore(context);
-    return await HttpGo.getInstance()
-        .post(UrlPath.notifyPay +
-            "?orderId=" +
-            store.state.loginResponseEntity.orderMasterEntity.orderId
-                .toString())
-        .then((baseResult) {
-      ///跳转到服务员设置界面
-      Fluttertoast.showToast(msg: "通知付款成功");
-      NavigatorUtils.pushReplacementNamed(context, RoutePath.LOGIN_PATH);
-    }).catchError((error) {
-      Fluttertoast.showToast(msg: error.toString());
-    });
-  }
 
   ///更新设置 type 1:退出确认 2：设置更新
   _updateOrderSetting(int type) {
@@ -384,8 +376,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          NavigatorUtils.navigatorRouter(
-                              context, MenuDrinkPage());
+                          if(isCanOperate) {
+                            NavigatorUtils.navigatorRouter(
+                                context, MenuDrinkPage());
+                          }
                         },
                         child: Container(
                           margin: EdgeInsets.all(5.0),
@@ -408,7 +402,11 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
                                   CommonUtils.getLocale(context).drink,
-                                  style: MyTextStyle.largeTextWhiteBold,
+                                  style: TextStyle(
+                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    fontSize: MyTextStyle.bigTextSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               )
                             ],
@@ -421,7 +419,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          this._toOrderFood();
+                          if(isCanOperate) {
+                            this._toOrderFood();
+                          }
                         },
                         child: Container(
                           margin: EdgeInsets.all(5.0),
@@ -444,7 +444,11 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
                                   CommonUtils.getLocale(context).menu,
-                                  style: MyTextStyle.largeTextWhiteBold,
+                                  style: TextStyle(
+                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    fontSize: MyTextStyle.bigTextSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               )
                             ],
@@ -457,8 +461,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          NavigatorUtils.navigatorRouter(
-                              context, MenuServicePage());
+                            if(isCanOperate) {
+                              NavigatorUtils.navigatorRouter(
+                                  context, MenuServicePage());
+                            }
                         },
                         child: Container(
                           margin: EdgeInsets.all(5.0),
@@ -481,7 +487,11 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
                                   CommonUtils.getLocale(context).service,
-                                  style: MyTextStyle.largeTextWhiteBold,
+                                  style: TextStyle(
+                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    fontSize: MyTextStyle.bigTextSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               )
                             ],
@@ -494,17 +504,25 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                     Expanded(
                       child: AvoidDoubleClickInkWell(
                         onTap: () {
-                          Navigator.push<bool>(
-                              context,
-                              new CupertinoPageRoute(
-                                  builder: (context) => PageDetailPage(store.state.loginResponseEntity.orderMasterEntity.orderId,
-                                      store.state.loginResponseEntity.setting.buyerName)))
-                              .then((isFinish) {
-                            if (isFinish != null && isFinish) {
-                              Navigator.pop(context);
-                              NavigatorUtils.pushReplacementNamed(context, RoutePath.LOGIN_PATH);
-                            }
-                          });
+                          if(isCanOperate) {
+                            Navigator.push<bool>(
+                                context,
+                                new CupertinoPageRoute(
+                                    builder: (context) =>
+                                        PageDetailPage(
+                                            store.state.loginResponseEntity.orderMasterEntity.orderId,
+                                            store.state.loginResponseEntity.setting.buyerName)))
+                                .then((isFinish) {
+                              if (isFinish != null && isFinish) {
+                                ///已通知支付后停止倒计时
+                                _cancelCountdown();
+                                ///已通知支付后上锁
+                                setState(() {
+                                  isCanOperate = false;
+                                });
+                              }
+                            });
+                          }
                         },
                         child: Container(
                           margin: EdgeInsets.all(5.0),
@@ -527,7 +545,11 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                 padding: const EdgeInsets.all(10.0),
                                 child: Text(
                                   CommonUtils.getLocale(context).payment,
-                                  style: MyTextStyle.largeTextWhiteBold,
+                                  style: TextStyle(
+                                    color: isCanOperate?Colors.white:Colors.grey,
+                                    fontSize: MyTextStyle.bigTextSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               )
                             ],
