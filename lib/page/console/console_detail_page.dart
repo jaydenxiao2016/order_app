@@ -210,7 +210,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
     String openTimeStr = orderMasterEntity.openTime != null
         ? formatDate(
             DateTime.fromMillisecondsSinceEpoch(orderMasterEntity.openTime),
-            [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn]).toString()
+            [dd, '-', mm, '-', yyyy, ' ', HH, ':', nn]).toString()
         : "";
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       String title = CommonUtils.getLocale(context).controlTitle;
