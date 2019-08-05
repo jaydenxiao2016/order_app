@@ -127,6 +127,7 @@ class _PageDetailPageState extends State<PageDetailPage> {
                     Navigator.of(context).pop();
                     Navigator.of(rootContext).pop(true);
                   }else {
+                    Navigator.of(context).pop();
                     Fluttertoast.showToast(msg: error.toString());
                   }
                 });

@@ -115,4 +115,5 @@ abstract class StringBase {
   String allOrderDetail;
   String drinkDetail;
   String refresh;
+  String refreshSuccess;
 }

@@ -265,4 +265,15 @@ class CommonUtils {
       ),
     );
   }
+  ///显示图片
+  static Widget displayImageWidget2(String url) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      placeholder: (context, url) => new CircularProgressIndicator(),
+      errorWidget: (context, url, error) => Image.asset(
+        'static/images/icon_wrong_default.png',
+        fit: BoxFit.fitWidth,
+      ),
+    );
+  }
 }

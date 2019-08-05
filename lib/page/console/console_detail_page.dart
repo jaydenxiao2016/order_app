@@ -108,7 +108,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                 onPressed: () {
                   HttpGo.getInstance()
                       .post(
-                          UrlPath.cancelPath +
+                          UrlPath.settlementPath +
                               "?orderId=" +
                               widget.orderId.toString(),
                           cancelToken: cancelToken)
@@ -120,6 +120,9 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                     ///刷新工作面板
                     Navigator.of(context).pop();
                     Navigator.of(rootContext).pop();
+                  }).catchError((error) {
+                      Navigator.of(context).pop();
+                      Fluttertoast.showToast(msg: error.toString());
                   });
                 },
               ),
@@ -179,7 +182,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                       .post(
                           UrlPath.cancelPath +
                               "?orderId=" +
-                              widget.orderId.toString(),
+                              widget.orderId.toString()+"&pwd="+CommonUtils.getStore(context).state.loginResponseEntity.setting.cancelPwd,
                           cancelToken: cancelToken)
                       .then((baseResult) {
                     Fluttertoast.showToast(
@@ -189,7 +192,14 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                     Navigator.of(context).pop();
                     Navigator.of(rootContext).pop();
                   }).catchError((error) {
-                    Fluttertoast.showToast(msg: error.toString());
+                    if(error==106){
+                      Fluttertoast.showToast(msg: CommonUtils.getLocale(context).passwordWrongTip);
+                      Navigator.of(context).pop();
+                      Navigator.of(rootContext).pop(true);
+                    }else {
+                      Navigator.of(context).pop();
+                      Fluttertoast.showToast(msg: error.toString());
+                    }
                   });
                 }
               },

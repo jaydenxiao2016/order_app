@@ -218,4 +218,6 @@ class StringEn extends StringBase {
   String drinkDetail="Liquor orders";
   @override
   String refresh="Refresh";
+  @override
+  String refreshSuccess="Refresh Success";
 }

@@ -12,6 +12,8 @@ import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/event/timer_event.dart';
 import 'package:order_app/common/event/timer_refresh_event.dart';
+import 'package:order_app/common/model/category.dart';
+import 'package:order_app/common/model/category_response_entity.dart';
 import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/login_info_redux.dart';
@@ -54,6 +56,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
   ///是否能操作
   bool isCanOperate = true;
 
+  ///图片数据
+  CategoryResponseEntity categoryInfoEntity =
+  new CategoryResponseEntity(data: List<Category>(), imgPath: "");
+
   ///时间字符串
   String get timerString {
     Duration duration = new Duration(seconds: currentTimeSecond);
@@ -63,6 +69,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      _requestPicData();
+    });
 
     ///监听触发计时器
     stream = CommonUtils.eventBus.on<TimerEvent>().listen((event) {
@@ -173,6 +183,23 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           msg: CommonUtils.getLocale(context).orderFoodTooMuchTip);
     } else {
       NavigatorUtils.navigatorRouter(context, MenuFoodPage());
+    }
+  }
+  ///获取分类图片
+  _requestPicData() async {
+    print('请求图片');
+    if (mounted) {
+      await HttpGo.getInstance()
+          .get(UrlPath.getCategoryByPidPath +
+          "?parentId=" +
+          Config.ROOT_ID.toString())
+          .then((baseResult) {
+        this.setState(() {
+          categoryInfoEntity = CategoryResponseEntity.fromJson(baseResult.data);
+        });
+      }).catchError((error) {
+        Fluttertoast.showToast(msg: error.toString());
+      });
     }
   }
 
@@ -358,8 +385,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                   color: Colors.white,
                                   width: 2.0,
                                   style: BorderStyle.solid)),
-                          child: Image.asset(
-                            'static/images/icon_bg.jpg',
+                          child: Image.network(
+                            Config.BASE_URL +
+                                store.state.loginResponseEntity.setting.logo,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -394,11 +422,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: Image.asset(
-                                  'static/images/hm1_de.png',
-                                  width: window.physicalSize.width / 4,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: categoryInfoEntity.data.length>0?CommonUtils.displayImageWidget(Config.BASE_URL +
+                                    categoryInfoEntity.imgPath+categoryInfoEntity.data[0].pic,
+                                  width: window.physicalSize.width ,
+                                ): Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -438,11 +465,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: Image.asset(
-                                  'static/images/hm2_de.png',
+                                child: categoryInfoEntity.data.length>1?CommonUtils.displayImageWidget(Config.BASE_URL +
+                                    categoryInfoEntity.imgPath+categoryInfoEntity.data[1].pic,
                                   width: window.physicalSize.width / 4,
-                                  fit: BoxFit.cover,
-                                ),
+                                ): Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -483,11 +509,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: Image.asset(
-                                  'static/images/hm3_de.png',
+                                child: categoryInfoEntity.data.length>2?CommonUtils.displayImageWidget(Config.BASE_URL +
+                                    categoryInfoEntity.imgPath+categoryInfoEntity.data[2].pic,
                                   width: window.physicalSize.width / 4,
-                                  fit: BoxFit.cover,
-                                ),
+                                ): Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -542,11 +567,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: Image.asset(
-                                  'static/images/hm4_de.png',
+                                child: categoryInfoEntity.data.length>3?CommonUtils.displayImageWidget(Config.BASE_URL +
+                                      categoryInfoEntity.imgPath+categoryInfoEntity.data[3].pic,
                                   width: window.physicalSize.width / 4,
-                                  fit: BoxFit.cover,
-                                ),
+                                ): Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),

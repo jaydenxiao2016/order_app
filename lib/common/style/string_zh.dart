@@ -215,4 +215,6 @@ class StringZh extends StringBase {
   String drinkDetail="酒水订单";
   @override
   String refresh="刷新";
+  @override
+  String refreshSuccess="刷新成功";
 }

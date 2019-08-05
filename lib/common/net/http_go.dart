@@ -39,16 +39,20 @@ class HttpGo {
 
   //get请求
   Future<BaseResult> get(String url,
-      {params, Map<String, dynamic> header,CancelToken cancelToken}) async {
+      {params, Map<String, dynamic> header, CancelToken cancelToken}) async {
     Options options = new Options(method: "GET");
     return netFetch(url, params, header, options);
   }
 
   //post请求
   Future<BaseResult> post(String url,
-      {params, Map<String, dynamic> header, loading = true,CancelToken cancelToken}) async {
+      {params,
+      Map<String, dynamic> header,
+      loading = true,
+      CancelToken cancelToken}) async {
     Options options = new Options(method: "POST");
-    return netFetch(url, params, header, options, loading: loading,cancelToken: cancelToken);
+    return netFetch(url, params, header, options,
+        loading: loading, cancelToken: cancelToken);
   }
 
   ///发起网络请求
@@ -58,7 +62,7 @@ class HttpGo {
   ///[ option] 配置
   Future<BaseResult> netFetch(
       url, params, Map<String, dynamic> header, Options option,
-      {loading = true,CancelToken cancelToken}) async {
+      {loading = true, CancelToken cancelToken}) async {
     Map<String, dynamic> headers = new HashMap();
     if (header != null) {
       headers.addAll(header);
@@ -72,22 +76,25 @@ class HttpGo {
     int _code;
     String _msg;
     var _data;
-    print("api参数：");
-    print(params.toString());
+    print("url：$url");
+    print("api参数：$params");
     Response response;
     try {
-      response = await dio.request(url, data: params, options: option,cancelToken: cancelToken);
+      response = await dio.request(url,
+          data: params, options: option, cancelToken: cancelToken);
     } on DioError catch (e) {
       if (CancelToken.isCancel(e)) {
-        print('Request canceled! '+ e.message);
-      }else{
+        print('Request canceled! ' + e.message);
+      } else {
         print("api请求报错：");
         print(e);
         return new Future.error("api请求失败");
       }
     }
-    if (response.statusCode == HttpStatus.ok ||
-        response.statusCode == HttpStatus.created) {
+    if (response != null &&
+        response.statusCode != null &&
+        (response.statusCode == HttpStatus.ok ||
+            response.statusCode == HttpStatus.created)) {
       try {
         ///api返回
         print("api返回：---------------------begin");
@@ -112,9 +119,11 @@ class HttpGo {
         if (_code == 100) {
           return new BaseResult(_data, _msg, _code);
         }
+
         ///接口数据失败
         else {
-          return new Future.error((_code==101||_code==102)?_code:_msg);
+          return new Future.error(
+              (_code == 101 || _code == 102||_code==106) ? _code : _msg);
         }
       } catch (e) {
         print(e);

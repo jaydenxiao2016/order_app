@@ -42,17 +42,17 @@ class _ConsolePageState extends State<ConsolePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      _requestAreaData();
+      _requestAreaData(false);
       ///监听更新操作
       streamUpdate =
           CommonUtils.eventBus.on<ConsoleRefreshEvent>().listen((event) {
-        _requestAreaData();
+        _requestAreaData(false);
       });
     });
   }
 
   ///请求餐区信息
-  _requestAreaData() async {
+  _requestAreaData(bool isRefresh) async {
     print('请求餐区信息');
     if (mounted) {
       await HttpGo.getInstance()
@@ -63,6 +63,9 @@ class _ConsolePageState extends State<ConsolePage> {
           (baseResult.data['data'] as List).forEach((v) {
             newAreaList.add(new AreaEntity.fromJson(v));
           });
+          if(isRefresh!=null&&isRefresh==true){
+            Fluttertoast.showToast(msg: CommonUtils.getLocale(context).refreshSuccess);
+          }
           this.setState(() {
             areaList = newAreaList;
           });
@@ -108,7 +111,7 @@ class _ConsolePageState extends State<ConsolePage> {
           ),
           AvoidDoubleClickInkWell(
             onTap: (){
-              _requestAreaData();
+              _requestAreaData(true);
             },
             child: Container(
               alignment: Alignment.center,

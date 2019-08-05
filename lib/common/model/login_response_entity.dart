@@ -83,6 +83,8 @@ class LoginInfoSetting {
   int lunchNum;
   int waitTime;
   String ctlAppPwd;
+  String cancelPwd;
+  String logo;
   ///餐区
   int buyerId;
   ///餐区名字
@@ -122,6 +124,8 @@ class LoginInfoSetting {
       this.lunchNum,
       this.waitTime,
       this.ctlAppPwd,
+      this.cancelPwd,
+      this.logo,
       this.buyerId,
       this.buyerName,
       this.adult,
@@ -149,6 +153,8 @@ class LoginInfoSetting {
     lunchNum = json['lunchNum'];
     waitTime = json['waitTime'];
     ctlAppPwd = json['ctlAppPwd'];
+    cancelPwd = json['cancelPwd'];
+    logo = json['logo'];
     buyerId = json['buyerId'];
     buyerName = json['buyerName'];
     adult = json['adult'];
@@ -177,6 +183,8 @@ class LoginInfoSetting {
     data['lunchNum'] = this.lunchNum;
     data['waitTime'] = this.waitTime;
     data['ctlAppPwd'] = this.ctlAppPwd;
+    data['cancelPwd'] = this.cancelPwd;
+    data['logo'] = this.logo;
     data['buyerId'] = this.buyerId;
     data['buyerName'] = this.buyerName;
     data['adult'] = this.adult;

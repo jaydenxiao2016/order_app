@@ -217,6 +217,8 @@ class StringDe extends StringBase {
   String drinkDetail="Getränke";
   @override
   String refresh="Aktualisieren";
+  @override
+  String refreshSuccess="Erfolg aktualisieren";
 
 }
 

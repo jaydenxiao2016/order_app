@@ -14,6 +14,8 @@ class Config {
   static const int LUNCH_ITEM = 5;
   ///晚餐=餐一次食品数量
   static const int DINNER_ITEM = 5;
+  ///根id
+  static const int ROOT_ID = 0;
   ///酒水菜单id
   static const int DRINK_CATEGORY_ID = 1;
   ///菜品菜单id
