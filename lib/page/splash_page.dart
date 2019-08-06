@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/redux/state_info.dart';
+import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,6 +43,8 @@ class _SplashPageState extends State<SplashPage> {
         return Scaffold(
           body: Container(
             color: Colors.black,
+            width: window.physicalSize.width,
+            height: window.physicalSize.height,
           ),
         );
       },
