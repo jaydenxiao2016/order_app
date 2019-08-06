@@ -385,10 +385,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                   color: Colors.white,
                                   width: 2.0,
                                   style: BorderStyle.solid)),
-                          child: Image.network(
+                          child: CommonUtils.displayImageWidget(
                             Config.BASE_URL +
                                 store.state.loginResponseEntity.setting.logo,
-                            fit: BoxFit.cover,
                           ),
                         ),
                         constraints: BoxConstraints.expand(),
