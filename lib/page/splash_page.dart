@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/redux/state_info.dart';
-import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +25,7 @@ class _SplashPageState extends State<SplashPage> {
     hadInit = true;
     CommonUtils.initStatusBarHeight(context);
     //2s后跳到主页
-    new Future.delayed(const Duration(seconds: 2), () {
+    new Future.delayed(const Duration(seconds: 0), () {
       NavigatorUtils.goLogin(context);
     });
   }
@@ -42,13 +41,7 @@ class _SplashPageState extends State<SplashPage> {
       builder: (context, store) {
         return Scaffold(
           body: Container(
-            color: Color(ColorsStyle.white),
-            child: Image.asset(
-              'static/images/icon_splash.jpg',
-              width: window.physicalSize.width,
-              height: window.physicalSize.height,
-              fit: BoxFit.cover,
-            ),
+            color: Colors.black,
           ),
         );
       },
