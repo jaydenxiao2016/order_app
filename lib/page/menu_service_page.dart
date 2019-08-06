@@ -306,7 +306,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
                                     ///标题
                                     Expanded(
                                       child: Text(
-                                        product.id.toString() +
+                                        product.no +
                                             ")    " +
                                             product.name,
                                         style: TextStyle(

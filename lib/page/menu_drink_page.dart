@@ -320,7 +320,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                     ///标题
                                     Expanded(
                                       child: Text(
-                                        product.id.toString() +
+                                        product.no+
                                             ")    " +
                                             product.name,
                                         style: TextStyle(

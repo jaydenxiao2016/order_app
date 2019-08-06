@@ -5,6 +5,7 @@ class Product {
   String name;
   int pageSize;
   int id;
+  String no;
   String pic;
   int inventory;
   Category category;
@@ -12,13 +13,14 @@ class Product {
   String status;
   int cid;
 
-  Product({this.price, this.name, this.pageSize, this.id, this.pic, this.inventory, this.category, this.pageNum, this.status, this.cid});
+  Product({this.price, this.name, this.pageSize, this.no,this.id, this.pic, this.inventory, this.category, this.pageNum, this.status, this.cid});
 
   Product.fromJson(Map<String, dynamic> json) {
     price = json['price'];
     name = json['name'];
     pageSize = json['pageSize'];
     id = json['id'];
+    no = json['no'];
     pic = json['pic'];
     inventory = json['inventory'];
     category = json['category'] != null ? new Category.fromJson(json['category']) : null;
@@ -33,6 +35,7 @@ class Product {
     data['name'] = this.name;
     data['pageSize'] = this.pageSize;
     data['id'] = this.id;
+    data['no'] = this.no;
     data['pic'] = this.pic;
     data['inventory'] = this.inventory;
     if (this.category != null) {
