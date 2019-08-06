@@ -26,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
     hadInit = true;
     CommonUtils.initStatusBarHeight(context);
     //2s后跳到主页
-    new Future.delayed(const Duration(seconds: 0), () {
+    new Future.delayed(const Duration(seconds: 1), () {
       NavigatorUtils.goLogin(context);
     });
   }
