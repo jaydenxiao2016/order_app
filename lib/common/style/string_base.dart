@@ -44,6 +44,9 @@ abstract class StringBase {
   String login;
   String loginUserTitle;
   String loginPswTip;
+  String ipAddressTip;
+  String ipAddressEmptyTip;
+  String ipAddressWrongTip;
   String loginUserEmpty;
   String loginPswEmpty;
 

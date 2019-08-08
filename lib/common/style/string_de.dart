@@ -88,6 +88,12 @@ class StringDe extends StringBase {
   @override
   String loginPswTip="Bitte geben Sie ein Passwort ein";
   @override
+  String ipAddressTip="Bitte geben Sie die Netzwerk -IP -Adresse ein";
+  @override
+  String ipAddressEmptyTip="IP -Adresse kann nicht leer sein";
+  @override
+  String ipAddressWrongTip="Fehler beim IP -Adressformat";
+  @override
   String loginUserEmpty="Benutzername kann nicht leer sein";
   @override
   String loginPswEmpty="Passwort kann nicht leer sein";

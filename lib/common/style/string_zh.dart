@@ -86,6 +86,12 @@ class StringZh extends StringBase {
   @override
   String loginPswTip = "请输入密码";
   @override
+  String ipAddressTip="请输入网络ip地址";
+  @override
+  String ipAddressEmptyTip="ip地址不能为空";
+  @override
+  String ipAddressWrongTip="ip地址格式错误";
+  @override
   String loginUserEmpty = "用户名不能为空";
   @override
   String loginPswEmpty = "密码不能为空";

@@ -89,6 +89,12 @@ class StringEn extends StringBase {
   @override
   String loginPswTip="Please input a password";
   @override
+  String ipAddressTip="Please enter the network IP address";
+  @override
+  String ipAddressEmptyTip="IP address cannot be empty";
+  @override
+  String ipAddressWrongTip="IP address format error";
+  @override
   String loginUserEmpty="User name cannot be empty";
   @override
   String loginPswEmpty="Password cannot be empty";

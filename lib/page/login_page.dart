@@ -19,6 +19,8 @@ import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:redux/redux.dart';
 
+import 'net_setting_page.dart';
+
 ///登录界面
 class LoginPage extends StatefulWidget {
   @override
@@ -35,8 +37,25 @@ class _LoginPageState extends State<LoginPage> {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       return new Scaffold(
         appBar: AppBar(
-            centerTitle: true,
-            title: Text(CommonUtils.getLocale(context).loginTitle)),
+          title: Text(CommonUtils.getLocale(context).loginTitle),
+          centerTitle: true,
+          actions: <Widget>[
+            InkWell(
+              onTap: () {
+                NavigatorUtils.navigatorRouter(context, new NetSettingPage());
+              },
+              child: Container(
+                padding: EdgeInsets.only(left:20.0,right: 20.0),
+                child: Image.asset(
+                  'static/images/icon_setting.png',color:Colors.white,
+                  height: ScreenUtil.getInstance().setWidth(45),
+                  width: ScreenUtil.getInstance().setWidth(45),
+                ),
+              ),
+            )
+          ],
+        ),
+
         body: Container(
           color: Colors.black,
           child: Center(

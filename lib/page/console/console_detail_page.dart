@@ -16,7 +16,6 @@ import 'package:order_app/common/utils/date_format_base.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/console/record.dart';
 import 'package:order_app/widget/flex_button.dart';
-import 'package:order_app/common/utils/common_utils.dart';
 
 //控制台详情
 class ConsoleDetailPage extends StatefulWidget {
@@ -39,7 +38,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
       new OrderMasterEntity(orderRounds: List());
 
   ///明细类型1：酒水 2：每轮订单 3:服务
-  String type = "1";
+  String type = "1,2";
 
   ///轮数ID
   int roundId;
@@ -201,7 +200,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                     if(error==106){
                       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).passwordWrongTip);
                       Navigator.pop(context);
-                      Navigator.of(rootContext).maybePop(true);
+                      Navigator.of(rootContext).pop(true);
                     }else {
                       Navigator.pop(context);
                       Fluttertoast.showToast(msg: error.toString());

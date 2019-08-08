@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/net/base_result.dart';
+import 'package:order_app/common/utils/sp_util.dart';
 
 ///dio网络请求工具
 class HttpGo {
@@ -28,9 +29,13 @@ class HttpGo {
     return _instance;
   }
 
+  static void reset() {
+    _instance=null;
+  }
+
   HttpGo() {
     dio = Dio(BaseOptions(
-      baseUrl: Config.BASE_URL,
+      baseUrl: SpUtil.getString(Config.BASH_URL_KEY,defValue: Config.BASE_URL),
       headers: {'platform': 'android', 'version': 11.0},
       connectTimeout: 5000,
       receiveTimeout: 100000,

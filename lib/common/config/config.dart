@@ -40,4 +40,5 @@ class Config {
   static const REFRESH_LANGUAGE = "refreshLanguageApp";
   static const THEME_COLOR = "theme-color";
   static const LOCALE = "locale";
+  static const BASH_URL_KEY = "base_url";
 }
