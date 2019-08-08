@@ -55,7 +55,7 @@ class _ConsolePageState extends State<ConsolePage> {
   _requestAreaData(bool isRefresh) async {
     print('请求餐区信息');
     if (mounted) {
-      await HttpGo.getInstance()
+      CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
           .get(UrlPath.consolePath, cancelToken: cancelToken)
           .then((baseResult) {
         if (baseResult.data['data'] != null) {
@@ -72,7 +72,7 @@ class _ConsolePageState extends State<ConsolePage> {
         }
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
-      });
+      }));
     }
   }
 

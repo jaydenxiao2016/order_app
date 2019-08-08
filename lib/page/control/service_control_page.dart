@@ -396,7 +396,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
 
     ///新增订单
     if (1 == widget.type) {
-      HttpGo.getInstance()
+     HttpGo.getInstance()
           .post(UrlPath.orderConfirmPath, params: orderMasterEntity.toJson())
           .then((baseResult) {
         ///1.保存本次订单主表信息
@@ -432,7 +432,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
         CommonUtils.eventBus.fire(TimerFreshEvent());
 
         ///3.退出
-        Navigator.pop(context);
+        NavigatorUtils.pop(context);
         Fluttertoast.showToast(msg: CommonUtils.getLocale(context).updateSuccess);
       }).catchError((error) {if(error is int &&error==101){
         Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);

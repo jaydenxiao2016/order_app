@@ -18,7 +18,8 @@ import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
-import 'package:order_app/page/menu_record.dart';
+import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:order_app/page/customMenu/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
 
@@ -79,14 +80,14 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   _requestDrinkCategoryData() async {
     print('请求酒水');
     if (mounted) {
-      await HttpGo.getInstance()
+      CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
-              "?parentId=" +
-              Config.DRINK_CATEGORY_ID.toString(),cancelToken: cancelToken)
+          "?parentId=" +
+          Config.DRINK_CATEGORY_ID.toString(),cancelToken: cancelToken)
           .then((baseResult) {
         ///默认选中第一个分类
         CategoryResponseEntity categoryResponseEntity =
-            CategoryResponseEntity.fromJson(baseResult.data);
+        CategoryResponseEntity.fromJson(baseResult.data);
         if (categoryResponseEntity != null &&
             categoryResponseEntity.data != null &&
             categoryResponseEntity.data.length > 0) {
@@ -99,7 +100,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
         });
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
-      });
+      }));
     }
   }
 
@@ -131,7 +132,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                   builder: (context) => MenuRecord(1, selectedProductList)))
           .then((isFinish) {
         if (isFinish != null && isFinish) {
-          Navigator.pop(context);
+          NavigatorUtils.pop(context);
         }
       });
     } else {

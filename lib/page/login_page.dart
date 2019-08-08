@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///登录
-  _login(BuildContext context, Store<StateInfo> store) async{
+  _login(BuildContext rootContext, Store<StateInfo> store) async{
     if (_passwordController.text.length <= 0) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).loginPswEmpty);
       return;
@@ -164,30 +164,30 @@ class _LoginPageState extends State<LoginPage> {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       macAddress=androidInfo.id;
     }
-      await HttpGo.getInstance().post(UrlPath.signInPath, params: {
-        'mac': macAddress,
-        'pwd': _passwordController.text,
-        "type":type
-      }).then((baseResult) {
-        LoginResponseEntity loginInfo =
-        LoginResponseEntity.fromJson(baseResult.data);
-        loginInfo.orderMasterEntity =
-            OrderMasterEntity(orderRounds: new List());
-        print(loginInfo);
-        store.dispatch(RefreshLoginInfoAction(loginInfo));
-        if("1"==type) {
-          NavigatorUtils.pushReplacementNamed(
-              context, RoutePath.SERVICE_CONTROL_PATH);
-        }else{
-          NavigatorUtils.pushNamed(context, RoutePath.CONSOLE_PATH);
-        }
-      }).catchError((error) {
-        if(error is int &&error==101){
-          Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
-        }else {
-          Fluttertoast.showToast(msg: error.toString());
-        }
-      });
+    await HttpGo.getInstance().post(UrlPath.signInPath, params: {
+      'mac': macAddress,
+      'pwd': _passwordController.text,
+      "type":type
+    }).then((baseResult) {
+      LoginResponseEntity loginInfo =
+      LoginResponseEntity.fromJson(baseResult.data);
+      loginInfo.orderMasterEntity =
+          OrderMasterEntity(orderRounds: new List());
+      print(loginInfo);
+      store.dispatch(RefreshLoginInfoAction(loginInfo));
+      if("1"==type) {
+        NavigatorUtils.pushReplacementNamed(
+            rootContext, RoutePath.SERVICE_CONTROL_PATH);
+      }else{
+        NavigatorUtils.pushNamed(rootContext, RoutePath.CONSOLE_PATH);
+      }
+    }).catchError((error) {
+      if(error is int &&error==101){
+        Fluttertoast.showToast(msg: CommonUtils.getLocale(context).tableUsingTip);
+      }else {
+        Fluttertoast.showToast(msg: error.toString());
+      }
+    });
 
   }
 

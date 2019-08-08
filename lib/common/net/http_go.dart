@@ -82,6 +82,7 @@ class HttpGo {
     try {
       response = await dio.request(url,
           data: params, options: option, cancelToken: cancelToken);
+
     } on DioError catch (e) {
       if (CancelToken.isCancel(e)) {
         print('Request canceled! ' + e.message);

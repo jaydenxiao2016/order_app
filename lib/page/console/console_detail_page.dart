@@ -13,6 +13,7 @@ import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/date_format_base.dart';
+import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/console/record.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:order_app/common/utils/common_utils.dart';
@@ -42,6 +43,8 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
 
   ///轮数ID
   int roundId;
+  ///密码监听器
+  TextEditingController _passwordController;
 
   @override
   void initState() {
@@ -59,7 +62,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
     if (context == null) {
       return;
     }
-    await HttpGo.getInstance()
+    CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
         .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info")
         .then((baseResult) {
       print("订单详情成功");
@@ -68,7 +71,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
       });
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
-    });
+    }));
   }
 
   ///确认结账
@@ -96,7 +99,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                       color: Colors.grey, fontSize: MyTextStyle.normalTextSize),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  NavigatorUtils.pop(context);
                 },
               ),
               new FlatButton(
@@ -118,10 +121,10 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                             .payedOrderSuccess);
                    CommonUtils.eventBus.fire(ConsoleRefreshEvent());
                     ///刷新工作面板
-                    Navigator.of(context).pop();
-                    Navigator.of(rootContext).pop();
+                    Navigator.pop(context);
+                    Navigator.pop(rootContext);
                   }).catchError((error) {
-                      Navigator.of(context).pop();
+                    Navigator.pop(context);
                       Fluttertoast.showToast(msg: error.toString());
                   });
                 },
@@ -135,7 +138,10 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
 
   ///取消订单
   _cancelOrder() {
-    TextEditingController _passwordController = new TextEditingController();
+    if (_passwordController != null) {
+      _passwordController.dispose();
+    }
+     _passwordController = new TextEditingController();
     BuildContext rootContext = context;
     showDialog<Null>(
       context: context,
@@ -178,7 +184,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                   Fluttertoast.showToast(
                       msg: CommonUtils.getLocale(context).passwordWrongTip);
                 } else {
-                  HttpGo.getInstance()
+                 HttpGo.getInstance()
                       .post(
                           UrlPath.cancelPath +
                               "?orderId=" +
@@ -189,15 +195,15 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
                         msg: CommonUtils.getLocale(context).cancelOrderSuccess);
                     CommonUtils.eventBus.fire(ConsoleRefreshEvent());
                     ///刷新工作面板
-                    Navigator.of(context).pop();
-                    Navigator.of(rootContext).pop();
+                    Navigator.pop(context);
+                    Navigator.pop(rootContext);
                   }).catchError((error) {
                     if(error==106){
                       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).passwordWrongTip);
-                      Navigator.of(context).pop();
-                      Navigator.of(rootContext).pop(true);
+                      Navigator.pop(context);
+                      Navigator.of(rootContext).maybePop(true);
                     }else {
-                      Navigator.of(context).pop();
+                      Navigator.pop(context);
                       Fluttertoast.showToast(msg: error.toString());
                     }
                   });
@@ -207,11 +213,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
           ],
         );
       },
-    ).whenComplete(() {
-      if (_passwordController != null) {
-        _passwordController.dispose();
-      }
-    });
+    );
   }
 
   @override
@@ -512,6 +514,9 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
   void dispose() {
     //取消网络请求
     cancelToken.cancel("cancelled");
+    if (_passwordController != null) {
+      _passwordController.dispose();
+    }
     super.dispose();
   }
 }

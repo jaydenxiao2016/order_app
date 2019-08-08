@@ -15,6 +15,7 @@ import 'package:order_app/common/redux/theme_redux.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/string_base.dart';
 import 'package:order_app/common/style/text_style.dart';
+import 'package:order_app/widget/NetLoadingDialog.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -164,38 +165,15 @@ class CommonUtils {
   }
 
   ///loading
-  static Future<Null> showLoadingDialog(BuildContext context) {
+  static Future<Null> showLoadingDialog(BuildContext context,Future<dynamic> requestCallBack) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return new Material(
-              color: Colors.transparent,
-              child: WillPopScope(
-                onWillPop: () => new Future.value(false),
-                child: Center(
-                  child: new Container(
-                    width: 200.0,
-                    height: 200.0,
-                    padding: new EdgeInsets.all(4.0),
-                    decoration: new BoxDecoration(
-                      color: Colors.transparent,
-                      //用一个BoxDecoration装饰器提供背景图片
-                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                    ),
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Container(child: CircularProgressIndicator()),
-                        new Container(height: 10.0),
-                        new Container(
-                            child: new Text(
-                                CommonUtils.getLocale(context).loadingText,
-                                style: MyTextStyle.normalTextWhite)),
-                      ],
-                    ),
-                  ),
-                ),
-              ));
+        barrierDismissible: false,
+        builder: (_) {
+          return new NetLoadingDialog(
+            requestCallBack:requestCallBack,
+            outsideDismiss: false,
+          );
         });
   }
 
@@ -260,7 +238,7 @@ class CommonUtils {
       width:width,
       imageUrl: url,
       fit: fit,
-      placeholder: (context, url) => Container(height:ScreenUtil.getInstance().setWidth(50),width: ScreenUtil.getInstance().setWidth(50),child: new CircularProgressIndicator()),
+      placeholder: (context, url) => new CircularProgressIndicator(),
       errorWidget: (context, url, error) => Image.asset(
         'static/images/icon_wrong_default.png',
         fit: BoxFit.cover,

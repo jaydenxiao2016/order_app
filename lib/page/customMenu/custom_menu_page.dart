@@ -24,14 +24,14 @@ import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/console/pay_detail_page.dart';
 import 'package:order_app/page/control/service_control_page.dart';
-import 'package:order_app/page/drink_record.dart';
-import 'package:order_app/page/menu_drink_page.dart';
-import 'package:order_app/page/menu_service_page.dart';
+import 'package:order_app/page/customMenu/menu_drink_page.dart';
+import 'package:order_app/page/customMenu/menu_service_page.dart';
 import 'package:order_app/widget/AvoidDoubleClickInkWell.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
-import '../menu_food_page.dart';
+import 'package:order_app/page/customMenu/menu_food_page.dart';
+import 'order_record.dart';
 
 ///客户工作台
 class CustomMenuPage extends StatefulWidget {
@@ -55,6 +55,8 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
   ///是否能操作
   bool isCanOperate = true;
+  ///输入密码监听器
+  TextEditingController _passwordController;
 
   ///图片数据
   CategoryResponseEntity categoryInfoEntity =
@@ -189,7 +191,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
   _requestPicData() async {
     print('请求图片');
     if (mounted) {
-      await HttpGo.getInstance()
+      CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
           "?parentId=" +
           Config.ROOT_ID.toString())
@@ -199,13 +201,16 @@ class _CustomMenuPageState extends State<CustomMenuPage>
         });
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
-      });
+      }));
     }
   }
 
   ///更新设置 type 1:退出确认 2：设置更新
   _updateOrderSetting(int type) {
-    TextEditingController _passwordController = new TextEditingController();
+    if(_passwordController!=null){
+      _passwordController.dispose();
+    }
+    _passwordController= new TextEditingController();
     showDialog<Null>(
       context: context,
       barrierDismissible: true,
@@ -247,7 +252,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                   Fluttertoast.showToast(
                       msg: CommonUtils.getLocale(context).passwordWrongTip);
                 } else {
-                  Navigator.of(context).pop();
+                  Navigator.pop(context);
                   if (1 == type) {
                     NavigatorUtils.pushReplacementNamed(
                         context, RoutePath.LOGIN_PATH);
@@ -261,11 +266,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           ],
         );
       },
-    ).whenComplete(() {
-      if (_passwordController != null) {
-        _passwordController.dispose();
-      }
-    });
+    );
   }
 
   @override
@@ -607,6 +608,9 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       streamUpdate.cancel();
       streamUpdate = null;
     }
+    if(_passwordController!=null){
+      _passwordController.dispose();
+    }
     countdownTimer?.cancel();
     countdownTimer = null;
     super.dispose();
@@ -679,7 +683,7 @@ class _RoundInfoState extends State<RoundInfo> {
               ///已点酒水
               if (index == 10) {
                 NavigatorUtils.navigatorRouter(
-                    context, DrinkRecord(Config.DETAIL_DRINK_TYPE));
+                    context, OrderRecord(Config.DETAIL_DRINK_TYPE));
               }
 
               ///已点轮菜单
@@ -690,7 +694,7 @@ class _RoundInfoState extends State<RoundInfo> {
                     store.state.loginResponseEntity.roundIdMap[index + 1];
                 if (roundId != null) {
                   NavigatorUtils.navigatorRouter(context,
-                      DrinkRecord(Config.DETAIL_FOOD_TYPE, round: roundId));
+                      OrderRecord(Config.DETAIL_FOOD_TYPE, round: roundId));
                 }
               }
             },

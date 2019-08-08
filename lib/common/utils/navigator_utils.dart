@@ -8,7 +8,10 @@ class NavigatorUtils {
   static pushReplacementNamed(BuildContext context, String routeName) {
     Navigator.pushReplacementNamed(context, routeName);
   }
-
+  ///退出
+  static pop(BuildContext context) {
+    Navigator.maybePop(context);
+  }
   ///切换无参数页面
   static pushNamed(BuildContext context, String routeName) {
     Navigator.pushNamed(context, routeName);

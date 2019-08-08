@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:order_app/common/style/text_style.dart';
 
 // ignore: must_be_immutable
 class NetLoadingDialog extends StatefulWidget {
@@ -19,6 +21,7 @@ class NetLoadingDialog extends StatefulWidget {
 
   @override
   State<NetLoadingDialog> createState() => _LoadingDialog();
+
 }
 
 class _LoadingDialog extends State<NetLoadingDialog> {
@@ -26,7 +29,7 @@ class _LoadingDialog extends State<NetLoadingDialog> {
     if (widget.dismissCallback != null) {
       widget.dismissCallback();
     }
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
   @override
@@ -34,7 +37,7 @@ class _LoadingDialog extends State<NetLoadingDialog> {
     super.initState();
     if (widget.requestCallBack != null) {
       widget.requestCallBack.then((_) {
-        Navigator.pop(context);
+          Navigator.pop(context);
       });
     }
   }
@@ -47,8 +50,8 @@ class _LoadingDialog extends State<NetLoadingDialog> {
         type: MaterialType.transparency,
         child: new Center(
           child: new SizedBox(
-            width: 120.0,
-            height: 120.0,
+            width: ScreenUtil.getInstance().setWidth(200),
+            height: ScreenUtil.getInstance().setWidth(200),
             child: new Container(
               decoration: ShapeDecoration(
                 color: Color(0xffffffff),
@@ -69,7 +72,7 @@ class _LoadingDialog extends State<NetLoadingDialog> {
                     ),
                     child: new Text(
                       widget.loadingText,
-                      style: new TextStyle(fontSize: 12.0),
+                      style: new TextStyle(fontSize: MyTextStyle.normalTextSize,color: Colors.black),
                     ),
                   ),
                 ],

@@ -18,7 +18,8 @@ import 'package:order_app/common/redux/state_info.dart';
 import 'package:order_app/common/style/colors_style.dart';
 import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
-import 'package:order_app/page/menu_record.dart';
+import 'package:order_app/common/utils/navigator_utils.dart';
+import 'package:order_app/page/customMenu/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
 import 'package:order_app/widget/flex_button.dart';
 
@@ -78,7 +79,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
   _requestDrinkCategoryData() async {
     print('请求服务');
     if (mounted) {
-      await HttpGo.getInstance()
+      CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
           .get(UrlPath.getCategoryByPidPath +
               "?parentId=" +
               Config.DRINK_SERVICE_ID.toString(),cancelToken: cancelToken)
@@ -98,7 +99,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
         });
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
-      });
+      }));
     }
   }
 
@@ -130,7 +131,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
                   builder: (context) => MenuRecord(3, selectedProductList)))
           .then((isFinish) {
         if (isFinish != null && isFinish) {
-          Navigator.pop(context);
+          NavigatorUtils.pop(context);
         }
       });
     } else {

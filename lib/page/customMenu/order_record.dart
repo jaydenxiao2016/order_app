@@ -12,16 +12,16 @@ import 'package:order_app/common/style/text_style.dart';
 import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/widget/flex_button.dart';
 
-///酒水记录
-class DrinkRecord extends StatefulWidget {
+///已点记录
+class OrderRecord extends StatefulWidget {
 
   ///1：酒水 2：每轮订单 3:服务
   String type;
   int round;
-  DrinkRecord(this.type,{this.round,Key key}):super(key:key);
+  OrderRecord(this.type,{this.round,Key key}):super(key:key);
 
   @override
-  _DrinkRecordState createState() => new _DrinkRecordState();
+  _OrderRecordState createState() => new _OrderRecordState();
 }
 
 ///获取酒水内容
@@ -110,7 +110,7 @@ Widget _getContent(int i, OrderDetail value) {
   );
 }
 
-class _DrinkRecordState extends State<DrinkRecord> {
+class _OrderRecordState extends State<OrderRecord> {
   CancelToken cancelToken = new CancelToken();
   ///订单明细
   List<OrderDetail> orderDetailList = new List();
@@ -129,7 +129,7 @@ class _DrinkRecordState extends State<DrinkRecord> {
   _requestOrderDetailData() async{
     print('请求商品');
     if (mounted) {
-      await HttpGo.getInstance().post(UrlPath.orderDetailPath, params: {
+      CommonUtils.showLoadingDialog(context, HttpGo.getInstance().post(UrlPath.orderDetailPath, params: {
         "detailType": widget.type,
         "orderId": CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderId,
         "roundId":widget.round,
@@ -146,7 +146,7 @@ class _DrinkRecordState extends State<DrinkRecord> {
         });
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
-      });
+      }));
     }
   }
 
@@ -286,7 +286,7 @@ class _DrinkRecordState extends State<DrinkRecord> {
                       fontSize: MyTextStyle.normalTextSize,
                       text: CommonUtils.getLocale(context).back,
                       onPress: () {
-                        Navigator.pop(context, false);
+                        Navigator.maybePop(context, false);
                       },
                     ),
                   ),

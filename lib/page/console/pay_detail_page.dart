@@ -102,7 +102,7 @@ class _PageDetailPageState extends State<PageDetailPage> {
                     fontSize: MyTextStyle.normalTextSize),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                NavigatorUtils.pop(context);
               },
             ),
             new FlatButton(
@@ -113,24 +113,24 @@ class _PageDetailPageState extends State<PageDetailPage> {
                     fontSize: MyTextStyle.normalTextSize),
               ),
               onPressed: () {
-                 HttpGo.getInstance()
+                 CommonUtils.showLoadingDialog(context,HttpGo.getInstance()
                     .post(UrlPath.notifyPay +
                     "?orderId=" +widget.orderId.toString())
                     .then((baseResult) {
                   ///跳转到服务员设置界面
                   Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payTipSuccess);
-                  Navigator.of(context).pop();
-                  Navigator.of(rootContext).pop(true);
+                  Navigator.of(context).maybePop();
+                  Navigator.of(rootContext).maybePop(true);
                 }).catchError((error) {
                   if(error==102){
                     Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payTipSuccess);
-                    Navigator.of(context).pop();
-                    Navigator.of(rootContext).pop(true);
+                    Navigator.of(context).maybePop();
+                    Navigator.of(rootContext).maybePop(true);
                   }else {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).maybePop();
                     Fluttertoast.showToast(msg: error.toString());
                   }
-                });
+                }));
               },
             ),
           ],
