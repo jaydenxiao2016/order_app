@@ -1,8 +1,8 @@
 class Config {
   ///接口api base
-//  static const BASE_URL = "http://192.168.1.7:8080";
+  static const BASE_URL = "http://192.168.1.7:8080";
 //  static const BASE_URL = "http://192.168.1.20:8080";
-  static const BASE_URL = "http://123.207.96.187:8080";
+//  static const BASE_URL = "http://123.207.96.187:8080";
   static const CODE_SUCCESS = 100;
   static const CODE_ERROR = 200;
   static const double SCREEN_WIDTH = 1600;
