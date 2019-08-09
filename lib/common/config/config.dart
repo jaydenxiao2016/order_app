@@ -1,14 +1,16 @@
 class Config {
   ///接口api base
-  static const BASE_URL = "http://192.168.1.7:8080";
+//  static const BASE_URL = "http://192.168.1.7:8080";
 //  static const BASE_URL = "http://192.168.1.20:8080";
-//  static const BASE_URL = "http://123.207.96.187:8080";
+  static const BASE_URL = "http://123.207.96.187:8080";
   static const CODE_SUCCESS = 100;
   static const CODE_ERROR = 200;
   static const double SCREEN_WIDTH = 1600;
   static const double SCREEN_HEIGHT = 2560;
   ///一页条数
   static const PAGE_SIZE = 1000000;
+  ///最多轮数
+  static const int ROUND_MAX=10;
   ///过15分钟一轮
   static const int ROUND_TIME = 15;
   ///午餐一次食品数量

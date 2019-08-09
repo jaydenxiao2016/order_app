@@ -286,7 +286,7 @@ class _OrderRecordState extends State<OrderRecord> {
                       fontSize: MyTextStyle.normalTextSize,
                       text: CommonUtils.getLocale(context).back,
                       onPress: () {
-                        Navigator.maybePop(context, false);
+                        Navigator.pop(context, false);
                       },
                     ),
                   ),

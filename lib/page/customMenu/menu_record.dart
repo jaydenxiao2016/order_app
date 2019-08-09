@@ -127,6 +127,17 @@ class _MenuRecordState extends State<MenuRecord> {
   }
   ///每轮点餐下单
   _requestRoundFoodConfirm(BuildContext context) async{
+    if (CommonUtils.getStore(context)
+        .state
+        .loginResponseEntity
+        .orderMasterEntity
+        .orderRounds
+        .length >=
+        Config.ROUND_MAX) {
+      Fluttertoast.showToast(
+          msg: CommonUtils.getLocale(context).orderFoodTooMuchTip);
+      return;
+    }
     ///倒计时结束才能下单
     if(!CommonUtils.getStore(context).state.loginResponseEntity.setting.isTimeFinish){
       Fluttertoast.showToast(

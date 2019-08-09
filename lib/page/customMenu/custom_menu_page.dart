@@ -55,12 +55,13 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
   ///是否能操作
   bool isCanOperate = true;
+
   ///输入密码监听器
   TextEditingController _passwordController;
 
   ///图片数据
   CategoryResponseEntity categoryInfoEntity =
-  new CategoryResponseEntity(data: List<Category>(), imgPath: "");
+      new CategoryResponseEntity(data: List<Category>(), imgPath: "");
 
   ///时间字符串
   String get timerString {
@@ -179,38 +180,42 @@ class _CustomMenuPageState extends State<CustomMenuPage>
             .loginResponseEntity
             .orderMasterEntity
             .orderRounds
-            .length >
-        10) {
+            .length >=
+        Config.ROUND_MAX) {
       Fluttertoast.showToast(
           msg: CommonUtils.getLocale(context).orderFoodTooMuchTip);
     } else {
       NavigatorUtils.navigatorRouter(context, MenuFoodPage());
     }
   }
+
   ///获取分类图片
   _requestPicData() async {
     print('请求图片');
     if (mounted) {
-      CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
-          .get(UrlPath.getCategoryByPidPath +
-          "?parentId=" +
-          Config.ROOT_ID.toString())
-          .then((baseResult) {
-        this.setState(() {
-          categoryInfoEntity = CategoryResponseEntity.fromJson(baseResult.data);
-        });
-      }).catchError((error) {
-        Fluttertoast.showToast(msg: error.toString());
-      }));
+      CommonUtils.showLoadingDialog(
+          context,
+          HttpGo.getInstance()
+              .get(UrlPath.getCategoryByPidPath +
+                  "?parentId=" +
+                  Config.ROOT_ID.toString())
+              .then((baseResult) {
+            this.setState(() {
+              categoryInfoEntity =
+                  CategoryResponseEntity.fromJson(baseResult.data);
+            });
+          }).catchError((error) {
+            Fluttertoast.showToast(msg: error.toString());
+          }));
     }
   }
 
   ///更新设置 type 1:退出确认 2：设置更新
   _updateOrderSetting(int type) {
-    if(_passwordController!=null){
+    if (_passwordController != null) {
       _passwordController.dispose();
     }
-    _passwordController= new TextEditingController();
+    _passwordController = new TextEditingController();
     showDialog<Null>(
       context: context,
       barrierDismissible: true,
@@ -281,14 +286,15 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           actions: <Widget>[
             InkWell(
               onTap: () {
-                if(isCanOperate) {
+                if (isCanOperate) {
                   _updateOrderSetting(2);
                 }
               },
               child: Container(
-                padding: EdgeInsets.only(left:20.0,right: 20.0),
+                padding: EdgeInsets.only(left: 20.0, right: 20.0),
                 child: Image.asset(
-                  'static/images/icon_setting.png',color: isCanOperate?Colors.white:Colors.grey,
+                  'static/images/icon_setting.png',
+                  color: isCanOperate ? Colors.white : Colors.grey,
                   height: ScreenUtil.getInstance().setWidth(45),
                   width: ScreenUtil.getInstance().setWidth(45),
                 ),
@@ -339,7 +345,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           Expanded(
                             child: Center(
                                 child: Text(
-                                    (currentTimeSecond != 0&&isCanOperate)
+                              (currentTimeSecond != 0 && isCanOperate)
                                   ? timerString
                                   : CommonUtils.getLocale(context).countTimer,
                               style: TextStyle(
@@ -422,10 +428,14 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: categoryInfoEntity.data.length>0?CommonUtils.displayImageWidget(Config.BASE_URL +
-                                    categoryInfoEntity.imgPath+categoryInfoEntity.data[0].pic,
-                                  width: window.physicalSize.width ,
-                                ): Container(),
+                                child: categoryInfoEntity.data.length > 0
+                                    ? CommonUtils.displayImageWidget(
+                                        Config.BASE_URL +
+                                            categoryInfoEntity.imgPath +
+                                            categoryInfoEntity.data[0].pic,
+                                        width: window.physicalSize.width,
+                                      )
+                                    : Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -465,10 +475,14 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: categoryInfoEntity.data.length>1?CommonUtils.displayImageWidget(Config.BASE_URL +
-                                    categoryInfoEntity.imgPath+categoryInfoEntity.data[1].pic,
-                                  width: window.physicalSize.width / 4,
-                                ): Container(),
+                                child: categoryInfoEntity.data.length > 1
+                                    ? CommonUtils.displayImageWidget(
+                                        Config.BASE_URL +
+                                            categoryInfoEntity.imgPath +
+                                            categoryInfoEntity.data[1].pic,
+                                        width: window.physicalSize.width / 4,
+                                      )
+                                    : Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -509,10 +523,14 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: categoryInfoEntity.data.length>2?CommonUtils.displayImageWidget(Config.BASE_URL +
-                                    categoryInfoEntity.imgPath+categoryInfoEntity.data[2].pic,
-                                  width: window.physicalSize.width / 4,
-                                ): Container(),
+                                child: categoryInfoEntity.data.length > 2
+                                    ? CommonUtils.displayImageWidget(
+                                        Config.BASE_URL +
+                                            categoryInfoEntity.imgPath +
+                                            categoryInfoEntity.data[2].pic,
+                                        width: window.physicalSize.width / 4,
+                                      )
+                                    : Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -567,10 +585,14 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                           child: Column(
                             children: <Widget>[
                               Expanded(
-                                child: categoryInfoEntity.data.length>3?CommonUtils.displayImageWidget(Config.BASE_URL +
-                                      categoryInfoEntity.imgPath+categoryInfoEntity.data[3].pic,
-                                  width: window.physicalSize.width / 4,
-                                ): Container(),
+                                child: categoryInfoEntity.data.length > 3
+                                    ? CommonUtils.displayImageWidget(
+                                        Config.BASE_URL +
+                                            categoryInfoEntity.imgPath +
+                                            categoryInfoEntity.data[3].pic,
+                                        width: window.physicalSize.width / 4,
+                                      )
+                                    : Container(),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -608,7 +630,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       streamUpdate.cancel();
       streamUpdate = null;
     }
-    if(_passwordController!=null){
+    if (_passwordController != null) {
       _passwordController.dispose();
     }
     countdownTimer?.cancel();
@@ -619,31 +641,27 @@ class _CustomMenuPageState extends State<CustomMenuPage>
 
 ///轮信息
 class RoundInfo extends StatefulWidget {
+  List<StaggeredTile> _staggeredTiles;
+
   @override
   _RoundInfoState createState() => _RoundInfoState();
+
+  RoundInfo({Key key}) : super(key: key) {
+    _staggeredTiles = List<StaggeredTile>();
+    for (int i = 0; i < Config.ROUND_MAX; i++) {
+      _staggeredTiles.add(StaggeredTile.fit(1));
+    }
+    _staggeredTiles.add(StaggeredTile.fit(2));
+  }
 }
 
 class _RoundInfoState extends State<RoundInfo> {
-  List<StaggeredTile> _staggeredTiles = const <StaggeredTile>[
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(1),
-    const StaggeredTile.fit(2),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return new StaggeredGridView.count(
       scrollDirection: Axis.vertical,
       crossAxisCount: 3,
-      staggeredTiles: _staggeredTiles,
+      staggeredTiles: widget._staggeredTiles,
       children: getWidgetList(context),
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
@@ -653,7 +671,7 @@ class _RoundInfoState extends State<RoundInfo> {
 
   List<String> getDataList(BuildContext context) {
     List<String> list = [];
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < Config.ROUND_MAX; i++) {
       list.add(CommonUtils.getLocale(context).round + " " + (i + 1).toString());
     }
     //最后加上已点酒水
@@ -681,7 +699,7 @@ class _RoundInfoState extends State<RoundInfo> {
           child: FlexButton(
             onPress: () {
               ///已点酒水
-              if (index == 10) {
+              if (index == Config.ROUND_MAX) {
                 NavigatorUtils.navigatorRouter(
                     context, OrderRecord(Config.DETAIL_DRINK_TYPE));
               }
@@ -702,7 +720,9 @@ class _RoundInfoState extends State<RoundInfo> {
                         .length >
                     index
                 ? Colors.red
-                : (index == 10 ? Colors.green : Colors.blueAccent),
+                : (index == Config.ROUND_MAX
+                    ? Colors.green
+                    : Colors.blueAccent),
             textColor: Colors.white,
             fontSize: MyTextStyle.normalTextSize,
             text: item,
