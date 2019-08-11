@@ -40,7 +40,6 @@ flutter:
   uses-material-design: true
 #存放资源
   assets:
-  - static/images/bg_logo.jpg
   - static/images/icon_decrease.png
   - static/images/icon_plus.png
   - static/images/hm1_de.png
@@ -51,7 +50,6 @@ flutter:
   - static/images/plus.png
   - static/images/minus.png
   - static/images/icon_table_num_logo.png
-  - static/images/icon_splash.jpg
   - static/images/41.png
   - static/images/27.png
   - static/images/icon_setting.png

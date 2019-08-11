@@ -2,8 +2,6 @@ import 'package:order_app/common/utils/sp_util.dart';
 
 class Config {
   ///默认接口api base
-//  static const DEFAULT_URL = "http://192.168.1.7:8080";
-//  static const DEFAULT_URL = "http://192.168.1.20:8080";
   static const DEFAULT_URL = "http://123.207.96.187:8080";
   ///设置接口api入口密码
   static const SETTING_URL_PWD = "Chen19880513";
