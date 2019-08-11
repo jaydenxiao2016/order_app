@@ -27,7 +27,7 @@ class _NetSettingPageState extends State<NetSettingPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      _urlController.text=SpUtil.getString(Config.BASH_URL_KEY,defValue: Config.BASE_URL);
+      _urlController.text=SpUtil.getString(Config.BASE_URL_KEY,defValue: Config.DEFAULT_URL);
     });
   }
   @override
@@ -116,7 +116,7 @@ class _NetSettingPageState extends State<NetSettingPage> {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).ipAddressWrongTip);
       return;
     }
-    SpUtil.putString(Config.BASH_URL_KEY, _urlController.text);
+    SpUtil.putString(Config.BASE_URL_KEY, _urlController.text);
     HttpGo.reset();
     NavigatorUtils.pop(context);
   }

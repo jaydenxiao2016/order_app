@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:order_app/common/config/config.dart';
 import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
 import 'package:order_app/common/model/login_response_entity.dart';
@@ -29,6 +30,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _passwordController = new TextEditingController();
+  ///设置输入密码监听器
+  TextEditingController _settingPasswordController;
   ///1:工作台 2：控制台
   String type="1";
 
@@ -42,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
           actions: <Widget>[
             InkWell(
               onTap: () {
-                NavigatorUtils.navigatorRouter(context, new NetSettingPage());
+                _ipSetting();
               },
               child: Container(
                 padding: EdgeInsets.only(left:20.0,right: 20.0),
@@ -166,6 +169,60 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  ///设置ip地址密码检验
+  _ipSetting() {
+    if (_settingPasswordController != null) {
+      _settingPasswordController.dispose();
+    }
+    _settingPasswordController = new TextEditingController();
+    showDialog<Null>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text(
+            CommonUtils.getLocale(context).password,
+            style: TextStyle(fontSize: MyTextStyle.normalTextSize),
+          ),
+          content: new TextField(
+            controller: _settingPasswordController,
+            autofocus: false,
+            style: MyTextStyle.largeText,
+            decoration: new InputDecoration(
+              labelText: CommonUtils.getLocale(context).loginPswTip,
+              suffixIcon: new IconButton(
+                icon: new Icon(Icons.clear, color: Colors.black45),
+                onPressed: () {
+                  _settingPasswordController.text = "";
+                },
+              ),
+            ),
+            obscureText: true,
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text(
+                CommonUtils.getLocale(context).sure,
+                style: TextStyle(
+                    color: Colors.blue, fontSize: MyTextStyle.normalTextSize),
+              ),
+              onPressed: () {
+                if (_settingPasswordController.text !=
+                    Config.SETTING_URL_PWD) {
+                  Fluttertoast.showToast(
+                      msg: CommonUtils.getLocale(context).passwordWrongTip);
+                } else {
+                  Navigator.pop(context);
+                  NavigatorUtils.navigatorRouter(context, new NetSettingPage());
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   ///登录
   _login(BuildContext rootContext, Store<StateInfo> store) async{
     if (_passwordController.text.length <= 0) {
@@ -213,6 +270,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     super.dispose();
-    _passwordController.dispose();
+    if(_settingPasswordController!=null) {
+      _settingPasswordController.dispose();
+    }
+    if(_passwordController!=null) {
+      _passwordController.dispose();
+    }
   }
 }

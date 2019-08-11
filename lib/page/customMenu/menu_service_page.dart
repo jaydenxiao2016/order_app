@@ -210,7 +210,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
                                       });
                                     },
                                     leading: CommonUtils.displayImageWidget(
-                                        Config.BASE_URL +
+                                        Config.getSettingBaseUrl() +
                                             categoryInfoEntity.imgPath +
                                             (categoryInfoEntity.data[index].pic ??
                                                 ""),height: ScreenUtil.getInstance().setWidth(80)
@@ -297,7 +297,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
                                       padding: const EdgeInsets.only(
                                           left: 10.0, right: 15.0),
                                       child: CommonUtils.displayImageWidget(
-                                          Config.BASE_URL +
+                                          Config.getSettingBaseUrl() +
                                               productResponseEntity.imgPath +
                                               (product.pic ?? ""),
                                           height: ScreenUtil.getInstance().setWidth(150),

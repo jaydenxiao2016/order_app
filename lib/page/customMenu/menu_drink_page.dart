@@ -211,7 +211,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                       });
                                     },
                                     leading: CommonUtils.displayImageWidget(
-                                        Config.BASE_URL +
+                                        Config.getSettingBaseUrl() +
                                                 categoryInfoEntity.imgPath +
                                                 (categoryInfoEntity
                                                     .data[index].pic) ??

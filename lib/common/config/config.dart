@@ -1,8 +1,12 @@
+import 'package:order_app/common/utils/sp_util.dart';
+
 class Config {
-  ///接口api base
-//  static const BASE_URL = "http://192.168.1.7:8080";
-//  static const BASE_URL = "http://192.168.1.20:8080";
-  static const BASE_URL = "http://123.207.96.187:8080";
+  ///默认接口api base
+//  static const DEFAULT_URL = "http://192.168.1.7:8080";
+//  static const DEFAULT_URL = "http://192.168.1.20:8080";
+  static const DEFAULT_URL = "http://123.207.96.187:8080";
+  ///设置接口api入口密码
+  static const SETTING_URL_PWD = "Chen19880513";
   static const CODE_SUCCESS = 100;
   static const CODE_ERROR = 200;
   static const double SCREEN_WIDTH = 1600;
@@ -42,5 +46,10 @@ class Config {
   static const REFRESH_LANGUAGE = "refreshLanguageApp";
   static const THEME_COLOR = "theme-color";
   static const LOCALE = "locale";
-  static const BASH_URL_KEY = "base_url";
+  static const BASE_URL_KEY = "base_url";
+  
+  ///获取设置后的接口地址
+  static String getSettingBaseUrl(){
+    return SpUtil.getString(Config.BASE_URL_KEY,defValue: Config.DEFAULT_URL);
+  }
 }

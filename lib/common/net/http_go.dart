@@ -35,7 +35,7 @@ class HttpGo {
 
   HttpGo() {
     dio = Dio(BaseOptions(
-      baseUrl: SpUtil.getString(Config.BASH_URL_KEY,defValue: Config.BASE_URL),
+      baseUrl: SpUtil.getString(Config.BASE_URL_KEY,defValue: Config.DEFAULT_URL),
       headers: {'platform': 'android', 'version': 11.0},
       connectTimeout: 5000,
       receiveTimeout: 100000,

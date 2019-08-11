@@ -393,7 +393,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                                   width: 2.0,
                                   style: BorderStyle.solid)),
                           child: CommonUtils.displayImageWidget(
-                            Config.BASE_URL +
+                            Config.getSettingBaseUrl() +
                                 store.state.loginResponseEntity.setting.logo,
                           ),
                         ),
@@ -430,7 +430,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                               Expanded(
                                 child: categoryInfoEntity.data.length > 0
                                     ? CommonUtils.displayImageWidget(
-                                        Config.BASE_URL +
+                                        Config.getSettingBaseUrl() +
                                             categoryInfoEntity.imgPath +
                                             categoryInfoEntity.data[0].pic,
                                         width: window.physicalSize.width,
@@ -477,7 +477,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                               Expanded(
                                 child: categoryInfoEntity.data.length > 1
                                     ? CommonUtils.displayImageWidget(
-                                        Config.BASE_URL +
+                                        Config.getSettingBaseUrl() +
                                             categoryInfoEntity.imgPath +
                                             categoryInfoEntity.data[1].pic,
                                         width: window.physicalSize.width / 4,
@@ -525,7 +525,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                               Expanded(
                                 child: categoryInfoEntity.data.length > 2
                                     ? CommonUtils.displayImageWidget(
-                                        Config.BASE_URL +
+                                        Config.getSettingBaseUrl() +
                                             categoryInfoEntity.imgPath +
                                             categoryInfoEntity.data[2].pic,
                                         width: window.physicalSize.width / 4,
@@ -587,7 +587,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
                               Expanded(
                                 child: categoryInfoEntity.data.length > 3
                                     ? CommonUtils.displayImageWidget(
-                                        Config.BASE_URL +
+                                        Config.getSettingBaseUrl() +
                                             categoryInfoEntity.imgPath +
                                             categoryInfoEntity.data[3].pic,
                                         width: window.physicalSize.width / 4,
