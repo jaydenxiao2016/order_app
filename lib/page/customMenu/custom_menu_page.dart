@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -41,6 +42,7 @@ class CustomMenuPage extends StatefulWidget {
 
 class _CustomMenuPageState extends State<CustomMenuPage>
     with TickerProviderStateMixin {
+  CancelToken cancelToken = new CancelToken();
   ///监听
   StreamSubscription stream;
 
@@ -145,7 +147,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
         .get(UrlPath.orderInfoPath +
             store.state.loginResponseEntity.orderMasterEntity.orderId
                 .toString() +
-            "/info")
+            "/info",cancelToken: cancelToken)
         .then((baseResult) {
       print("订单详情成功");
 
@@ -198,7 +200,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
           HttpGo.getInstance()
               .get(UrlPath.getCategoryByPidPath +
                   "?parentId=" +
-                  Config.ROOT_ID.toString())
+                  Config.ROOT_ID.toString(),cancelToken: cancelToken)
               .then((baseResult) {
             this.setState(() {
               categoryInfoEntity =
@@ -633,6 +635,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     if (_passwordController != null) {
       _passwordController.dispose();
     }
+   if(cancelToken!=null){
+     //取消网络请求
+     cancelToken.cancel("cancelled");
+   }
     countdownTimer?.cancel();
     countdownTimer = null;
     super.dispose();

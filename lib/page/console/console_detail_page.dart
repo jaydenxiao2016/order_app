@@ -62,7 +62,7 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
       return;
     }
     CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
-        .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info")
+        .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info",cancelToken: cancelToken)
         .then((baseResult) {
       print("订单详情成功");
       setState(() {
