@@ -241,7 +241,7 @@ class CommonUtils {
       placeholder: (context, url) => new CircularProgressIndicator(),
       errorWidget: (context, url, error) => Image.asset(
         'static/images/icon_wrong_default.png',
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
       ),
     );
   }

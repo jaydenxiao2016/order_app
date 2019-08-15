@@ -128,7 +128,7 @@ class _MenuServicePageState extends State<MenuServicePage> {
       Navigator.push<bool>(
               context,
               new CupertinoPageRoute(
-                  builder: (context) => MenuRecord(3, selectedProductList)))
+                  builder: (context) => MenuRecord(3,productResponseEntity.imgPath, selectedProductList)))
           .then((isFinish) {
         if (isFinish != null && isFinish) {
           NavigatorUtils.pop(context);
@@ -356,7 +356,9 @@ class _MenuServicePageState extends State<MenuServicePage> {
                                                       .DETAIL_SERVICE_TYPE,
                                                   categoryId: categoryInfoEntity
                                                       .data[selectTypeIndex].id,
-                                                  productPrice: product.price);
+                                                  productPrice: product.price,
+                                                product: product
+                                              );
                                               selectedProduct[key] =
                                                   orderDetail;
                                             } else {

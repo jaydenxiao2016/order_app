@@ -19,102 +19,19 @@ import 'package:order_app/widget/flex_button.dart';
 class MenuRecord extends StatefulWidget {
   ///1：酒水 2：每轮订单 3:服务
   int type;
+  ///图片地址
+  String imgPath;
   ///订单明细
   List<OrderDetail> selectedDrinkProduct = new List();
-  MenuRecord(this.type,this.selectedDrinkProduct,{Key key}):super(key:key);
+  MenuRecord(this.type,this.imgPath,this.selectedDrinkProduct,{Key key}):super(key:key);
   @override
   _MenuRecordState createState() => new _MenuRecordState();
 }
 
-///获取订单内容
-  Widget _getContent(int i, OrderDetail value) {
-    return Container(
-      color: i.isEven ? Colors.white : Color(0xFFF2F2F2),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                value.productId.toString(),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            height: 35.0,
-            width: 1,
-          ),
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                value.categoryName,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            height: 35.0,
-            width: 1,
-          ),
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                value.productName,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            height: 35.0,
-            width: 1,
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                value.productNumber.toString(),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            height: 35.0,
-            width: 1,
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                value.productPrice.toString(),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
 class _MenuRecordState extends State<MenuRecord> {
   CancelToken cancelToken = new CancelToken();
-
   ///酒水下单
   _requestDrinkConfirm(BuildContext context) async{
     print('请求酒水下单');
@@ -173,6 +90,90 @@ class _MenuRecordState extends State<MenuRecord> {
     }));
   }
 
+  ///获取订单内容
+  Widget _getContent(int i, OrderDetail value) {
+    return Container(
+      color: i.isEven ? Colors.white : Color(0xFFF2F2F2),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: CommonUtils.displayImageWidget(Config.getSettingBaseUrl() +widget.imgPath+value.product.pic,height: ScreenUtil.getInstance().setWidth(90),width: ScreenUtil.getInstance().setWidth(110)),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 90.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productId.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 90.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productNumber.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 90.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productName,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 90.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productPrice.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -211,6 +212,23 @@ class _MenuRecordState extends State<MenuRecord> {
                             flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
+                              child: Text("图片", textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: MyTextStyle.smallTextSize
+                                ),),
+                            ),
+                          ),
+                          Container(
+                            color: Colors.white,
+                            height: 35.0,
+                            width: 1,
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(CommonUtils.getLocale(context).serialNum, textAlign: TextAlign.center,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -225,10 +243,10 @@ class _MenuRecordState extends State<MenuRecord> {
                             width: 1,
                           ),
                           Expanded(
-                            flex: 2,
+                            flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(CommonUtils.getLocale(context).categories, textAlign: TextAlign.center,style: TextStyle(
+                              child: Text(CommonUtils.getLocale(context).num, textAlign: TextAlign.center,style: TextStyle(
                                   fontSize: MyTextStyle.smallTextSize
                               )),
                             ),
@@ -252,20 +270,7 @@ class _MenuRecordState extends State<MenuRecord> {
                             height: 35.0,
                             width: 1,
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(CommonUtils.getLocale(context).num, textAlign: TextAlign.center,style: TextStyle(
-                                  fontSize: MyTextStyle.smallTextSize
-                              )),
-                            ),
-                          ),
-                          Container(
-                            color: Colors.white,
-                            height: 35.0,
-                            width: 1,
-                          ),
+
                           Expanded(
                             flex: 1,
                             child: Padding(

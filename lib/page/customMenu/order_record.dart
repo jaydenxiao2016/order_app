@@ -24,94 +24,11 @@ class OrderRecord extends StatefulWidget {
   _OrderRecordState createState() => new _OrderRecordState();
 }
 
-///获取酒水内容
-Widget _getContent(int i, OrderDetail value) {
-  return Container(
-    color: i.isEven ? Colors.white : Color(0xFFF2F2F2),
-    child: Row(
-      children: <Widget>[
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              value.productId.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-            ),
-          ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              value.categoryName,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-            ),
-          ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              value.productName,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-            ),
-          ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              value.productNumber.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-            ),
-          ),
-        ),
-        Container(
-          color: Colors.white,
-          height: 35.0,
-          width: 1,
-        ),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              value.productPrice.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+
 
 class _OrderRecordState extends State<OrderRecord> {
   CancelToken cancelToken = new CancelToken();
+  String imgPath="";
   ///订单明细
   List<OrderDetail> orderDetailList = new List();
 
@@ -142,6 +59,7 @@ class _OrderRecordState extends State<OrderRecord> {
         });
         print(selectedDrinkProduct.length);
         this.setState(() {
+          this.imgPath=baseResult.data['imgPath'];
           this.orderDetailList=selectedDrinkProduct;
         });
       }).catchError((error) {
@@ -149,7 +67,89 @@ class _OrderRecordState extends State<OrderRecord> {
       }));
     }
   }
-
+  ///获取酒水内容
+  Widget _getContent(int i, OrderDetail value) {
+    return Container(
+      color: i.isEven ? Colors.white : Color(0xFFF2F2F2),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: CommonUtils.displayImageWidget(Config.getSettingBaseUrl() +imgPath+value.product.pic,height: ScreenUtil.getInstance().setWidth(90),width: ScreenUtil.getInstance().setWidth(110)),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 90.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productNumber.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 90.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productId.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 90.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productName,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            height: 35.0,
+            width: 1,
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                value.productPrice.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontSize: MyTextStyle.smallTextSize),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,6 +187,37 @@ class _OrderRecordState extends State<OrderRecord> {
                             flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
+                              child: Text("图片", textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: MyTextStyle.smallTextSize
+                                ),),
+                            ),
+                          ),
+                          Container(
+                            color: Colors.white,
+                            height: 35.0,
+                            width: 1,
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(CommonUtils.getLocale(context).num, textAlign: TextAlign.center,style: TextStyle(
+                                  fontSize: MyTextStyle.smallTextSize
+                              )),
+                            ),
+                          ),
+                          Container(
+                            color: Colors.white,
+                            height: 35.0,
+                            width: 1,
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(CommonUtils.getLocale(context).serialNum, textAlign: TextAlign.center,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -204,35 +235,7 @@ class _OrderRecordState extends State<OrderRecord> {
                             flex: 2,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(CommonUtils.getLocale(context).categories, textAlign: TextAlign.center,style: TextStyle(
-                                  fontSize: MyTextStyle.smallTextSize
-                              )),
-                            ),
-                          ),
-                          Container(
-                            color: Colors.white,
-                            height: 35.0,
-                            width: 1,
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
                               child: Text(CommonUtils.getLocale(context).name, textAlign: TextAlign.center,style: TextStyle(
-                                  fontSize: MyTextStyle.smallTextSize
-                              )),
-                            ),
-                          ),
-                          Container(
-                            color: Colors.white,
-                            height: 35.0,
-                            width: 1,
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(CommonUtils.getLocale(context).num, textAlign: TextAlign.center,style: TextStyle(
                                   fontSize: MyTextStyle.smallTextSize
                               )),
                             ),
