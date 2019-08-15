@@ -62,7 +62,7 @@ class _PageDetailPageState extends State<PageDetailPage> {
       return;
     }
     await HttpGo.getInstance()
-        .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info")
+        .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info",cancelToken: cancelToken)
         .then((baseResult) {
       print("订单详情成功");
       setState(() {
@@ -115,7 +115,7 @@ class _PageDetailPageState extends State<PageDetailPage> {
               onPressed: () {
                  CommonUtils.showLoadingDialog(context,HttpGo.getInstance()
                     .post(UrlPath.notifyPay +
-                    "?orderId=" +widget.orderId.toString())
+                    "?orderId=" +widget.orderId.toString(),cancelToken: cancelToken)
                     .then((baseResult) {
                   ///跳转到服务员设置界面
                   Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payTipSuccess);

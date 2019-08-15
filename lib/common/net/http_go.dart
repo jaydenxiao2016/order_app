@@ -137,7 +137,10 @@ class HttpGo {
         return new Future.error(_msg);
       }
     }
-    return new Future.error("statusCode: $response.statusCode, service error");
+    if(response!=null) {
+      return new Future.error(
+          "statusCode: $response.statusCode, service error");
+    }
   }
 
   /// decode response data.

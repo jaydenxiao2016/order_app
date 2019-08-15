@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,6 +35,7 @@ class ServiceControlPage extends StatefulWidget {
 }
 
 class _ServiceControlPageState extends State<ServiceControlPage> {
+  CancelToken cancelToken = new CancelToken();
   //成人
   TextEditingController _adultController = TextEditingController();
 
@@ -397,7 +399,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     ///新增订单
     if (1 == widget.type) {
      HttpGo.getInstance()
-          .post(UrlPath.orderConfirmPath, params: orderMasterEntity.toJson())
+          .post(UrlPath.orderConfirmPath, params: orderMasterEntity.toJson(),cancelToken: cancelToken)
           .then((baseResult) {
         ///1.保存本次订单主表信息
         OrderMasterEntity orderMasterEntity =
@@ -421,7 +423,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
     ///修改订单
     else if (2 == widget.type) {
       HttpGo.getInstance()
-          .post(UrlPath.orderUpdate, params: orderMasterEntity.toJson())
+          .post(UrlPath.orderUpdate, params: orderMasterEntity.toJson(),cancelToken: cancelToken)
           .then((baseResult) {
         print(loginInfoEntity.setting.toJson());
 
@@ -446,6 +448,10 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
   @override
   void dispose() {
     super.dispose();
+    //取消网络请求
+    if(cancelToken!=null) {
+      cancelToken.cancel("cancelled");
+    }
     _adultController.dispose();
     _childrenController.dispose();
     _tableNumController.dispose();
