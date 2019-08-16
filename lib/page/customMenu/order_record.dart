@@ -187,7 +187,7 @@ class _OrderRecordState extends State<OrderRecord> {
                             flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("图片", textAlign: TextAlign.center,
+                              child: Text(CommonUtils.getLocale(context).picture, textAlign: TextAlign.center,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

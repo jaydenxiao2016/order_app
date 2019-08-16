@@ -226,4 +226,6 @@ class StringEn extends StringBase {
   String refresh="Refresh";
   @override
   String refreshSuccess="Refresh Success";
+  @override
+  String picture="Picture";
 }

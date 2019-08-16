@@ -119,4 +119,5 @@ abstract class StringBase {
   String drinkDetail;
   String refresh;
   String refreshSuccess;
+  String picture;
 }

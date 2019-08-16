@@ -225,6 +225,7 @@ class StringDe extends StringBase {
   String refresh="Aktualisieren";
   @override
   String refreshSuccess="Erfolg aktualisieren";
-
+  @override
+  String picture="Bild";
 }
 

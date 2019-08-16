@@ -223,4 +223,6 @@ class StringZh extends StringBase {
   String refresh="刷新";
   @override
   String refreshSuccess="刷新成功";
+  @override
+  String picture="图片";
 }
