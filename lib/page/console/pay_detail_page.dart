@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:order_app/common/config/route_path.dart';
 import 'package:order_app/common/config/url_path.dart';
-import 'package:order_app/common/event/console_refresh_event.dart';
-import 'package:order_app/common/event/type_refresh_event.dart';
 import 'package:order_app/common/model/order_master_entity.dart';
 import 'package:order_app/common/net/http_go.dart';
 import 'package:order_app/common/redux/state_info.dart';
@@ -17,16 +14,16 @@ import 'package:order_app/common/utils/date_format_base.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/console/record.dart';
 import 'package:order_app/widget/flex_button.dart';
-import 'package:order_app/common/utils/common_utils.dart';
 
 //支付详情
 class PageDetailPage extends StatefulWidget {
   /// 订单id
   int orderId;
+
   /// 台区
   String buyerName;
 
-  PageDetailPage(this.orderId, this.buyerName,{Key key}) : super(key: key);
+  PageDetailPage(this.orderId, this.buyerName, {Key key}) : super(key: key);
 
   @override
   _PageDetailPageState createState() => _PageDetailPageState();
@@ -62,21 +59,25 @@ class _PageDetailPageState extends State<PageDetailPage> {
       return;
     }
     await HttpGo.getInstance()
-        .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info",cancelToken: cancelToken)
+        .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info",
+            cancelToken: cancelToken)
         .then((baseResult) {
       print("订单详情成功");
-      setState(() {
-        orderMasterEntity = OrderMasterEntity.fromJson(baseResult.data["data"]);
-      });
+      if (mounted) {
+        setState(() {
+          orderMasterEntity =
+              OrderMasterEntity.fromJson(baseResult.data["data"]);
+        });
+      }
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
     });
   }
 
-
   ///确认支付订单
   _payNotify() {
-    BuildContext rootContext=context;
+    BuildContext rootContext = context;
+
     ///提示
     showDialog<Null>(
       context: context,
@@ -85,21 +86,18 @@ class _PageDetailPageState extends State<PageDetailPage> {
         return new AlertDialog(
           title: new Text(
             CommonUtils.getLocale(context).tip,
-            style: TextStyle(
-                fontSize: MyTextStyle.normalTextSize),
+            style: TextStyle(fontSize: MyTextStyle.normalTextSize),
           ),
           content: new Text(
             CommonUtils.getLocale(context).payTip,
-            style: TextStyle(
-                fontSize: MyTextStyle.bigTextSize),
+            style: TextStyle(fontSize: MyTextStyle.bigTextSize),
           ),
           actions: <Widget>[
             new FlatButton(
               child: new Text(
                 CommonUtils.getLocale(context).cancel,
                 style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: MyTextStyle.normalTextSize),
+                    color: Colors.grey, fontSize: MyTextStyle.normalTextSize),
               ),
               onPressed: () {
                 NavigatorUtils.pop(context);
@@ -109,28 +107,34 @@ class _PageDetailPageState extends State<PageDetailPage> {
               child: new Text(
                 CommonUtils.getLocale(context).sure,
                 style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: MyTextStyle.normalTextSize),
+                    color: Colors.blue, fontSize: MyTextStyle.normalTextSize),
               ),
               onPressed: () {
-                 CommonUtils.showLoadingDialog(context,HttpGo.getInstance()
-                    .post(UrlPath.notifyPay +
-                    "?orderId=" +widget.orderId.toString(),cancelToken: cancelToken)
-                    .then((baseResult) {
-                  ///跳转到服务员设置界面
-                  Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payTipSuccess);
-                  Navigator.of(context).maybePop();
-                  Navigator.of(rootContext).maybePop(true);
-                }).catchError((error) {
-                  if(error==102){
-                    Fluttertoast.showToast(msg: CommonUtils.getLocale(context).payTipSuccess);
-                    Navigator.of(context).maybePop();
-                    Navigator.of(rootContext).maybePop(true);
-                  }else {
-                    Navigator.of(context).maybePop();
-                    Fluttertoast.showToast(msg: error.toString());
-                  }
-                }));
+                CommonUtils.showLoadingDialog(
+                    context,
+                    HttpGo.getInstance()
+                        .post(
+                            UrlPath.notifyPay +
+                                "?orderId=" +
+                                widget.orderId.toString(),
+                            cancelToken: cancelToken)
+                        .then((baseResult) {
+                      ///跳转到服务员设置界面
+                      Fluttertoast.showToast(
+                          msg: CommonUtils.getLocale(context).payTipSuccess);
+                      Navigator.of(context).maybePop();
+                      Navigator.of(rootContext).maybePop(true);
+                    }).catchError((error) {
+                      if (error == 102) {
+                        Fluttertoast.showToast(
+                            msg: CommonUtils.getLocale(context).payTipSuccess);
+                        Navigator.of(context).maybePop();
+                        Navigator.of(rootContext).maybePop(true);
+                      } else {
+                        Navigator.of(context).maybePop();
+                        Fluttertoast.showToast(msg: error.toString());
+                      }
+                    }));
               },
             ),
           ],
@@ -151,10 +155,14 @@ class _PageDetailPageState extends State<PageDetailPage> {
         : "";
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       String title = CommonUtils.getLocale(context).payment;
-      double adultPrice=orderMasterEntity.orderType=="1"?store.state.loginResponseEntity.setting.adultLunchPrice:store.state.loginResponseEntity.setting.adultDinnerPrice;
-      double childPrice=orderMasterEntity.orderType=="1"?store.state.loginResponseEntity.setting.childLunchPrice:store.state.loginResponseEntity.setting.childDinnerPrice;
-      double adultTotalPrice=adultPrice*(orderMasterEntity.adult??0);
-      double childTotalPrice=childPrice*(orderMasterEntity.child??0);
+      double adultPrice = orderMasterEntity.orderType == "1"
+          ? store.state.loginResponseEntity.setting.adultLunchPrice
+          : store.state.loginResponseEntity.setting.adultDinnerPrice;
+      double childPrice = orderMasterEntity.orderType == "1"
+          ? store.state.loginResponseEntity.setting.childLunchPrice
+          : store.state.loginResponseEntity.setting.childDinnerPrice;
+      double adultTotalPrice = adultPrice * (orderMasterEntity.adult ?? 0);
+      double childTotalPrice = childPrice * (orderMasterEntity.child ?? 0);
       AppBar appBar = AppBar(
         title: Text(title),
       );
@@ -184,13 +192,19 @@ class _PageDetailPageState extends State<PageDetailPage> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        CommonUtils.getLocale(context).drinkPrice,
+                                        CommonUtils.getLocale(context)
+                                            .drinkPrice,
                                         style: TextStyle(
                                             fontSize:
                                                 MyTextStyle.normalTextSize),
                                       ),
                                       Text(
-                                          orderMasterEntity.drinksTotalAmount!=null?orderMasterEntity.drinksTotalAmount.toString():"0",
+                                          orderMasterEntity.drinksTotalAmount !=
+                                                  null
+                                              ? orderMasterEntity
+                                                  .drinksTotalAmount
+                                                  .toString()
+                                              : "0",
                                           style: TextStyle(
                                               fontSize: MyTextStyle.bigTextSize,
                                               color: Colors.red)),
@@ -201,16 +215,20 @@ class _PageDetailPageState extends State<PageDetailPage> {
                                   padding: const EdgeInsets.all(10),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        CommonUtils.getLocale(context).adult.toString()+"("+orderMasterEntity.adult.toString()+")",
+                                        CommonUtils.getLocale(context)
+                                                .adult
+                                                .toString() +
+                                            "(" +
+                                            orderMasterEntity.adult.toString() +
+                                            ")",
                                         style: TextStyle(
                                             fontSize:
-                                            MyTextStyle.normalTextSize),
+                                                MyTextStyle.normalTextSize),
                                       ),
-                                      Text(
-                                          adultTotalPrice.toString(),
+                                      Text(adultTotalPrice.toString(),
                                           style: TextStyle(
                                               fontSize: MyTextStyle.bigTextSize,
                                               color: Colors.red)),
@@ -221,16 +239,22 @@ class _PageDetailPageState extends State<PageDetailPage> {
                                   padding: const EdgeInsets.all(10),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        CommonUtils.getLocale(context).children.toString()+"("+(orderMasterEntity.child.toString()??"0")+")",
+                                        CommonUtils.getLocale(context)
+                                                .children
+                                                .toString() +
+                                            "(" +
+                                            (orderMasterEntity.child
+                                                    .toString() ??
+                                                "0") +
+                                            ")",
                                         style: TextStyle(
                                             fontSize:
-                                            MyTextStyle.normalTextSize),
+                                                MyTextStyle.normalTextSize),
                                       ),
-                                      Text(
-                                          childTotalPrice.toString(),
+                                      Text(childTotalPrice.toString(),
                                           style: TextStyle(
                                               fontSize: MyTextStyle.bigTextSize,
                                               color: Colors.red)),
@@ -248,7 +272,10 @@ class _PageDetailPageState extends State<PageDetailPage> {
                                             fontSize: MyTextStyle.bigTextSize),
                                       ),
                                       Text(
-                                        widget.buyerName+"-"+orderMasterEntity.tableNum.toString() +
+                                        widget.buyerName +
+                                            "-" +
+                                            orderMasterEntity.tableNum
+                                                .toString() +
                                             "（" +
                                             openTimeStr +
                                             "）",
@@ -265,7 +292,8 @@ class _PageDetailPageState extends State<PageDetailPage> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        CommonUtils.getLocale(context).totalPrice,
+                                        CommonUtils.getLocale(context)
+                                            .totalPrice,
                                         style: TextStyle(
                                             fontSize:
                                                 MyTextStyle.normalTextSize),
@@ -303,18 +331,18 @@ class _PageDetailPageState extends State<PageDetailPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                        Container(
-                          height: ScreenUtil.getInstance().setWidth(70),
-                          width:ScreenUtil.getInstance().setWidth(500),
-                          margin: EdgeInsets.all(5.0),
-                          child: FlexButton(
-                            color: Colors.deepOrange,
-                            textColor: Colors.white,
-                            fontSize: MyTextStyle.normalTextSize,
-                            text: CommonUtils.getLocale(context).payment,
-                            onPress: () {
-                              _payNotify();
-                            },
+                      Container(
+                        height: ScreenUtil.getInstance().setWidth(70),
+                        width: ScreenUtil.getInstance().setWidth(500),
+                        margin: EdgeInsets.all(5.0),
+                        child: FlexButton(
+                          color: Colors.deepOrange,
+                          textColor: Colors.white,
+                          fontSize: MyTextStyle.normalTextSize,
+                          text: CommonUtils.getLocale(context).payment,
+                          onPress: () {
+                            _payNotify();
+                          },
                         ),
                       ),
                     ],

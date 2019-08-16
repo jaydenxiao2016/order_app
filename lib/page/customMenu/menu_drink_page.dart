@@ -95,9 +95,12 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
           _requestDrinkProductData(
               categoryResponseEntity.data[selectTypeIndex].id);
         }
-        this.setState(() {
-          categoryInfoEntity = CategoryResponseEntity.fromJson(baseResult.data);
-        });
+        if(mounted) {
+          this.setState(() {
+            categoryInfoEntity =
+                CategoryResponseEntity.fromJson(baseResult.data);
+          });
+        }
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
       }));
@@ -113,10 +116,12 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
         "pageNum": 1,
         "pageSize": Config.PAGE_SIZE,
       },cancelToken: cancelToken).then((baseResult) {
-        this.setState(() {
-          productResponseEntity =
-              ProductResponseEntity.fromJson(baseResult.data);
-        });
+        if(mounted) {
+          this.setState(() {
+            productResponseEntity =
+                ProductResponseEntity.fromJson(baseResult.data);
+          });
+        }
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
       });

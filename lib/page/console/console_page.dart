@@ -66,9 +66,11 @@ class _ConsolePageState extends State<ConsolePage> {
           if(isRefresh!=null&&isRefresh==true){
             Fluttertoast.showToast(msg: CommonUtils.getLocale(context).refreshSuccess);
           }
-          this.setState(() {
-            areaList = newAreaList;
-          });
+          if(mounted) {
+            this.setState(() {
+              areaList = newAreaList;
+            });
+          }
         }
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());

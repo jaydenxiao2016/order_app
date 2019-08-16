@@ -121,10 +121,12 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
         "pageNum": 1,
         "pageSize": Config.PAGE_SIZE,
       },cancelToken: cancelToken).then((baseResult) {
-        this.setState(() {
-          productResponseEntity =
-              ProductResponseEntity.fromJson(baseResult.data);
-        });
+        if(mounted) {
+          this.setState(() {
+            productResponseEntity =
+                ProductResponseEntity.fromJson(baseResult.data);
+          });
+        }
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
       });

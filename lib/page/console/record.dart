@@ -163,10 +163,11 @@ class _RecordState extends State<Record> {
         (baseResult.data['data']['list'] as List).forEach((v) {
           selectedDrinkProduct.add(new OrderDetail.fromJson(v));
         });
-        print(selectedDrinkProduct.length);
-        this.setState(() {
-          this.orderDetailList = selectedDrinkProduct;
-        });
+        if(mounted) {
+          this.setState(() {
+            this.orderDetailList = selectedDrinkProduct;
+          });
+        }
       }).catchError((error) {
         Fluttertoast.showToast(msg: error.toString());
       });

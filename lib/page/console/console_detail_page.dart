@@ -65,9 +65,12 @@ class _ConsoleDetailPageState extends State<ConsoleDetailPage> {
         .get(UrlPath.orderInfoPath + widget.orderId.toString() + "/info",cancelToken: cancelToken)
         .then((baseResult) {
       print("订单详情成功");
-      setState(() {
-        orderMasterEntity = OrderMasterEntity.fromJson(baseResult.data["data"]);
-      });
+      if(mounted) {
+        setState(() {
+          orderMasterEntity =
+              OrderMasterEntity.fromJson(baseResult.data["data"]);
+        });
+      }
     }).catchError((error) {
       Fluttertoast.showToast(msg: error.toString());
     }));

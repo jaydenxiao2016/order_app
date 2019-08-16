@@ -26,12 +26,12 @@ import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/console/pay_detail_page.dart';
 import 'package:order_app/page/control/service_control_page.dart';
 import 'package:order_app/page/customMenu/menu_drink_page.dart';
+import 'package:order_app/page/customMenu/menu_food_page.dart';
 import 'package:order_app/page/customMenu/menu_service_page.dart';
 import 'package:order_app/widget/AvoidDoubleClickInkWell.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/redux.dart';
 
-import 'package:order_app/page/customMenu/menu_food_page.dart';
 import 'order_record.dart';
 
 ///客户工作台
@@ -43,6 +43,7 @@ class CustomMenuPage extends StatefulWidget {
 class _CustomMenuPageState extends State<CustomMenuPage>
     with TickerProviderStateMixin {
   CancelToken cancelToken = new CancelToken();
+
   ///监听
   StreamSubscription stream;
 
@@ -113,7 +114,7 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       countdownTimer = null;
     }
     countdownTimer = new Timer.periodic(new Duration(seconds: 1), (timer) {
-      if (currentTimeSecond > 0) {
+      if (currentTimeSecond > 0&&mounted) {
         setState(() {
           currentTimeSecond = currentTimeSecond - 1;
         });
@@ -144,10 +145,12 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     }
     Store<StateInfo> store = CommonUtils.getStore(context);
     await HttpGo.getInstance()
-        .get(UrlPath.orderInfoPath +
-            store.state.loginResponseEntity.orderMasterEntity.orderId
-                .toString() +
-            "/info",cancelToken: cancelToken)
+        .get(
+            UrlPath.orderInfoPath +
+                store.state.loginResponseEntity.orderMasterEntity.orderId
+                    .toString() +
+                "/info",
+            cancelToken: cancelToken)
         .then((baseResult) {
       print("订单详情成功");
 
@@ -198,14 +201,18 @@ class _CustomMenuPageState extends State<CustomMenuPage>
       CommonUtils.showLoadingDialog(
           context,
           HttpGo.getInstance()
-              .get(UrlPath.getCategoryByPidPath +
-                  "?parentId=" +
-                  Config.ROOT_ID.toString(),cancelToken: cancelToken)
+              .get(
+                  UrlPath.getCategoryByPidPath +
+                      "?parentId=" +
+                      Config.ROOT_ID.toString(),
+                  cancelToken: cancelToken)
               .then((baseResult) {
-            this.setState(() {
-              categoryInfoEntity =
-                  CategoryResponseEntity.fromJson(baseResult.data);
-            });
+            if (mounted) {
+              this.setState(() {
+                categoryInfoEntity =
+                    CategoryResponseEntity.fromJson(baseResult.data);
+              });
+            }
           }).catchError((error) {
             Fluttertoast.showToast(msg: error.toString());
           }));
@@ -635,10 +642,10 @@ class _CustomMenuPageState extends State<CustomMenuPage>
     if (_passwordController != null) {
       _passwordController.dispose();
     }
-   if(cancelToken!=null){
-     //取消网络请求
-     cancelToken.cancel("cancelled");
-   }
+    if (cancelToken != null) {
+      //取消网络请求
+      cancelToken.cancel("cancelled");
+    }
     countdownTimer?.cancel();
     countdownTimer = null;
     super.dispose();
