@@ -36,10 +36,10 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
   int currentNum = 0;
 
   ///已点餐单和数目
-  Map<int, int> selected = new Map();
+  Map<String, int> selected = new Map();
 
   ///已点餐单key:分类id+商品id value:订单明细
-  Map<int, OrderDetail> selectedProduct = new Map();
+  Map<String, OrderDetail> selectedProduct = new Map();
   List<OrderDetail> selectedProductList = new List();
 
   ///分类选择index
@@ -113,6 +113,7 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
     if (mounted) {
       await HttpGo.getInstance().post(UrlPath.productListPath, params: {
         "cid": cId,
+        "type": CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderType,
         "pageNum": 1,
         "pageSize": Config.PAGE_SIZE,
       },cancelToken: cancelToken).then((baseResult) {
@@ -341,13 +342,13 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                       padding: EdgeInsets.only(right: 10.0),
                                       child: PlusDecreaseText(
                                         inputValue: selected[categoryInfoEntity
-                                                    .data[selectTypeIndex].id +
-                                                product.id]
+                                                    .data[selectTypeIndex].id.toString() +
+                                                product.id.toString()]
                                             ?.toString(),
                                         callback: (String value) {
-                                          int key = categoryInfoEntity
-                                                  .data[selectTypeIndex].id +
-                                              product.id;
+                                          String key = categoryInfoEntity
+                                                  .data[selectTypeIndex].id.toString() +
+                                              product.id.toString();
                                           int num = int.parse(value);
                                           if (num > 0) {
                                             selected[key] = num;

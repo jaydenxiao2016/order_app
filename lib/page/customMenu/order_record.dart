@@ -89,7 +89,7 @@ class _OrderRecordState extends State<OrderRecord> {
               child: Container(
                 padding: const EdgeInsets.all(8.0),
                 child: CommonUtils.displayImageWidget(
-                    Config.getSettingBaseUrl() + imgPath + value.product.pic,
+                    Config.getSettingBaseUrl() + imgPath + (value.product.pic??""),
                     height: ScreenUtil.getInstance().setWidth(90),
                     width: ScreenUtil.getInstance().setWidth(110)),
               ),

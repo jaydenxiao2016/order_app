@@ -39,10 +39,10 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   int totalNumLimited = 0;
 
   ///已点餐单和数目
-  Map<int, int> selected = new Map();
+  Map<String, int> selected = new Map();
 
   ///已点餐单key:分类id+商品id value:订单明细
-  Map<int, OrderDetail> selectedProduct = new Map();
+  Map<String, OrderDetail> selectedProduct = new Map();
   List<OrderDetail> selectedProductList = new List();
 
   ///加号是否可用
@@ -220,6 +220,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                     onTap: () {
                                       _requestDrinkProductData(
                                           categoryInfoEntity.data[index].id);
+                                      print("分类"+index.toString());
                                       setState(() {
                                         selectTypeIndex = index;
                                       });
@@ -336,13 +337,13 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                       child: PlusDecreaseText(
                                         plusEnable: plusEnable,
                                         inputValue: selected[categoryInfoEntity
-                                                    .data[selectTypeIndex].id +
-                                                product.id]
+                                                    .data[selectTypeIndex].id.toString() +
+                                                product.id.toString()]
                                             ?.toString(),
                                         callback: (String value) {
-                                          int key = categoryInfoEntity
-                                                  .data[selectTypeIndex].id +
-                                              product.id;
+                                          String key = categoryInfoEntity
+                                                  .data[selectTypeIndex].id.toString() +
+                                              product.id.toString();
                                           int num = int.parse(value);
                                           if (num > 0) {
                                             selected[key] = num;
