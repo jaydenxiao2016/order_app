@@ -358,7 +358,7 @@ class _ServiceControlPageState extends State<ServiceControlPage> {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).dinnerItemEmptyTip);
       return;
     }
-    if (_timerItem <= 0) {
+    if (_timerItem < 0) {
       Fluttertoast.showToast(msg: CommonUtils.getLocale(context).waitTimeEmptyTip);
       return;
     }

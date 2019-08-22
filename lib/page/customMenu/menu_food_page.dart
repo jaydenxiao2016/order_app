@@ -21,6 +21,7 @@ import 'package:order_app/common/utils/common_utils.dart';
 import 'package:order_app/common/utils/navigator_utils.dart';
 import 'package:order_app/page/customMenu/menu_record.dart';
 import 'package:order_app/widget/PlusDecreaseText.dart';
+import 'package:order_app/widget/big_photo_view.dart';
 import 'package:order_app/widget/flex_button.dart';
 import 'package:redux/src/store.dart';
 
@@ -32,6 +33,7 @@ class MenuFoodPage extends StatefulWidget {
 
 class _MenuFoodPageState extends State<MenuFoodPage> {
   CancelToken cancelToken = new CancelToken();
+
   ///已点数目
   int currentNum = 0;
 
@@ -87,27 +89,32 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   _requestDrinkCategoryData() async {
     print('请求食品');
     if (mounted) {
-      CommonUtils.showLoadingDialog(context, HttpGo.getInstance()
-          .get(UrlPath.getCategoryByPidPath +
-              "?parentId=" +
-              Config.DETAIL_FOOD_TYPE.toString(),cancelToken: cancelToken)
-          .then((baseResult) {
-        ///默认选中第一个分类
-        CategoryResponseEntity categoryResponseEntity =
-            CategoryResponseEntity.fromJson(baseResult.data);
-        if (categoryResponseEntity != null &&
-            categoryResponseEntity.data != null &&
-            categoryResponseEntity.data.length > 0) {
-          ///请求商品
-          _requestDrinkProductData(
-              categoryResponseEntity.data[selectTypeIndex].id);
-        }
-        this.setState(() {
-          categoryInfoEntity = CategoryResponseEntity.fromJson(baseResult.data);
-        });
-      }).catchError((error) {
-        Fluttertoast.showToast(msg: error.toString());
-      }));
+      CommonUtils.showLoadingDialog(
+          context,
+          HttpGo.getInstance()
+              .get(
+                  UrlPath.getCategoryByPidPath +
+                      "?parentId=" +
+                      Config.DETAIL_FOOD_TYPE.toString(),
+                  cancelToken: cancelToken)
+              .then((baseResult) {
+            ///默认选中第一个分类
+            CategoryResponseEntity categoryResponseEntity =
+                CategoryResponseEntity.fromJson(baseResult.data);
+            if (categoryResponseEntity != null &&
+                categoryResponseEntity.data != null &&
+                categoryResponseEntity.data.length > 0) {
+              ///请求商品
+              _requestDrinkProductData(
+                  categoryResponseEntity.data[selectTypeIndex].id);
+            }
+            this.setState(() {
+              categoryInfoEntity =
+                  CategoryResponseEntity.fromJson(baseResult.data);
+            });
+          }).catchError((error) {
+            Fluttertoast.showToast(msg: error.toString());
+          }));
     }
   }
 
@@ -115,13 +122,21 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
   _requestDrinkProductData(int cId) async {
     print('请求商品');
     if (mounted) {
-      await HttpGo.getInstance().post(UrlPath.productListPath, params: {
-        "cid": cId,
-        "type": CommonUtils.getStore(context).state.loginResponseEntity.orderMasterEntity.orderType,
-        "pageNum": 1,
-        "pageSize": Config.PAGE_SIZE,
-      },cancelToken: cancelToken).then((baseResult) {
-        if(mounted) {
+      await HttpGo.getInstance()
+          .post(UrlPath.productListPath,
+              params: {
+                "cid": cId,
+                "type": CommonUtils.getStore(context)
+                    .state
+                    .loginResponseEntity
+                    .orderMasterEntity
+                    .orderType,
+                "pageNum": 1,
+                "pageSize": Config.PAGE_SIZE,
+              },
+              cancelToken: cancelToken)
+          .then((baseResult) {
+        if (mounted) {
           this.setState(() {
             productResponseEntity =
                 ProductResponseEntity.fromJson(baseResult.data);
@@ -139,7 +154,8 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
       Navigator.push<bool>(
               context,
               new CupertinoPageRoute(
-                  builder: (context) => MenuRecord(2,productResponseEntity.imgPath, selectedProductList)))
+                  builder: (context) => MenuRecord(
+                      2, productResponseEntity.imgPath, selectedProductList)))
           .then((isFinish) {
         if (isFinish != null && isFinish) {
           NavigatorUtils.pop(context);
@@ -155,6 +171,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       ///计算限制点餐总数
       _calculateTotalNumLimited(store);
+
       ///标题
       String title = CommonUtils.getLocale(context).menu;
       return Scaffold(
@@ -220,18 +237,21 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                     onTap: () {
                                       _requestDrinkProductData(
                                           categoryInfoEntity.data[index].id);
-                                      print("分类"+index.toString());
+                                      print("分类" + index.toString());
                                       setState(() {
                                         selectTypeIndex = index;
                                       });
                                     },
                                     leading: CommonUtils.displayImageWidget(
                                         Config.getSettingBaseUrl() +
-                                            categoryInfoEntity.imgPath +
-                                            (categoryInfoEntity
-                                                .data[index].pic) ??
-                                            "",height: ScreenUtil.getInstance().setWidth(80)
-                                        ,width: ScreenUtil.getInstance().setWidth(80)),
+                                                categoryInfoEntity.imgPath +
+                                                (categoryInfoEntity
+                                                    .data[index].pic) ??
+                                            "",
+                                        height: ScreenUtil.getInstance()
+                                            .setWidth(80),
+                                        width: ScreenUtil.getInstance()
+                                            .setWidth(80)),
                                     title: new Text(
                                       categoryInfoEntity.data[index].name,
                                       style: TextStyle(
@@ -254,7 +274,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                     ),
                     //操作按钮
                     Container(
-                      height:ScreenUtil.getInstance().setWidth(80),
+                      height: ScreenUtil.getInstance().setWidth(80),
                       margin: EdgeInsets.all(5.0),
                       child: FlexButton(
                         color: Colors.deepOrange,
@@ -304,28 +324,46 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                             itemBuilder: (BuildContext context, int index) {
                               Product product =
                                   productResponseEntity.data.list[index];
+                              String photoUrl = Config.getSettingBaseUrl() +
+                                  productResponseEntity.imgPath +
+                                  (product.pic ?? "");
                               return Container(
                                 padding:
                                     EdgeInsets.only(top: 10.0, bottom: 10.0),
                                 child: Row(
                                   children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10.0, right: 15.0),
-                                      child: CommonUtils.displayImageWidget(
-                                          Config.getSettingBaseUrl() +
-                                              productResponseEntity.imgPath +
-                                              (product.pic ?? ""),
-                                          height: ScreenUtil.getInstance().setWidth(150),
-                                          width: ScreenUtil.getInstance().setWidth(150)),
+                                    InkWell(
+                                      ///点击查看大图
+                                      onTap: () {
+                                        NavigatorUtils.navigatorRouter(
+                                            context,
+                                            new BigPhotoView(photoUrl,
+                                                "food_tag${index.toString()}"));
+                                      },
+                                      child: Container(
+                                        child: Hero(
+                                          tag: "food_tag${index.toString()}",
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0, right: 15.0),
+                                            child:
+                                                CommonUtils.displayImageWidget(
+                                                    photoUrl,
+                                                    height:
+                                                        ScreenUtil.getInstance()
+                                                            .setWidth(150),
+                                                    width:
+                                                        ScreenUtil.getInstance()
+                                                            .setWidth(150)),
+                                          ),
+                                        ),
+                                      ),
                                     ),
 
                                     ///标题
                                     Expanded(
                                       child: Text(
-                                        product.no +
-                                            ")    " +
-                                            product.name,
+                                        product.no + ")    " + product.name,
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: MyTextStyle.bigTextSize,
@@ -337,12 +375,14 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                       child: PlusDecreaseText(
                                         plusEnable: plusEnable,
                                         inputValue: selected[categoryInfoEntity
-                                                    .data[selectTypeIndex].id.toString() +
+                                                    .data[selectTypeIndex].id
+                                                    .toString() +
                                                 product.id.toString()]
                                             ?.toString(),
                                         callback: (String value) {
                                           String key = categoryInfoEntity
-                                                  .data[selectTypeIndex].id.toString() +
+                                                  .data[selectTypeIndex].id
+                                                  .toString() +
                                               product.id.toString();
                                           int num = int.parse(value);
                                           if (num > 0) {
@@ -372,8 +412,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                                   categoryId: categoryInfoEntity
                                                       .data[selectTypeIndex].id,
                                                   productPrice: product.price,
-                                                  product: product
-                                              );
+                                                  product: product);
                                               selectedProduct[key] =
                                                   orderDetail;
                                             } else {
@@ -391,7 +430,8 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                         decreaseImg: 'static/images/minus.png',
                                         plusImg: 'static/images/plus.png',
                                       ),
-                                      width: ScreenUtil.getInstance().setWidth(320),
+                                      width: ScreenUtil.getInstance()
+                                          .setWidth(320),
                                     ),
                                   ],
                                 ),
@@ -408,20 +448,28 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
       );
     });
   }
+
   ///计算限制点餐总数
   void _calculateTotalNumLimited(Store<StateInfo> store) {
-     if(store.state.loginResponseEntity.setting.isLunch){
-      totalNumLimited=store.state.loginResponseEntity.setting.lunchNum*store.state.loginResponseEntity.setting.adult;
-      if(store.state.loginResponseEntity.setting.children!=null){
-        totalNumLimited=totalNumLimited+store.state.loginResponseEntity.setting.lunchNum*store.state.loginResponseEntity.setting.children;
+    if (store.state.loginResponseEntity.setting.isLunch) {
+      totalNumLimited = store.state.loginResponseEntity.setting.lunchNum *
+          store.state.loginResponseEntity.setting.adult;
+      if (store.state.loginResponseEntity.setting.children != null) {
+        totalNumLimited = totalNumLimited +
+            store.state.loginResponseEntity.setting.lunchNum *
+                store.state.loginResponseEntity.setting.children;
       }
-    }else{
-      totalNumLimited=store.state.loginResponseEntity.setting.dinnerNum*store.state.loginResponseEntity.setting.adult;
-      if(store.state.loginResponseEntity.setting.children!=null){
-        totalNumLimited=totalNumLimited+store.state.loginResponseEntity.setting.dinnerNum*store.state.loginResponseEntity.setting.children;
+    } else {
+      totalNumLimited = store.state.loginResponseEntity.setting.dinnerNum *
+          store.state.loginResponseEntity.setting.adult;
+      if (store.state.loginResponseEntity.setting.children != null) {
+        totalNumLimited = totalNumLimited +
+            store.state.loginResponseEntity.setting.dinnerNum *
+                store.state.loginResponseEntity.setting.children;
       }
     }
   }
+
   @override
   void dispose() {
     //取消网络请求
