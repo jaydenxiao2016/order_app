@@ -37,7 +37,7 @@ Widget _getContent(int i, OrderDetail value) {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              value.productId.toString(),
+              value.product.no.toString(),
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black, fontSize: MyTextStyle.smallTextSize),
