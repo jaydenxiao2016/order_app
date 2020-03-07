@@ -323,17 +323,37 @@ class _MenuDrinkPageState extends State<MenuDrinkPage> {
                                             fontSize: MyTextStyle.bigTextSize,
                                           ),
                                         )),
-
+                                    ///序号
+                                    Text(
+                                      product.no+
+                                          ")    ",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: MyTextStyle.bigTextSize,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     ///标题
                                     Expanded(
-                                      child: Text(
-                                        product.no+
-                                            ")    " +
-                                            product.name,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: MyTextStyle.bigTextSize,
-                                            fontWeight: FontWeight.bold),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                       children: <Widget>[
+                                         Text(
+                                           product.name,
+                                           style: TextStyle(
+                                               color: Colors.white,
+                                               fontSize: MyTextStyle.bigTextSize,
+                                               fontWeight: FontWeight.bold),
+                                         ),
+                                         product.remark!=null?Text(
+                                           product.remark,
+                                           style: TextStyle(
+                                               color: Colors.white,
+                                               fontSize: MyTextStyle.bigTextSize,
+                                               fontWeight: FontWeight.bold),
+                                           maxLines: 2,
+                                           overflow: TextOverflow.ellipsis,
+                                         ):Container(),
+                                       ],
                                       ),
                                     ),
 
