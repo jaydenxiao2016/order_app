@@ -6,17 +6,17 @@ class OrderDetail {
 	int orderId;
 	int detailId;
 	int pageSize;
-	int updateTime;
+	String updateTime;
 	int productNumber;
 	String searchKey;
 	String categoryName;
 	int pageNum;
 	String productName;
 	String detailType;
-	int createTime;
+	String createTime;
 	int roundId;
 	int categoryId;
-	double productPrice;
+	String productPrice;
 	Product product=new Product();
 
 	OrderDetail({this.productId, this.orderId, this.detailId, this.pageSize, this.updateTime, this.productNumber, this.searchKey, this.categoryName, this.pageNum, this.productName, this.detailType, this.createTime, this.roundId, this.categoryId, this.productPrice,this.product});
@@ -26,17 +26,17 @@ class OrderDetail {
 		orderId = json['orderId'];
 		detailId = json['detailId'];
 		pageSize = json['pageSize'];
-		updateTime = json['updateTime'];
+		updateTime = json['updateTime'].toString();
 		productNumber = json['productNumber'];
 		searchKey = json['searchKey'];
 		categoryName = json['categoryName'];
 		pageNum = json['pageNum'];
 		productName = json['productName'];
 		detailType = json['detailType'];
-		createTime = json['createTime'];
+		createTime = json['createTime'].toString();
 		roundId = json['roundId'];
 		categoryId = json['categoryId'];
-		productPrice = json['productPrice'];
+		productPrice = json['productPrice'].toString();
 		product = Product.fromJson(json['product']);
 	}
 
@@ -56,7 +56,7 @@ class OrderDetail {
 		data['createTime'] = this.createTime;
 		data['roundId'] = this.roundId;
 		data['categoryId'] = this.categoryId;
-		data['productPrice'] = this.productPrice;
+		data['productPrice'] = this.productPrice.toString();
 		data['product'] = this.product.toJson();
 		return data;
 	}

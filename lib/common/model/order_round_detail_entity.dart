@@ -16,7 +16,7 @@ class OrderRoundDetailEntity {
 		if (json['orderDetails'] != null) {
 			orderDetails = new List<OrderDetail>();(json['orderDetails'] as List).forEach((v) { orderDetails.add(new OrderDetail.fromJson(v)); });
 		}
-		createTime = json['createTime'];
+		createTime = json['createTime'].toString();
 		orderId = json['orderId'];
 		num = json['num'];
 		pageSize = json['pageSize'];

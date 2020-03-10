@@ -1,7 +1,7 @@
 import 'package:order_app/common/model/category.dart';
 
 class Product {
-  double price;
+  String price;
   String name;
   String remark;
   int pageSize;
@@ -17,7 +17,7 @@ class Product {
   Product({this.price, this.name,this.remark, this.pageSize, this.no,this.id, this.pic, this.inventory, this.category, this.pageNum, this.status, this.cid});
 
   Product.fromJson(Map<String, dynamic> json) {
-    price = json['price'];
+    price = json['price'].toString();
     name = json['name'];
     remark = json['remark'];
     pageSize = json['pageSize'];

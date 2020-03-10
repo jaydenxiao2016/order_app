@@ -59,11 +59,11 @@ class OrderMasterEntity {
   int buyerId;
   int lunchNum;
   int pageNum;
-  double drinksTotalAmount;
-  double totalAmount;
+  String drinksTotalAmount;
+  String totalAmount;
   String tableNum;
   int adult;
-  int openTime;
+  String openTime;
   int waitTime;
   int child;
   String status;
@@ -104,8 +104,8 @@ class OrderMasterEntity {
     buyerId = json['buyerId'];
     lunchNum = json['lunchNum'];
     pageNum = json['pageNum'];
-    drinksTotalAmount = json['drinksTotalAmount'];
-    totalAmount = json['totalAmount'];
+    drinksTotalAmount = json['drinksTotalAmount'].toString();
+    totalAmount = json['totalAmount'].toString();
     tableNum = json['tableNum'];
     adult = json['adult'];
     openTime = json['openTime'];
@@ -142,7 +142,7 @@ class OrderMasterEntity {
 
 class OrderRound {
   List<OrderDetail> orderDetails;
-  int createTime;
+  String createTime;
   int orderId;
   int num;
   int pageSize;
@@ -167,7 +167,7 @@ class OrderRound {
         orderDetails.add(new OrderDetail.fromJson(v));
       });
     }
-    createTime = json['createTime'];
+    createTime = json['createTime'].toString();
     orderId = json['orderId'];
     num = json['num'];
     pageSize = json['pageSize'];

@@ -63,6 +63,7 @@ class _PageDetailPageState extends State<PageDetailPage> {
             cancelToken: cancelToken)
         .then((baseResult) {
       print("订单详情成功");
+      print(OrderMasterEntity.fromJson(baseResult.data["data"]).toJson());
       if (mounted) {
         setState(() {
           orderMasterEntity =
@@ -148,21 +149,28 @@ class _PageDetailPageState extends State<PageDetailPage> {
   @override
   Widget build(BuildContext context) {
     ///开台时间
-    String openTimeStr = orderMasterEntity.openTime != null
-        ? formatDate(
-            DateTime.fromMillisecondsSinceEpoch(orderMasterEntity.openTime),
-            [dd, '-', mm, '-', yyyy, ' ', HH, ':', nn]).toString()
-        : "";
+//    String openTimeStr = orderMasterEntity.openTime != null
+//        ? formatDate(
+//            DateTime.fromMillisecondsSinceEpoch(orderMasterEntity.openTime),
+//            [dd, '-', mm, '-', yyyy, ' ', HH, ':', nn]).toString()
+//        : "";
+    String openTimeStr=orderMasterEntity.openTime??"";
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       String title = CommonUtils.getLocale(context).payment;
-      double adultPrice = orderMasterEntity.orderType == "1"
+      String adultPrice = orderMasterEntity.orderType == "1"
           ? store.state.loginResponseEntity.setting.adultLunchPrice
           : store.state.loginResponseEntity.setting.adultDinnerPrice;
-      double childPrice = orderMasterEntity.orderType == "1"
+      String childPrice = orderMasterEntity.orderType == "1"
           ? store.state.loginResponseEntity.setting.childLunchPrice
           : store.state.loginResponseEntity.setting.childDinnerPrice;
-      double adultTotalPrice = adultPrice * (orderMasterEntity.adult ?? 0);
-      double childTotalPrice = childPrice * (orderMasterEntity.child ?? 0);
+      double adultTotalPrice=0;
+      double childTotalPrice=0;
+      try {
+        adultTotalPrice=double.parse(adultPrice)*(orderMasterEntity.adult??0);
+        childTotalPrice=double.parse(childPrice)*(orderMasterEntity.child??0);
+      } catch (e) {
+        print(e);
+      }
       AppBar appBar = AppBar(
         title: Text(title),
       );

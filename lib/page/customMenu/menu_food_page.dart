@@ -381,7 +381,7 @@ class _MenuFoodPageState extends State<MenuFoodPage> {
                                                 fontSize: MyTextStyle.bigTextSize,
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          product.remark!=null?Text(
+                                          (product.remark!=null&&product.remark.isNotEmpty)?Text(
                                             product.remark,
                                             style: TextStyle(
                                                 color: Colors.white,

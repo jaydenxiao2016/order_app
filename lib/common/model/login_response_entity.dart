@@ -71,14 +71,14 @@ class LoginInfoArea {
 }
 
 class LoginInfoSetting {
-  double adultDinnerPrice;
+  String adultDinnerPrice;
   int servicePrinterId;
-  double adultLunchPrice;
-  double childLunchPrice;
+  String adultLunchPrice;
+  String childLunchPrice;
   String appPwd;
   int dinnerNum;
   Printer servicePrinter;
-  double childDinnerPrice;
+  String childDinnerPrice;
   int id;
   int lunchNum;
   int waitTime;
@@ -139,16 +139,16 @@ class LoginInfoSetting {
       });
 
   LoginInfoSetting.fromJson(Map<String, dynamic> json) {
-    adultDinnerPrice = json['adultDinnerPrice'];
+    adultDinnerPrice = json['adultDinnerPrice'].toString();
     servicePrinterId = json['servicePrinterId'];
-    adultLunchPrice = json['adultLunchPrice'];
-    childLunchPrice = json['childLunchPrice'];
+    adultLunchPrice = json['adultLunchPrice'].toString();
+    childLunchPrice = json['childLunchPrice'].toString();
     appPwd = json['appPwd'];
     dinnerNum = json['dinnerNum'];
     servicePrinter = json['servicePrinter'] != null
         ? new Printer.fromJson(json['servicePrinter'])
         : null;
-    childDinnerPrice = json['childDinnerPrice'];
+    childDinnerPrice = json['childDinnerPrice'].toString();
     id = json['id'];
     lunchNum = json['lunchNum'];
     waitTime = json['waitTime'];
