@@ -60,6 +60,8 @@ class OrderMasterEntity {
   int lunchNum;
   int pageNum;
   String drinksTotalAmount;
+  String adultAmount;
+  String childAmount;
   String totalAmount;
   String tableNum;
   int adult;
@@ -80,6 +82,8 @@ class OrderMasterEntity {
       this.lunchNum,
       this.pageNum,
       this.drinksTotalAmount,
+      this.adultAmount,
+      this.childAmount,
       this.totalAmount,
       this.tableNum,
       this.adult,
@@ -104,8 +108,10 @@ class OrderMasterEntity {
     buyerId = json['buyerId'];
     lunchNum = json['lunchNum'];
     pageNum = json['pageNum'];
-    drinksTotalAmount = json['drinksTotalAmount'].toString();
     totalAmount = json['totalAmount'].toString();
+    drinksTotalAmount = json['drinksTotalAmount'].toString();
+    adultAmount = json['adultAmount'].toString();
+    childAmount = json['childAmount'].toString();
     tableNum = json['tableNum'];
     adult = json['adult'];
     openTime = json['openTime'];
@@ -130,6 +136,8 @@ class OrderMasterEntity {
     data['pageNum'] = this.pageNum;
     data['totalAmount'] = this.totalAmount;
     data['drinksTotalAmount'] = this.drinksTotalAmount;
+    data['adultAmount'] = this.adultAmount;
+    data['childAmount'] = this.childAmount;
     data['tableNum'] = this.tableNum;
     data['adult'] = this.adult;
     data['openTime'] = this.openTime;

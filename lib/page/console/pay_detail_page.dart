@@ -157,20 +157,6 @@ class _PageDetailPageState extends State<PageDetailPage> {
     String openTimeStr=orderMasterEntity.openTime??"";
     return new StoreBuilder<StateInfo>(builder: (context, store) {
       String title = CommonUtils.getLocale(context).payment;
-      String adultPrice = orderMasterEntity.orderType == "1"
-          ? store.state.loginResponseEntity.setting.adultLunchPrice
-          : store.state.loginResponseEntity.setting.adultDinnerPrice;
-      String childPrice = orderMasterEntity.orderType == "1"
-          ? store.state.loginResponseEntity.setting.childLunchPrice
-          : store.state.loginResponseEntity.setting.childDinnerPrice;
-      double adultTotalPrice=0;
-      double childTotalPrice=0;
-      try {
-        adultTotalPrice=double.parse(adultPrice)*(orderMasterEntity.adult??0);
-        childTotalPrice=double.parse(childPrice)*(orderMasterEntity.child??0);
-      } catch (e) {
-        print(e);
-      }
       AppBar appBar = AppBar(
         title: Text(title),
       );
@@ -236,7 +222,7 @@ class _PageDetailPageState extends State<PageDetailPage> {
                                             fontSize:
                                                 MyTextStyle.normalTextSize),
                                       ),
-                                      Text(adultTotalPrice.toString(),
+                                      Text(orderMasterEntity.adultAmount??"",
                                           style: TextStyle(
                                               fontSize: MyTextStyle.bigTextSize,
                                               color: Colors.red)),
@@ -262,7 +248,7 @@ class _PageDetailPageState extends State<PageDetailPage> {
                                             fontSize:
                                                 MyTextStyle.normalTextSize),
                                       ),
-                                      Text(childTotalPrice.toString(),
+                                      Text(orderMasterEntity.childAmount??"",
                                           style: TextStyle(
                                               fontSize: MyTextStyle.bigTextSize,
                                               color: Colors.red)),
